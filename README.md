@@ -245,3 +245,8 @@ The SDK is organized by service, available under the `sdkClient` object. For exa
 *   `sdkClient.Policies`: For managing policies (example was commented out in `main.go` but shows the pattern).
 
 Refer to the generated SDK code in the `pkg/client` directory for a full list of services and their operations.
+
+## License
+
+This SDK is distributed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file for more information.
+
