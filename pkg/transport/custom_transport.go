@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
+
+	"github.com/PuerkitoBio/rehttp"
 )
 
 // Define unexported types for context keys to prevent collisions
@@ -28,6 +31,12 @@ const (
 	encodingGzip          = "gzip"
 )
 
+const (
+	defaultRetryCount = 3
+	minRetryWait      = 1 * time.Second
+	maxRetryWait      = 30 * time.Second
+)
+
 // WithRequestGzip returns a new context with the Gzip override setting.
 func WithRequestGzip(ctx context.Context, enabled bool) context.Context {
 	return context.WithValue(ctx, gzipOverrideKey, enabled)
@@ -44,21 +53,45 @@ type customTransport struct {
 	backendID         string
 	clientTraceparent string // Renamed to avoid confusion with context override
 	clientGzipEnabled bool   // Renamed to avoid confusion with context override
-	base              http.RoundTripper
+	retryTransport    http.RoundTripper
 }
 
 // NewCustomTransport creates a new customTransport.
 // traceparent is optional and can be an empty string.
-func NewCustomTransport(apiKey, backendID, clientTraceparent string, clientGzipEnabled bool, baseTransport http.RoundTripper) *customTransport {
-	if baseTransport == nil {
-		baseTransport = http.DefaultTransport
+// retryCount, minWait, maxWait configure the retry mechanism.
+func NewCustomTransport(
+	apiKey, backendID, clientTraceparent string,
+	clientGzipEnabled bool,
+	baseHttpTransport http.RoundTripper, // This is the transport *before* retries
+	retryCount int,
+	minWait, maxWait time.Duration,
+	retryStatuses []int,
+) *customTransport {
+	if baseHttpTransport == nil {
+		baseHttpTransport = http.DefaultTransport
 	}
+
+	// Default retry statuses if not provided or empty
+	if len(retryStatuses) == 0 {
+		retryStatuses = []int{http.StatusServiceUnavailable, http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusBadGateway}
+	}
+
+	// Configure retry transport
+	rt := rehttp.NewTransport(
+		baseHttpTransport,
+		rehttp.RetryAll(
+			rehttp.RetryMaxRetries(retryCount),
+			rehttp.RetryStatuses(retryStatuses...),
+		),
+		rehttp.ExpJitterDelay(minWait, maxWait),
+	)
+
 	return &customTransport{
 		apiKey:            apiKey,
 		backendID:         backendID,
-		clientTraceparent: clientTraceparent, // Use renamed field
-		clientGzipEnabled: clientGzipEnabled, // Use renamed field
-		base:              baseTransport,
+		clientTraceparent: clientTraceparent,
+		clientGzipEnabled: clientGzipEnabled,
+		retryTransport:    rt,
 	}
 }
 
@@ -120,6 +153,6 @@ func (t *customTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		newReq.Header.Set(headerTraceparent, effectiveTraceparent)
 	}
 
-	// Proceed with the request using the base transport
-	return t.base.RoundTrip(newReq)
+	// Proceed with the request using the retry transport
+	return t.retryTransport.RoundTrip(newReq)
 }
