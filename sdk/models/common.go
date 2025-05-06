@@ -81,7 +81,7 @@ func NewEqualStringCondition(key, value string) Condition {
 		},
 		Filters: []Filter{
 			{
-				Op:    OpEqual,
+				Op:    OperatorEqual,
 				Value: value,
 			},
 		},
