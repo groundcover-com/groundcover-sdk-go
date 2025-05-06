@@ -31,7 +31,7 @@ type QueryRequest struct {
 	Filters string `json:"Filters,omitempty"`
 
 	// pipeline
-	Pipeline *Pipeline `json:"Pipeline,omitempty"`
+	Pipeline *PromqlPipeline `json:"Pipeline,omitempty"`
 
 	// promql
 	Promql string `json:"Promql,omitempty"`

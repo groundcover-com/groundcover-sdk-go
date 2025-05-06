@@ -47,13 +47,13 @@ type BaseQuery struct {
 	QueryType string `json:"queryType,omitempty"`
 
 	// pipeline
-	Pipeline *Pipeline `json:"pipeline,omitempty"`
+	Pipeline *PromqlPipeline `json:"pipeline,omitempty"`
 
 	// relative timerange
 	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty"`
 
 	// sql pipeline
-	SQLPipeline *SearchPipeline `json:"sqlPipeline,omitempty"`
+	SQLPipeline *SQLPipeline `json:"sqlPipeline,omitempty"`
 }
 
 // Validate validates this base query

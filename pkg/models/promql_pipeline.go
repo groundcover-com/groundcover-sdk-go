@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Pipeline Pipeline represents a segment of a PromQL query, which can be a metric with conditions, a function, or a template.
+// PromqlPipeline PromqlPipeline represents a segment of a PromQL query, which can be a metric with conditions, a function, or a template.
 //
-// swagger:model Pipeline
-type Pipeline struct {
+// swagger:model PromqlPipeline
+type PromqlPipeline struct {
 
 	// conditions
 	Conditions []*Condition `json:"conditions"`
@@ -32,8 +32,8 @@ type Pipeline struct {
 	Function *PromqlFunction `json:"function,omitempty"`
 }
 
-// Validate validates this pipeline
-func (m *Pipeline) Validate(formats strfmt.Registry) error {
+// Validate validates this promql pipeline
+func (m *PromqlPipeline) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateConditions(formats); err != nil {
@@ -50,7 +50,7 @@ func (m *Pipeline) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Pipeline) validateConditions(formats strfmt.Registry) error {
+func (m *PromqlPipeline) validateConditions(formats strfmt.Registry) error {
 	if swag.IsZero(m.Conditions) { // not required
 		return nil
 	}
@@ -76,7 +76,7 @@ func (m *Pipeline) validateConditions(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Pipeline) validateFunction(formats strfmt.Registry) error {
+func (m *PromqlPipeline) validateFunction(formats strfmt.Registry) error {
 	if swag.IsZero(m.Function) { // not required
 		return nil
 	}
@@ -95,8 +95,8 @@ func (m *Pipeline) validateFunction(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this pipeline based on the context it is used
-func (m *Pipeline) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this promql pipeline based on the context it is used
+func (m *PromqlPipeline) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateConditions(ctx, formats); err != nil {
@@ -113,7 +113,7 @@ func (m *Pipeline) ContextValidate(ctx context.Context, formats strfmt.Registry)
 	return nil
 }
 
-func (m *Pipeline) contextValidateConditions(ctx context.Context, formats strfmt.Registry) error {
+func (m *PromqlPipeline) contextValidateConditions(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Conditions); i++ {
 
@@ -138,7 +138,7 @@ func (m *Pipeline) contextValidateConditions(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *Pipeline) contextValidateFunction(ctx context.Context, formats strfmt.Registry) error {
+func (m *PromqlPipeline) contextValidateFunction(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Function != nil {
 
@@ -160,7 +160,7 @@ func (m *Pipeline) contextValidateFunction(ctx context.Context, formats strfmt.R
 }
 
 // MarshalBinary interface implementation
-func (m *Pipeline) MarshalBinary() ([]byte, error) {
+func (m *PromqlPipeline) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -168,8 +168,8 @@ func (m *Pipeline) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Pipeline) UnmarshalBinary(b []byte) error {
-	var res Pipeline
+func (m *PromqlPipeline) UnmarshalBinary(b []byte) error {
+	var res PromqlPipeline
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

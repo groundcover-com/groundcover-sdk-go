@@ -26,7 +26,7 @@ type PromqlFunction struct {
 	Name string `json:"name,omitempty"`
 
 	// pipelines
-	Pipelines []*Pipeline `json:"pipelines"`
+	Pipelines []*PromqlPipeline `json:"pipelines"`
 }
 
 // Validate validates this promql function

@@ -17,7 +17,7 @@ import (
 // We need this separate model to prevent circular references in swagger generation
 //
 // swagger:model KnownPipelines
-type KnownPipelines map[string]Pipeline
+type KnownPipelines map[string]PromqlPipeline
 
 // Validate validates this known pipelines
 func (m KnownPipelines) Validate(formats strfmt.Registry) error {

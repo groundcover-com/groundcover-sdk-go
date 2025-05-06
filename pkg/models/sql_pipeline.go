@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// SearchPipeline SearchPipeline defines a pipeline for search queries.
+// SQLPipeline SqlPipeline defines a pipeline for search queries.
 //
-// swagger:model SearchPipeline
-type SearchPipeline struct {
+// swagger:model SqlPipeline
+type SQLPipeline struct {
 
 	// except
 	Except []*Selector `json:"except"`
@@ -41,14 +41,14 @@ type SearchPipeline struct {
 	Filters *Group `json:"filters,omitempty"`
 
 	// from
-	From *SearchPipeline `json:"from,omitempty"`
+	From *SQLPipeline `json:"from,omitempty"`
 
 	// having
 	Having *Group `json:"having,omitempty"`
 }
 
-// Validate validates this search pipeline
-func (m *SearchPipeline) Validate(formats strfmt.Registry) error {
+// Validate validates this Sql pipeline
+func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateExcept(formats); err != nil {
@@ -85,7 +85,7 @@ func (m *SearchPipeline) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SearchPipeline) validateExcept(formats strfmt.Registry) error {
+func (m *SQLPipeline) validateExcept(formats strfmt.Registry) error {
 	if swag.IsZero(m.Except) { // not required
 		return nil
 	}
@@ -111,7 +111,7 @@ func (m *SearchPipeline) validateExcept(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SearchPipeline) validateGroupBy(formats strfmt.Registry) error {
+func (m *SQLPipeline) validateGroupBy(formats strfmt.Registry) error {
 	if swag.IsZero(m.GroupBy) { // not required
 		return nil
 	}
@@ -137,7 +137,7 @@ func (m *SearchPipeline) validateGroupBy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SearchPipeline) validateOrderBy(formats strfmt.Registry) error {
+func (m *SQLPipeline) validateOrderBy(formats strfmt.Registry) error {
 	if swag.IsZero(m.OrderBy) { // not required
 		return nil
 	}
@@ -163,7 +163,7 @@ func (m *SearchPipeline) validateOrderBy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SearchPipeline) validateSelectors(formats strfmt.Registry) error {
+func (m *SQLPipeline) validateSelectors(formats strfmt.Registry) error {
 	if swag.IsZero(m.Selectors) { // not required
 		return nil
 	}
@@ -189,7 +189,7 @@ func (m *SearchPipeline) validateSelectors(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SearchPipeline) validateFilters(formats strfmt.Registry) error {
+func (m *SQLPipeline) validateFilters(formats strfmt.Registry) error {
 	if swag.IsZero(m.Filters) { // not required
 		return nil
 	}
@@ -208,7 +208,7 @@ func (m *SearchPipeline) validateFilters(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SearchPipeline) validateFrom(formats strfmt.Registry) error {
+func (m *SQLPipeline) validateFrom(formats strfmt.Registry) error {
 	if swag.IsZero(m.From) { // not required
 		return nil
 	}
@@ -227,7 +227,7 @@ func (m *SearchPipeline) validateFrom(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SearchPipeline) validateHaving(formats strfmt.Registry) error {
+func (m *SQLPipeline) validateHaving(formats strfmt.Registry) error {
 	if swag.IsZero(m.Having) { // not required
 		return nil
 	}
@@ -246,8 +246,8 @@ func (m *SearchPipeline) validateHaving(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this search pipeline based on the context it is used
-func (m *SearchPipeline) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this Sql pipeline based on the context it is used
+func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateExcept(ctx, formats); err != nil {
@@ -284,7 +284,7 @@ func (m *SearchPipeline) ContextValidate(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *SearchPipeline) contextValidateExcept(ctx context.Context, formats strfmt.Registry) error {
+func (m *SQLPipeline) contextValidateExcept(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Except); i++ {
 
@@ -309,7 +309,7 @@ func (m *SearchPipeline) contextValidateExcept(ctx context.Context, formats strf
 	return nil
 }
 
-func (m *SearchPipeline) contextValidateGroupBy(ctx context.Context, formats strfmt.Registry) error {
+func (m *SQLPipeline) contextValidateGroupBy(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.GroupBy); i++ {
 
@@ -334,7 +334,7 @@ func (m *SearchPipeline) contextValidateGroupBy(ctx context.Context, formats str
 	return nil
 }
 
-func (m *SearchPipeline) contextValidateOrderBy(ctx context.Context, formats strfmt.Registry) error {
+func (m *SQLPipeline) contextValidateOrderBy(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.OrderBy); i++ {
 
@@ -359,7 +359,7 @@ func (m *SearchPipeline) contextValidateOrderBy(ctx context.Context, formats str
 	return nil
 }
 
-func (m *SearchPipeline) contextValidateSelectors(ctx context.Context, formats strfmt.Registry) error {
+func (m *SQLPipeline) contextValidateSelectors(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Selectors); i++ {
 
@@ -384,7 +384,7 @@ func (m *SearchPipeline) contextValidateSelectors(ctx context.Context, formats s
 	return nil
 }
 
-func (m *SearchPipeline) contextValidateFilters(ctx context.Context, formats strfmt.Registry) error {
+func (m *SQLPipeline) contextValidateFilters(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Filters != nil {
 
@@ -405,7 +405,7 @@ func (m *SearchPipeline) contextValidateFilters(ctx context.Context, formats str
 	return nil
 }
 
-func (m *SearchPipeline) contextValidateFrom(ctx context.Context, formats strfmt.Registry) error {
+func (m *SQLPipeline) contextValidateFrom(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.From != nil {
 
@@ -426,7 +426,7 @@ func (m *SearchPipeline) contextValidateFrom(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *SearchPipeline) contextValidateHaving(ctx context.Context, formats strfmt.Registry) error {
+func (m *SQLPipeline) contextValidateHaving(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Having != nil {
 
@@ -448,7 +448,7 @@ func (m *SearchPipeline) contextValidateHaving(ctx context.Context, formats strf
 }
 
 // MarshalBinary interface implementation
-func (m *SearchPipeline) MarshalBinary() ([]byte, error) {
+func (m *SQLPipeline) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -456,8 +456,8 @@ func (m *SearchPipeline) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *SearchPipeline) UnmarshalBinary(b []byte) error {
-	var res SearchPipeline
+func (m *SQLPipeline) UnmarshalBinary(b []byte) error {
+	var res SQLPipeline
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
