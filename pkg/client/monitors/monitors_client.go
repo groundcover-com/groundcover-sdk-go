@@ -58,6 +58,26 @@ type ClientOption func(*runtime.ClientOperation)
 //
 // Feel free to add you own set of options.
 
+// WithContentType allows the client to force the Content-Type header
+// to negotiate a specific Consumer from the server.
+//
+// You may use this option to set arbitrary extensions to your MIME media type.
+func WithContentType(mime string) ClientOption {
+	return func(r *runtime.ClientOperation) {
+		r.ConsumesMediaTypes = []string{mime}
+	}
+}
+
+// WithContentTypeApplicationJSON sets the Content-Type header to "application/json".
+func WithContentTypeApplicationJSON(r *runtime.ClientOperation) {
+	r.ConsumesMediaTypes = []string{"application/json"}
+}
+
+// WithContentTypeApplicationYaml sets the Content-Type header to "application/yaml".
+func WithContentTypeApplicationYaml(r *runtime.ClientOperation) {
+	r.ConsumesMediaTypes = []string{"application/yaml"}
+}
+
 // WithAccept allows the client to force the Accept header
 // to negotiate a specific Producer from the server.
 //
@@ -106,7 +126,7 @@ func (a *Client) CreateMonitor(params *CreateMonitorParams, opts ...ClientOption
 		Method:             "POST",
 		PathPattern:        "/api/monitors",
 		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/yaml"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &CreateMonitorReader{formats: a.formats},

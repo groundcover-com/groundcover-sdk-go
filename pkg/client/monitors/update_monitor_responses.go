@@ -67,7 +67,7 @@ func NewUpdateMonitorAccepted() *UpdateMonitorAccepted {
 /*
 UpdateMonitorAccepted describes a response with status code 202, with default header values.
 
-NoContentResponse indicates success but that no response body is expected or included.
+UpdateMonitorAccepted update monitor accepted
 */
 type UpdateMonitorAccepted struct {
 }

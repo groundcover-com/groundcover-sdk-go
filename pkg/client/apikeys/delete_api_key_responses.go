@@ -61,7 +61,7 @@ func NewDeleteAPIKeyAccepted() *DeleteAPIKeyAccepted {
 /*
 DeleteAPIKeyAccepted describes a response with status code 202, with default header values.
 
-NoContentResponse indicates success but that no response body is expected or included.
+DeleteAPIKeyAccepted delete Api key accepted
 */
 type DeleteAPIKeyAccepted struct {
 }
