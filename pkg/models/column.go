@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Column column
+// Column Column defines a searchable column and its properties.
 //
 // swagger:model Column
 type Column struct {

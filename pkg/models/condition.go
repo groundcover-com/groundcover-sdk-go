@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Condition condition
+// Condition Condition specifies a search condition based on a column and filters.
 //
 // swagger:model Condition
 type Condition struct {

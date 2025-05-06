@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Filter filter
+// Filter Filter represents an operation and value for a condition.
 //
 // swagger:model Filter
 type Filter struct {
