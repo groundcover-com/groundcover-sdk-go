@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// PromqlFunction promql function
+// PromqlFunction PromqlFunction represents a function call in a PromQL query.
 //
 // swagger:model PromqlFunction
 type PromqlFunction struct {

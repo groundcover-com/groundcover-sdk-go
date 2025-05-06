@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Pipeline pipeline
+// Pipeline Pipeline represents a segment of a PromQL query, which can be a metric with conditions, a function, or a template.
 //
 // swagger:model Pipeline
 type Pipeline struct {

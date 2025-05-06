@@ -61,7 +61,7 @@ func NewDeletePolicyNoContent() *DeletePolicyNoContent {
 /*
 DeletePolicyNoContent describes a response with status code 204, with default header values.
 
-DeletePolicyNoContent delete policy no content
+NoContentResponse indicates success but that no response body is expected or included.
 */
 type DeletePolicyNoContent struct {
 }

@@ -53,7 +53,7 @@ type BaseQuery struct {
 	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty"`
 
 	// sql pipeline
-	SQLPipeline *Pipeline `json:"sqlPipeline,omitempty"`
+	SQLPipeline *SearchPipeline `json:"sqlPipeline,omitempty"`
 }
 
 // Validate validates this base query

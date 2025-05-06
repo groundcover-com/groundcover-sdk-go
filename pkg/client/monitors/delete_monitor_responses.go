@@ -61,7 +61,7 @@ func NewDeleteMonitorAccepted() *DeleteMonitorAccepted {
 /*
 DeleteMonitorAccepted describes a response with status code 202, with default header values.
 
-DeleteMonitorAccepted delete monitor accepted
+NoContentResponse indicates success but that no response body is expected or included.
 */
 type DeleteMonitorAccepted struct {
 }
