@@ -44,7 +44,7 @@ import (
 	"strings"
 	"time"
 
-	pkgClient "github.com/groundcover-com/groundcover-sdk-go/pkg/client"
+	client "github.com/groundcover-com/groundcover-sdk-go/pkg/client"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/transport"
 	"github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
@@ -85,7 +85,7 @@ func main() {
 	host := parsedURL.Host
 	basePath := parsedURL.Path
 	if basePath == "" {
-		basePath = pkgClient.DefaultBasePath // Use default if path is empty
+		basePath = client.DefaultBasePath // Use default if path is empty
 	}
 	if !strings.HasPrefix(basePath, "/") && basePath != "" {
 		basePath = "/" + basePath
@@ -93,7 +93,7 @@ func main() {
 
 	schemes := []string{parsedURL.Scheme}
 	if len(schemes) == 0 || schemes[0] == "" {
-		schemes = pkgClient.DefaultSchemes // Use default if scheme is missing
+		schemes = client.DefaultSchemes // Use default if scheme is missing
 	}
 
 	// --- Transport Stack Construction ---
@@ -105,8 +105,8 @@ func main() {
 	}
 
 	// 2. Custom Transport (handles auth, Gzip, retries)
-	//    The retry logic is built into NewCustomTransport.
-	customTransportWrapper := transport.NewCustomTransport(
+	//    The retry logic is built into NewTransport.
+	transportWrapper := transport.NewTransport(
 		apiKey,
 		backendID,
 		traceparent,
@@ -121,10 +121,10 @@ func main() {
 
 	// 3. Final OpenAPI Runtime Transport
 	finalRuntimeTransport := client.New(host, basePath, schemes)
-	finalRuntimeTransport.Transport = customTransportWrapper // Set our custom transport
+	finalRuntimeTransport.Transport = transportWrapper // Set our custom transport
 
 	// --- Client Initialization ---
-	sdkClient := pkgClient.New(finalRuntimeTransport, strfmt.Default)
+	sdkClient := client.New(finalRuntimeTransport, strfmt.Default)
 
 	// Now you can use sdkClient to make API calls
 	// Example: sdkClient.Metrics.MetricsQuery(...)
@@ -140,8 +140,8 @@ Here's an example of how to make a metrics query:
 ```go
 	// (Continued from Client Initialization above)
 	// --- API Call: Metrics Query ---
-	// import pkgModels "github.com/groundcover-com/groundcover-sdk-go/pkg/models"
-	// import pkgMetrics "github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
+	// import models "github.com/groundcover-com/groundcover-sdk-go/pkg/models"
+	// import metrics "github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
 	// import "github.com/sirupsen/logrus"
 	// import "github.com/davecgh/go-spew/spew"
 
@@ -156,7 +156,7 @@ Here's an example of how to make a metrics query:
 	queryType := "instant"
 	promqlQuery := "avg(groundcover_container_cpu_limit_m_cpu)"
 
-	queryRequestBody := &pkgModels.QueryRequest{
+	queryRequestBody := &models.QueryRequest{
 		Start:     startTime,
 		End:       endTime,
 		Step:      step,
@@ -165,7 +165,7 @@ Here's an example of how to make a metrics query:
 	}
 
 	// Prepare the parameters for metrics query
-	metricsParams := pkgMetrics.NewMetricsQueryParams().
+	metricsParams := metrics.NewMetricsQueryParams().
 		WithContext(baseCtx).
 		WithTimeout(defaultTimeout). // Overall request timeout
 		WithBody(queryRequestBody)
@@ -203,7 +203,7 @@ The `pkg/transport` module provides functions to override default client setting
 
 ### Retry Mechanism
 
-The SDK's custom transport has a built-in retry mechanism that automatically retries requests on transient server errors (e.g., `503 Service Unavailable`, `429 Too Many Requests`). This is configured during client initialization via `transport.NewCustomTransport`.
+The SDK's custom transport has a built-in retry mechanism that automatically retries requests on transient server errors (e.g., `503 Service Unavailable`, `429 Too Many Requests`). This is configured during client initialization via `transport.NewTransport`.
 
 ### Error Handling
 
@@ -211,15 +211,15 @@ API calls can return errors. It's important to handle these appropriately. The S
 
 ```go
 	// import "github.com/go-openapi/runtime"
-	// import pkgMetrics "github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
+	// import metrics "github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
 
 	// (inside an API call block like the metrics query example)
 	// queryResponse, err := sdkClient.Metrics.MetricsQuery(metricsParams)
 	if err != nil {
 		switch e := err.(type) {
-		case *pkgMetrics.MetricsQueryBadRequest: // Example specific error
+		case *metrics.MetricsQueryBadRequest: // Example specific error
 			logrus.Errorf("Metrics API Error (Bad Request): %s, Payload: %v", e.Error(), e.Payload)
-		case *pkgMetrics.MetricsQueryInternalServerError: // Example specific error
+		case *metrics.MetricsQueryInternalServerError: // Example specific error
 			logrus.Errorf("Metrics API Error (Internal Server Error): %s, Payload: %v", e.Error(), e.Payload)
 		default:
 			if apiErr, ok := err.(*runtime.APIError); ok {

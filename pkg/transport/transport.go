@@ -47,8 +47,8 @@ func WithRequestTraceparent(ctx context.Context, traceparent string) context.Con
 	return context.WithValue(ctx, traceparentOverrideKey, traceparent)
 }
 
-// customTransport wraps an existing http.RoundTripper to add custom headers and optional request Gzip compression.
-type customTransport struct {
+// transport wraps an existing http.RoundTripper to add custom headers and optional request Gzip compression.
+type transport struct {
 	apiKey            string
 	backendID         string
 	clientTraceparent string // Renamed to avoid confusion with context override
@@ -56,17 +56,17 @@ type customTransport struct {
 	retryTransport    http.RoundTripper
 }
 
-// NewCustomTransport creates a new customTransport.
+// NewTransport creates a new transport.
 // traceparent is optional and can be an empty string.
 // retryCount, minWait, maxWait configure the retry mechanism.
-func NewCustomTransport(
+func NewTransport(
 	apiKey, backendID, clientTraceparent string,
 	clientGzipEnabled bool,
 	baseHttpTransport http.RoundTripper, // This is the transport *before* retries
 	retryCount int,
 	minWait, maxWait time.Duration,
 	retryStatuses []int,
-) *customTransport {
+) *transport {
 	if baseHttpTransport == nil {
 		baseHttpTransport = http.DefaultTransport
 	}
@@ -86,7 +86,7 @@ func NewCustomTransport(
 		rehttp.ExpJitterDelay(minWait, maxWait),
 	)
 
-	return &customTransport{
+	return &transport{
 		apiKey:            apiKey,
 		backendID:         backendID,
 		clientTraceparent: clientTraceparent,
@@ -96,7 +96,7 @@ func NewCustomTransport(
 }
 
 // RoundTrip executes a single HTTP transaction, checking context for overrides.
-func (t *customTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	ctx := req.Context()
 
 	// Determine effective settings based on context overrides or client defaults
