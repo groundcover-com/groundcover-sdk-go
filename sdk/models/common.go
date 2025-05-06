@@ -3,25 +3,25 @@ package models
 type EmptyResponse struct{}
 
 type Condition struct {
-	Column  `json:",inline"`
-	Filters []Filter `json:"filters,omitempty"`
+	Column  `json:",inline" yaml:",inline"`
+	Filters []Filter `json:"filters,omitempty" yaml:"filters,omitempty"`
 }
 
 type Column struct {
-	Key    string `json:"key,omitempty"`
-	Origin string `json:"origin,omitempty"`
-	Type   string `json:"type,omitempty"`
+	Key    string `json:"key,omitempty" yaml:"key,omitempty"`
+	Origin string `json:"origin,omitempty" yaml:"origin,omitempty"`
+	Type   string `json:"type,omitempty" yaml:"type,omitempty"`
 }
 
 type Filter struct {
-	Op    string      `json:"op,omitempty"`
-	Value interface{} `json:"value,omitempty"`
+	Op    string      `json:"op,omitempty" yaml:"op,omitempty"`
+	Value interface{} `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 type Group struct {
-	Conditions []Condition `json:"conditions,omitempty"`
-	Operator   string      `json:"operator,omitempty"`
-	Groups     []Group     `json:"groups,omitempty"`
+	Conditions []Condition `json:"conditions,omitempty" yaml:"conditions,omitempty"`
+	Operator   string      `json:"operator,omitempty" yaml:"operator,omitempty"`
+	Groups     []Group     `json:"groups,omitempty" yaml:"groups,omitempty"`
 }
 
 type Pipeline struct {
@@ -71,3 +71,19 @@ type PromqlFunction struct {
 }
 
 type KnownPipelines map[string]PromqlPipeline
+
+func NewEqualStringCondition(key, value string) Condition {
+	return Condition{
+		Column: Column{
+			Key:    key,
+			Type:   ColumnTypeString,
+			Origin: ColumnOriginRoot,
+		},
+		Filters: []Filter{
+			{
+				Op:    OpEqual,
+				Value: value,
+			},
+		},
+	}
+}
