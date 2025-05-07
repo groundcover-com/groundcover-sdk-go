@@ -73,9 +73,9 @@ func WithContentTypeApplicationJSON(r *runtime.ClientOperation) {
 	r.ConsumesMediaTypes = []string{"application/json"}
 }
 
-// WithContentTypeApplicationYaml sets the Content-Type header to "application/yaml".
+// WithContentTypeApplicationYaml sets the Content-Type header to "application/x-yaml".
 func WithContentTypeApplicationYaml(r *runtime.ClientOperation) {
-	r.ConsumesMediaTypes = []string{"application/yaml"}
+	r.ConsumesMediaTypes = []string{"application/x-yaml"}
 }
 
 // WithAccept allows the client to force the Accept header
@@ -93,9 +93,9 @@ func WithAcceptApplicationJSON(r *runtime.ClientOperation) {
 	r.ProducesMediaTypes = []string{"application/json"}
 }
 
-// WithAcceptApplicationYaml sets the Accept header to "application/yaml".
+// WithAcceptApplicationYaml sets the Accept header to "application/x-yaml".
 func WithAcceptApplicationYaml(r *runtime.ClientOperation) {
-	r.ProducesMediaTypes = []string{"application/yaml"}
+	r.ProducesMediaTypes = []string{"application/x-yaml"}
 }
 
 // ClientService is the interface for Client methods
@@ -126,7 +126,7 @@ func (a *Client) CreateMonitor(params *CreateMonitorParams, opts ...ClientOption
 		Method:             "POST",
 		PathPattern:        "/api/monitors",
 		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/yaml"},
+		ConsumesMediaTypes: []string{"application/x-yaml"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &CreateMonitorReader{formats: a.formats},
@@ -201,7 +201,7 @@ func (a *Client) GetMonitor(params *GetMonitorParams, opts ...ClientOption) (*Ge
 		ID:                 "getMonitor",
 		Method:             "GET",
 		PathPattern:        "/api/monitors/{id}",
-		ProducesMediaTypes: []string{"application/yaml"},
+		ProducesMediaTypes: []string{"application/x-yaml"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
