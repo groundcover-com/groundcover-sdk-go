@@ -51,7 +51,7 @@ type EventsOverTimeResponse struct {
 	ObjectUID string `json:"object_uid,omitempty"`
 
 	// raw
-	Raw interface{} `json:"raw,omitempty"`
+	Raw string `json:"raw,omitempty"`
 
 	// reason
 	Reason string `json:"reason,omitempty"`

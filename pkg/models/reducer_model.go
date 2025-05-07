@@ -20,20 +20,20 @@ import (
 type ReducerModel struct {
 
 	// Math expression (if type is 'math').
-	Expression string `json:"expression,omitempty"`
+	Expression string `json:"expression,omitempty" yaml:"expression,omitempty"`
 
 	// Name of the query or reducer output to use as input.
-	InputName string `json:"inputName,omitempty"`
+	InputName string `json:"inputName,omitempty" yaml:"inputName,omitempty"`
 
 	// Name of the reducer output.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
 	// Type of the reducer (e.g., last, min, max, mean, sum, count, math).
 	// Required: true
-	Type *string `json:"type"`
+	Type *string `json:"type" yaml:"type"`
 
 	// relative timerange
-	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty"`
+	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty" yaml:"relativeTimerange,omitempty"`
 }
 
 // Validate validates this reducer model

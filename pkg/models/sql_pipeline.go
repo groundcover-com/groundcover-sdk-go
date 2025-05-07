@@ -20,31 +20,31 @@ import (
 type SQLPipeline struct {
 
 	// except
-	Except []*Selector `json:"except"`
+	Except []*Selector `json:"except" yaml:"except"`
 
 	// group by
-	GroupBy []*Selector `json:"groupBy"`
+	GroupBy []*Selector `json:"groupBy" yaml:"groupBy"`
 
 	// limit
-	Limit uint64 `json:"limit,omitempty"`
+	Limit uint64 `json:"limit,omitempty" yaml:"limit,omitempty"`
 
 	// offset
-	Offset uint64 `json:"offset,omitempty"`
+	Offset uint64 `json:"offset,omitempty" yaml:"offset,omitempty"`
 
 	// order by
-	OrderBy []*SearchOrderBy `json:"orderBy"`
+	OrderBy []*SearchOrderBy `json:"orderBy" yaml:"orderBy"`
 
 	// selectors
-	Selectors []*Selector `json:"selectors"`
+	Selectors []*Selector `json:"selectors" yaml:"selectors"`
 
 	// filters
-	Filters *Group `json:"filters,omitempty"`
+	Filters *Group `json:"filters,omitempty" yaml:"filters,omitempty"`
 
 	// from
-	From *SQLPipeline `json:"from,omitempty"`
+	From *SQLPipeline `json:"from,omitempty" yaml:"from,omitempty"`
 
 	// having
-	Having *Group `json:"having,omitempty"`
+	Having *Group `json:"having,omitempty" yaml:"having,omitempty"`
 }
 
 // Validate validates this Sql pipeline

@@ -19,10 +19,10 @@ import (
 type SearchOrderBy struct {
 
 	// direction
-	Direction string `json:"direction,omitempty"`
+	Direction string `json:"direction,omitempty" yaml:"direction,omitempty"`
 
 	// selector
-	Selector *Selector `json:"selector,omitempty"`
+	Selector *Selector `json:"selector,omitempty" yaml:"selector,omitempty"`
 }
 
 // Validate validates this search order by

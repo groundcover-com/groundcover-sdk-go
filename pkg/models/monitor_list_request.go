@@ -20,10 +20,10 @@ import (
 type MonitorListRequest struct {
 
 	// Search conditions to filter monitors.
-	Conditions []*Condition `json:"conditions"`
+	Conditions []*Condition `json:"conditions" yaml:"conditions"`
 
 	// Maximum number of monitors to return.
-	Limit *int64 `json:"limit,omitempty"`
+	Limit *int64 `json:"limit,omitempty" yaml:"limit,omitempty"`
 }
 
 // Validate validates this monitor list request

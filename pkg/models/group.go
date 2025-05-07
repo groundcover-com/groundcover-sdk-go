@@ -20,13 +20,13 @@ import (
 type Group struct {
 
 	// conditions
-	Conditions []*Condition `json:"conditions"`
+	Conditions []*Condition `json:"conditions" yaml:"conditions"`
 
 	// groups
-	Groups []*Group `json:"groups"`
+	Groups []*Group `json:"groups" yaml:"groups"`
 
 	// operator
-	Operator GroupOp `json:"operator,omitempty"`
+	Operator GroupOp `json:"operator,omitempty" yaml:"operator,omitempty"`
 }
 
 // Validate validates this group

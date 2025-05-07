@@ -20,7 +20,7 @@ import (
 type MonitorListResponse struct {
 
 	// List of monitors matching the criteria.
-	Monitors []*MonitorListItem `json:"monitors"`
+	Monitors []*MonitorListItem `json:"monitors" yaml:"monitors"`
 }
 
 // Validate validates this monitor list response

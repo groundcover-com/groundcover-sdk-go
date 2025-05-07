@@ -20,15 +20,15 @@ import (
 type MonitorListItem struct {
 
 	// Title of the monitor.
-	Title string `json:"title,omitempty"`
+	Title string `json:"title,omitempty" yaml:"title,omitempty"`
 
 	// Type of the monitor.
-	Type string `json:"type,omitempty"`
+	Type string `json:"type,omitempty" yaml:"type,omitempty"`
 
 	// Unique identifier for the monitor.
 	// Format: uuid
 	// Format: uuid
-	UUID strfmt.UUID `json:"uuid,omitempty"`
+	UUID strfmt.UUID `json:"uuid,omitempty" yaml:"uuid,omitempty"`
 }
 
 // Validate validates this monitor list item

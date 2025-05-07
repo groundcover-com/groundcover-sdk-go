@@ -20,13 +20,13 @@ import (
 type PromqlFunction struct {
 
 	// args
-	Args []string `json:"args"`
+	Args []string `json:"args" yaml:"args"`
 
 	// name
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
 	// pipelines
-	Pipelines []*PromqlPipeline `json:"pipelines"`
+	Pipelines []*PromqlPipeline `json:"pipelines" yaml:"pipelines"`
 }
 
 // Validate validates this promql function

@@ -20,16 +20,16 @@ import (
 type PromqlPipeline struct {
 
 	// conditions
-	Conditions []*Condition `json:"conditions"`
+	Conditions []*Condition `json:"conditions" yaml:"conditions"`
 
 	// Pipeline can either have a metric OR a function OR a template
-	Metric string `json:"metric,omitempty"`
+	Metric string `json:"metric,omitempty" yaml:"metric,omitempty"`
 
 	// template
-	Template string `json:"template,omitempty"`
+	Template string `json:"template,omitempty" yaml:"template,omitempty"`
 
 	// function
-	Function *PromqlFunction `json:"function,omitempty"`
+	Function *PromqlFunction `json:"function,omitempty" yaml:"function,omitempty"`
 }
 
 // Validate validates this promql pipeline

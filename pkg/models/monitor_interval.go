@@ -21,11 +21,11 @@ type MonitorInterval struct {
 
 	// for
 	// Format: duration
-	For strfmt.Duration `json:"for,omitempty"`
+	For strfmt.Duration `json:"for,omitempty" yaml:"for,omitempty"`
 
 	// interval
 	// Format: duration
-	Interval strfmt.Duration `json:"interval,omitempty"`
+	Interval strfmt.Duration `json:"interval,omitempty" yaml:"interval,omitempty"`
 }
 
 // Validate validates this monitor interval

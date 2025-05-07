@@ -20,40 +20,40 @@ import (
 type BaseQuery struct {
 
 	// conditions
-	Conditions []*Condition `json:"conditions"`
+	Conditions []*Condition `json:"conditions" yaml:"conditions"`
 
 	// data type
-	DataType string `json:"dataType,omitempty"`
+	DataType string `json:"dataType,omitempty" yaml:"dataType,omitempty"`
 
 	// datasource ID
-	DatasourceID string `json:"datasourceID,omitempty"`
+	DatasourceID string `json:"datasourceID,omitempty" yaml:"datasourceID,omitempty"`
 
 	// datasource type
-	DatasourceType string `json:"datasourceType,omitempty"`
+	DatasourceType string `json:"datasourceType,omitempty" yaml:"datasourceType,omitempty"`
 
 	// expression
-	Expression string `json:"expression,omitempty"`
+	Expression string `json:"expression,omitempty" yaml:"expression,omitempty"`
 
 	// filters
-	Filters string `json:"filters,omitempty"`
+	Filters string `json:"filters,omitempty" yaml:"filters,omitempty"`
 
 	// instant rollup
-	InstantRollup string `json:"instantRollup,omitempty"`
+	InstantRollup string `json:"instantRollup,omitempty" yaml:"instantRollup,omitempty"`
 
 	// name
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
 	// query type
-	QueryType string `json:"queryType,omitempty"`
+	QueryType string `json:"queryType,omitempty" yaml:"queryType,omitempty"`
 
 	// pipeline
-	Pipeline *PromqlPipeline `json:"pipeline,omitempty"`
+	Pipeline *PromqlPipeline `json:"pipeline,omitempty" yaml:"pipeline,omitempty"`
 
 	// relative timerange
-	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty"`
+	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty" yaml:"relativeTimerange,omitempty"`
 
 	// sql pipeline
-	SQLPipeline *SQLPipeline `json:"sqlPipeline,omitempty"`
+	SQLPipeline *SQLPipeline `json:"sqlPipeline,omitempty" yaml:"sqlPipeline,omitempty"`
 }
 
 // Validate validates this base query

@@ -22,23 +22,23 @@ type Threshold struct {
 
 	// Name of the reducer output this threshold applies to.
 	// Required: true
-	InputName *string `json:"inputName"`
+	InputName *string `json:"inputName" yaml:"inputName"`
 
 	// Name of the threshold.
 	// Required: true
-	Name *string `json:"name"`
+	Name *string `json:"name" yaml:"name"`
 
 	// Comparison operator.
 	// Required: true
 	// Enum: ["gt"," lt"," within_range"," outside_range"]
-	Operator *string `json:"operator"`
+	Operator *string `json:"operator" yaml:"operator"`
 
 	// Values to compare against (one for gt/lt, two for range operators).
 	// Required: true
-	Values []float64 `json:"values"`
+	Values []float64 `json:"values" yaml:"values"`
 
 	// relative timerange
-	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty"`
+	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty" yaml:"relativeTimerange,omitempty"`
 }
 
 // Validate validates this threshold

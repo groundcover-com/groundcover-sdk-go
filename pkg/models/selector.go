@@ -20,31 +20,31 @@ import (
 type Selector struct {
 
 	// additional filter
-	AdditionalFilter string `json:"additionalFilter,omitempty"`
+	AdditionalFilter string `json:"additionalFilter,omitempty" yaml:"additionalFilter,omitempty"`
 
 	// alias
-	Alias string `json:"alias,omitempty"`
+	Alias string `json:"alias,omitempty" yaml:"alias,omitempty"`
 
 	// auto complete
-	AutoComplete bool `json:"autoComplete,omitempty"`
+	AutoComplete bool `json:"autoComplete,omitempty" yaml:"autoComplete,omitempty"`
 
 	// filter keys
-	FilterKeys []string `json:"filterKeys"`
+	FilterKeys []string `json:"filterKeys" yaml:"filterKeys"`
 
 	// is nullable
-	IsNullable bool `json:"isNullable,omitempty"`
+	IsNullable bool `json:"isNullable,omitempty" yaml:"isNullable,omitempty"`
 
 	// key
-	Key string `json:"key,omitempty"`
+	Key string `json:"key,omitempty" yaml:"key,omitempty"`
 
 	// origin
-	Origin string `json:"origin,omitempty"`
+	Origin string `json:"origin,omitempty" yaml:"origin,omitempty"`
 
 	// processors
-	Processors []*Processor `json:"processors"`
+	Processors []*Processor `json:"processors" yaml:"processors"`
 
 	// type
-	Type string `json:"type,omitempty"`
+	Type string `json:"type,omitempty" yaml:"type,omitempty"`
 }
 
 // Validate validates this selector
