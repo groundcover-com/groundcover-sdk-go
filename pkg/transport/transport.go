@@ -59,6 +59,7 @@ type transport struct {
 // NewTransport creates a new transport.
 // traceparent is optional and can be an empty string.
 // retryCount, minWait, maxWait configure the retry mechanism.
+// If retryCount, minWait, or maxWait are provided as 0, package defaults will be used.
 func NewTransport(
 	apiKey, backendID, clientTraceparent string,
 	clientGzipEnabled bool,
@@ -76,14 +77,30 @@ func NewTransport(
 		retryStatuses = []int{http.StatusServiceUnavailable, http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusBadGateway}
 	}
 
+	// Apply package defaults if parameters are zero
+	actualRetryCount := retryCount
+	if actualRetryCount == 0 {
+		actualRetryCount = defaultRetryCount
+	}
+
+	actualMinWait := minWait
+	if actualMinWait == 0 {
+		actualMinWait = minRetryWait
+	}
+
+	actualMaxWait := maxWait
+	if actualMaxWait == 0 {
+		actualMaxWait = maxRetryWait
+	}
+
 	// Configure retry transport
 	rt := rehttp.NewTransport(
 		baseHttpTransport,
 		rehttp.RetryAll(
-			rehttp.RetryMaxRetries(retryCount),
+			rehttp.RetryMaxRetries(actualRetryCount),
 			rehttp.RetryStatuses(retryStatuses...),
 		),
-		rehttp.ExpJitterDelay(minWait, maxWait),
+		rehttp.ExpJitterDelay(actualMinWait, actualMaxWait),
 	)
 
 	return &transport{
