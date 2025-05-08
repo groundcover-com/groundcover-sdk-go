@@ -73,8 +73,8 @@ func WithContentTypeApplicationJSON(r *runtime.ClientOperation) {
 	r.ConsumesMediaTypes = []string{"application/json"}
 }
 
-// WithContentTypeApplicationYaml sets the Content-Type header to "application/x-yaml".
-func WithContentTypeApplicationYaml(r *runtime.ClientOperation) {
+// WithContentTypeApplicationxYaml sets the Content-Type header to "application/x-yaml".
+func WithContentTypeApplicationxYaml(r *runtime.ClientOperation) {
 	r.ConsumesMediaTypes = []string{"application/x-yaml"}
 }
 
@@ -93,8 +93,8 @@ func WithAcceptApplicationJSON(r *runtime.ClientOperation) {
 	r.ProducesMediaTypes = []string{"application/json"}
 }
 
-// WithAcceptApplicationYaml sets the Accept header to "application/x-yaml".
-func WithAcceptApplicationYaml(r *runtime.ClientOperation) {
+// WithAcceptApplicationxYaml sets the Accept header to "application/x-yaml".
+func WithAcceptApplicationxYaml(r *runtime.ClientOperation) {
 	r.ProducesMediaTypes = []string{"application/x-yaml"}
 }
 
