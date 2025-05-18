@@ -101,12 +101,19 @@ jobs:
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "current_version=$PREVIOUS_VERSION_INFO" >> $GITHUB_OUTPUT
 
+      # Create a GitHub app token for the auto-update app
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.GROUNDCOVER_BOT_APP_ID }}
+          private-key: ${{ secrets.GROUNDCOVER_BOT_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Commit & Push SDK and Version Changes
         id: commit_changes
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          
+          git config --global user.name 'groundcover-bot'
+          git config --global user.email 'groundcover-bot@users.noreply.github.com'
           git add pkg/client pkg/models pkg/transport tests VERSION LICENSE README.md go.mod go.sum
           
           if git diff --staged --quiet; then
@@ -132,7 +139,7 @@ jobs:
         if: steps.commit_changes.outputs.committed == 'true'
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
           tag_name: ${{ steps.version_logic.outputs.new_version }}
           release_name: "Release ${{ steps.version_logic.outputs.new_version }}"
