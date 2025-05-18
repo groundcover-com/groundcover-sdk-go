@@ -28,11 +28,21 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      # Create a GitHub app token for the auto-update app
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.GROUNDCOVER_BOT_APP_ID }}
+          private-key: ${{ secrets.GROUNDCOVER_BOT_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Set up Go
         uses: actions/setup-go@v3
@@ -101,19 +111,9 @@ jobs:
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "current_version=$PREVIOUS_VERSION_INFO" >> $GITHUB_OUTPUT
 
-      # Create a GitHub app token for the auto-update app
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ vars.GROUNDCOVER_BOT_APP_ID }}
-          private-key: ${{ secrets.GROUNDCOVER_BOT_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
-
       - name: Commit & Push SDK and Version Changes
         id: commit_changes
         run: |
-          git config --global user.name 'groundcover-bot'
-          git config --global user.email 'groundcover-bot@users.noreply.github.com'
           git add pkg/client pkg/models pkg/transport tests VERSION LICENSE README.md go.mod go.sum
           
           if git diff --staged --quiet; then
@@ -122,6 +122,8 @@ jobs:
           else
             echo "Changes detected. Committing and pushing..."
             COMMIT_MSG="Update SDK to version ${{ steps.version_logic.outputs.new_version }} (SDK source: ${{ github.event.inputs.commit_hash }})"
+            git config --global user.name 'groundcover-bot[bot]'
+            git config --global user.email 'groundcover-bot[bot]@users.noreply.github.com'
             git commit -m "$COMMIT_MSG"
             git push
             echo "committed=true" >> $GITHUB_OUTPUT
