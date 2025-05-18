@@ -126,6 +126,8 @@ jobs:
             git push
             echo "committed=true" >> $GITHUB_OUTPUT
           fi
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Create and Push Tag
         if: steps.commit_changes.outputs.committed == 'true'
@@ -134,6 +136,8 @@ jobs:
           echo "Creating and pushing tag: $NEW_VERSION_TAG"
           git tag "$NEW_VERSION_TAG"
           git push origin "$NEW_VERSION_TAG"
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Create GitHub Release
         if: steps.commit_changes.outputs.committed == 'true'
