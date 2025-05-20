@@ -121,6 +121,7 @@ jobs:
             echo "committed=false" >> $GITHUB_OUTPUT
           else
             echo "Changes detected. Committing and pushing..."
+            git add VERSION
             COMMIT_MSG="Update SDK to version ${{ steps.version_logic.outputs.new_version }} (SDK source: ${{ github.event.inputs.commit_hash }})"
             git config --global user.name 'groundcover-bot[bot]'
             git config --global user.email 'groundcover-bot[bot]@users.noreply.github.com'
