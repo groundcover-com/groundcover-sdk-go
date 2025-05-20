@@ -117,7 +117,7 @@ jobs:
           git add pkg/client pkg/models pkg/transport pkg/utils pkg/types tests LICENSE README.md go.mod go.sum
           
           if git diff --staged --quiet; then
-            echo "No changes to SDK files or VERSION file. Skipping commit, tag, and release."
+            echo "No changes to SDK files. Skipping commit, tag, and release."
             echo "committed=false" >> $GITHUB_OUTPUT
           else
             echo "Changes detected. Committing and pushing..."
