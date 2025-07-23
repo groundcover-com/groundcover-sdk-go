@@ -13,7 +13,9 @@ import (
 	"testing"
 	"time"
 
-	client "github.com/groundcover-com/groundcover-sdk-go/pkg/client"
+	"github.com/groundcover-com/groundcover-sdk-go"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/option"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/transport"
 )
 
@@ -111,7 +113,6 @@ func NewTestClient(t *testing.T, options ...TestClientOption) *TestClient {
 	t.Helper()
 	debug := isDebugEnabled()
 
-	// Get environment variables
 	baseURLStr := os.Getenv("GC_BASE_URL")
 	if baseURLStr == "" {
 		t.Fatal("GC_BASE_URL environment variable is required")
@@ -140,11 +141,6 @@ func NewTestClient(t *testing.T, options ...TestClientOption) *TestClient {
 	}
 	t.Logf("TraceID: %s", extractTraceID(traceparent))
 
-	// Create SDK client with all configurations handled automatically
-	baseHttpTransport := &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-	}
-
 	// Create debug transport wrapper if enabled
 	var debugWrapper func(http.RoundTripper) http.RoundTripper
 	if debug {
@@ -156,14 +152,24 @@ func NewTestClient(t *testing.T, options ...TestClientOption) *TestClient {
 		}
 	}
 
-	// Create the client - this automatically includes content-type fixes and YAML consumer
-	var clientOptions []transport.ClientOption
+	// Use our new simplified client creation with options
+	var clientOptions []option.Option
 
-	// Add HTTP transport option
-	clientOptions = append(clientOptions, transport.WithHTTPTransport(baseHttpTransport))
+	// Set the credentials explicitly (even though they're in env vars)
+	clientOptions = append(clientOptions,
+		option.WithAPIKey(apiKey),
+		option.WithBackendID(opts.backendID),
+		option.WithBaseURL(baseURLStr),
+	)
 
-	// Add retry config option
-	clientOptions = append(clientOptions, transport.WithRetryConfig(
+	// Add custom HTTP transport
+	baseHttpTransport := &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+	}
+	clientOptions = append(clientOptions, option.WithHTTPTransport(baseHttpTransport))
+
+	// Add retry config
+	clientOptions = append(clientOptions, option.WithRetryConfig(
 		defaultRetryCount,
 		minRetryWait,
 		maxRetryWait,
@@ -172,10 +178,11 @@ func NewTestClient(t *testing.T, options ...TestClientOption) *TestClient {
 
 	// Add debug wrapper if enabled
 	if debugWrapper != nil {
-		clientOptions = append(clientOptions, transport.WithTransportWrapper(debugWrapper))
+		clientOptions = append(clientOptions, option.WithTransportWrapper(debugWrapper))
 	}
 
-	sdkClient, err := transport.NewSDKClient(apiKey, opts.backendID, baseURLStr, clientOptions...)
+	// Create the client using our new simplified API
+	sdkClient, err := groundcover.NewClient(clientOptions...)
 	if err != nil {
 		t.Fatalf("Failed to create SDK client: %v", err)
 	}

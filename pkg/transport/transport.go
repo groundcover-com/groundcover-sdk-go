@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	client "github.com/groundcover-com/groundcover-sdk-go/pkg/client"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/option"
 )
 
 type contextKey int
@@ -132,15 +134,22 @@ func WithTransportWrapper(wrapper func(http.RoundTripper) http.RoundTripper) Cli
 // NewSDKClient creates a fully configured groundcover SDK client with all
 // standard configurations applied automatically. Use options to customize behavior.
 func NewSDKClient(apiKey, backendID, baseURL string, options ...ClientOption) (*client.GroundcoverAPI, error) {
-	// Default configuration
+	if apiKey == "" {
+		return nil, fmt.Errorf("apiKey is required")
+	}
+	if backendID == "" {
+		return nil, fmt.Errorf("backendID is required")
+	}
+	if baseURL == "" {
+		return nil, fmt.Errorf("baseURL is required")
+	}
+
+	// Create default config
 	config := &clientConfig{
-		httpTransport: &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-		},
 		retryCount:    defaultRetryCount,
 		minWait:       minRetryWait,
 		maxWait:       maxRetryWait,
-		retryStatuses: []int{http.StatusServiceUnavailable, http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusBadGateway},
+		retryStatuses: []int{503, 429}, // Service Unavailable, Too Many Requests
 	}
 
 	// Apply options
@@ -148,8 +157,9 @@ func NewSDKClient(apiKey, backendID, baseURL string, options ...ClientOption) (*
 		option(config)
 	}
 
-	// Parse baseURL
-	parsedURL, err := url.Parse(baseURL)
+	// Normalize and parse baseURL
+	normalizedURL := normalizeBaseURL(baseURL)
+	parsedURL, err := url.Parse(normalizedURL)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing base URL: %v", err)
 	}
@@ -299,4 +309,89 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 
 	return resp, nil
+}
+
+func normalizeBaseURL(baseURL string) string {
+	if baseURL == "" {
+		return ""
+	}
+
+	// Handle URLs starting with // (protocol-relative URLs)
+	if strings.HasPrefix(baseURL, "//") {
+		return "https:" + baseURL
+	}
+
+	// Handle URLs starting with / (relative paths) - assume https and remove leading slash
+	if strings.HasPrefix(baseURL, "/") && !strings.HasPrefix(baseURL, "//") {
+		return "https://" + strings.TrimPrefix(baseURL, "/")
+	}
+
+	// Handle URLs without scheme
+	if !strings.Contains(baseURL, "://") {
+		return "https://" + baseURL
+	}
+
+	return baseURL
+}
+
+// NewClient creates a new groundcover SDK client with a simplified API.
+// It automatically reads configuration from environment variables unless overridden by options.
+//
+// Environment variables:
+//   - GC_API_KEY: Your groundcover API key (required)
+//   - GC_BACKEND_ID: Your groundcover Backend ID (required)
+//   - GC_BASE_URL: The base URL of the groundcover API (optional, defaults to https://api.groundcover.com)
+//
+// Example usage:
+//
+//	client := transport.NewClient()
+//	client := transport.NewClient(option.WithAPIKey("custom-key"))
+func NewClient(options ...option.Option) (*client.GroundcoverAPI, error) {
+	// Set up default configuration from environment variables
+	config := &option.Config{
+		APIKey:    os.Getenv("GC_API_KEY"),
+		BackendID: os.Getenv("GC_BACKEND_ID"),
+		BaseURL:   os.Getenv("GC_BASE_URL"),
+	}
+
+	// Apply provided options
+	for _, opt := range options {
+		opt(config)
+	}
+
+	// Set default base URL if not provided
+	if config.BaseURL == "" {
+		config.BaseURL = "https://api.groundcover.com"
+	}
+
+	// Validate required fields
+	if config.APIKey == "" {
+		return nil, fmt.Errorf("API key is required: set GC_API_KEY environment variable or use option.WithAPIKey()")
+	}
+	if config.BackendID == "" {
+		return nil, fmt.Errorf("backend ID is required: set GC_BACKEND_ID environment variable or use option.WithBackendID()")
+	}
+
+	// Convert to legacy ClientOption format
+	var clientOptions []ClientOption
+
+	if config.HTTPTransport != nil {
+		clientOptions = append(clientOptions, WithHTTPTransport(config.HTTPTransport))
+	}
+
+	if config.RetryCount > 0 || config.MinWait > 0 || config.MaxWait > 0 || len(config.RetryStatuses) > 0 {
+		clientOptions = append(clientOptions, WithRetryConfig(
+			config.RetryCount,
+			config.MinWait,
+			config.MaxWait,
+			config.RetryStatuses,
+		))
+	}
+
+	if config.TransportWrapper != nil {
+		clientOptions = append(clientOptions, WithTransportWrapper(config.TransportWrapper))
+	}
+
+	// Use the existing NewSDKClient function
+	return NewSDKClient(config.APIKey, config.BackendID, config.BaseURL, clientOptions...)
 }

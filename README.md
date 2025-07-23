@@ -1,6 +1,7 @@
 # groundcover Go SDK
 
 This is the official Go SDK for interacting with the groundcover API. It provides convenient access to groundcover's services, including metrics queries and policy management.
+See our docs for details: [groundcover API Docs](https://docs.groundcover.com/use-groundcover/remote-access-and-apis/apis)
 
 ## Prerequisites
 
@@ -20,9 +21,9 @@ go get github.com/groundcover-com/groundcover-sdk-go
 
 The SDK requires the following environment variables to be set for authentication and endpoint configuration:
 
-*   `GC_BASE_URL`: The base URL of the groundcover API (e.g., `https://api.groundcover.com`).
 *   `GC_API_KEY`: Your groundcover API key.
 *   `GC_BACKEND_ID`: Your groundcover Backend ID.
+*   `GC_BASE_URL`: The base URL of the groundcover API (optional, defaults to `https://api.groundcover.com`).
 
 Optionally, you can set:
 
@@ -30,11 +31,74 @@ Optionally, you can set:
 
 ### Client Initialization
 
-The SDK provides simple functions to create a fully configured client with all necessary features (authentication, retries and other options) automatically included.
-
 #### Simple Client Creation (Recommended)
 
-For most use cases, you can create a client with minimal code:
+The simplest way to create a client is using the default configuration from environment variables:
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+
+	"github.com/groundcover-com/groundcover-sdk-go"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/option"
+)
+
+func main() {
+	// Create client with environment variables (GC_API_KEY, GC_BACKEND_ID, GC_BASE_URL)
+	client, err := groundcover.NewClient()
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	// Now you can use client to make API calls
+	// Example: client.Metrics.MetricsQuery(...)
+}
+```
+
+#### Client Creation with Custom Options
+
+You can override any configuration using options:
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+	"net/http"
+	"time"
+
+	"github.com/groundcover-com/groundcover-sdk-go"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/option"
+)
+
+func main() {
+	// Create client with custom options
+	client, err := groundcover.NewClient(
+		option.WithAPIKey("your-api-key"),
+		option.WithBackendID("your-backend-id"),
+		option.WithBaseURL("https://api.groundcover.com"),
+		option.WithRetryConfig(
+			5,                    // retry count
+			2*time.Second,        // min wait
+			30*time.Second,       // max wait
+			[]int{http.StatusServiceUnavailable, http.StatusTooManyRequests},
+		),
+	)
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	// Client is ready to use
+}
+```
+
+#### Legacy Client Creation
+
+For advanced use cases, you can still use the lower-level transport API:
 
 ```go
 package main
@@ -48,19 +112,8 @@ import (
 
 func main() {
 	baseURL := os.Getenv("GC_BASE_URL")
-	if baseURL == "" {
-		log.Fatal("GC_BASE_URL environment variable is required")
-	}
-
 	apiKey := os.Getenv("GC_API_KEY")
-	if apiKey == "" {
-		log.Fatal("GC_API_KEY environment variable is required")
-	}
-
 	backendID := os.Getenv("GC_BACKEND_ID")
-	if backendID == "" {
-		log.Fatal("GC_BACKEND_ID environment variable is required")
-	}
 
 	// Create a fully configured client - handles auth, retries, content-type fixes, etc.
 	sdkClient, err := transport.NewSDKClient(apiKey, backendID, baseURL)
@@ -73,54 +126,6 @@ func main() {
 }
 ```
 
-#### Client Creation with Custom Settings
-
-If you need custom retry settings or HTTP transport:
-
-```go
-package main
-
-import (
-	"log"
-	"net/http"
-	"os"
-	"time"
-
-	"github.com/groundcover-com/groundcover-sdk-go/pkg/transport"
-)
-
-func main() {
-	baseURL := os.Getenv("GC_BASE_URL")
-	apiKey := os.Getenv("GC_API_KEY")
-	backendID := os.Getenv("GC_BACKEND_ID")
-
-	// Custom HTTP transport (optional)
-	customTransport := &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		// Add any custom transport settings here
-	}
-
-	// Create client with custom settings using options
-	sdkClient, err := transport.NewSDKClient(
-		apiKey,
-		backendID,
-		baseURL,
-		transport.WithHTTPTransport(customTransport),
-		transport.WithRetryConfig(
-			3,                    // retry count
-			1*time.Second,        // min wait
-			10*time.Second,       // max wait
-			[]int{http.StatusServiceUnavailable, http.StatusTooManyRequests},
-		),
-	)
-	if err != nil {
-		log.Fatalf("Failed to create SDK client: %v", err)
-	}
-
-	// Client is ready to use
-}
-```
-
 ## Usage
 
 ### Making an API Call
@@ -128,14 +133,30 @@ func main() {
 Here's an example of how to make a metrics query:
 
 ```go
-	// (Continued from Client Initialization above)
-	// --- API Call: Metrics Query ---
-	// import models "github.com/groundcover-com/groundcover-sdk-go/pkg/models"
-	// import metrics "github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
-	// import "github.com/sirupsen/logrus"
-	// import "github.com/davecgh/go-spew/spew"
+package main
 
-	baseCtx := context.Background()
+import (
+	"context"
+	"log"
+	"time"
+
+	"github.com/go-openapi/strfmt"
+	"github.com/groundcover-com/groundcover-sdk-go"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
+	"github.com/sirupsen/logrus"
+	"github.com/davecgh/go-spew/spew"
+)
+
+func main() {
+	// Create client (reads from environment variables)
+	client, err := groundcover.NewClient()
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx := context.Background()
+	defaultTimeout := 30 * time.Second
 
 	logrus.Info("--- Calling Metrics Query ---")
 
@@ -156,13 +177,13 @@ Here's an example of how to make a metrics query:
 
 	// Prepare the parameters for metrics query
 	metricsParams := metrics.NewMetricsQueryParams().
-		WithContext(baseCtx).
+		WithContext(ctx).
 		WithTimeout(defaultTimeout). // Overall request timeout
 		WithBody(queryRequestBody)
 
 	// Execute the metrics query
 	// The second argument (nil) is for AuthInfoWriter, as authentication is handled by our custom transport.
-	queryResponse, err := sdkClient.Metrics.MetricsQuery(metricsParams, nil)
+	queryResponse, err := client.Metrics.MetricsQuery(metricsParams, nil)
 	if err != nil {
 		// Handle errors (see Error Handling section)
 		logrus.Errorf("Error executing metrics query: %v", err)
@@ -172,6 +193,7 @@ Here's an example of how to make a metrics query:
 	// Handle the successful metrics response payload
 	logrus.Info("Metrics Query Response:")
 	spew.Dump(queryResponse.Payload) // queryResponse.Payload contains the data
+}
 ```
 
 ### Building Conditions for Queries
@@ -252,7 +274,7 @@ API calls can return errors. It's important to handle these appropriately. The S
 	// import metrics "github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
 
 	// (inside an API call block like the metrics query example)
-	// queryResponse, err := sdkClient.Metrics.MetricsQuery(metricsParams, nil)
+	// queryResponse, err := client.Metrics.MetricsQuery(metricsParams, nil)
 	if err != nil {
 		switch e := err.(type) {
 		case *metrics.MetricsQueryBadRequest: // Example specific error
@@ -277,12 +299,46 @@ API calls can return errors. It's important to handle these appropriately. The S
 
 ## Available Services
 
-The SDK is organized by service, available under the `sdkClient` object. For example:
+The SDK is organized by service, available under the client object. For example:
 
-*   `sdkClient.Metrics`: For querying metrics.
-*   `sdkClient.Policies`: For managing policies (example was commented out in `main.go` but shows the pattern).
+*   `client.Metrics`: For querying metrics.
+*   `client.Policies`: For managing policies.
+*   `client.Logs`: For searching logs.
+*   `client.Events`: For searching events.
+*   `client.Traces`: For searching traces.
 
 Refer to the generated SDK code in the `pkg/client` directory for a full list of services and their operations.
+
+## Examples
+
+The `examples/` directory contains practical examples demonstrating various use cases:
+
+### Basic Usage
+- **[basic-usage](./examples/basic-usage/)** - Simple client creation and basic API calls
+- **[client-options](./examples/client-options/)** - Different ways to configure the client
+
+### Data Querying
+- **[metrics](./examples/metrics/)** - Query metrics using PromQL with instant and range queries
+- **[logs](./examples/logs/)** - Search and filter logs with various conditions
+- **[events](./examples/events/)** - Query Kubernetes and infrastructure events
+
+### Advanced Usage
+- **[error-handling](./examples/error-handling/)** - Comprehensive error handling patterns
+
+To run an example:
+
+```bash
+cd examples/basic-usage
+go run main.go
+```
+
+Make sure to set the required environment variables before running examples:
+
+```bash
+export GC_BASE_URL="https://api.groundcover.com"
+export GC_API_KEY="your-api-key"
+export GC_BACKEND_ID="your-backend-id"
+```
 
 ## License
 
