@@ -75,7 +75,7 @@ func (a *Client) SearchLogs(params *SearchLogsParams, authInfo runtime.ClientAut
 		PathPattern:        "/api/logs/v2/search",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
+		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &SearchLogsReader{formats: a.formats},
 		AuthInfo:           authInfo,

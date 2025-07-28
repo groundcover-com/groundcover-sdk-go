@@ -75,7 +75,7 @@ func (a *Client) SearchTraces(params *SearchTracesParams, authInfo runtime.Clien
 		PathPattern:        "/api/traces/v2/search",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
+		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &SearchTracesReader{formats: a.formats},
 		AuthInfo:           authInfo,

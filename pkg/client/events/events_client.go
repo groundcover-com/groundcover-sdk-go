@@ -75,7 +75,7 @@ func (a *Client) SearchEvents(params *SearchEventsParams, authInfo runtime.Clien
 		PathPattern:        "/api/k8s/v2/events/search",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
+		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &SearchEventsReader{formats: a.formats},
 		AuthInfo:           authInfo,
