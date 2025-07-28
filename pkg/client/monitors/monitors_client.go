@@ -456,7 +456,7 @@ func (a *Client) UpdateMonitor(params *UpdateMonitorParams, authInfo runtime.Cli
 		Method:             "PUT",
 		PathPattern:        "/api/monitors/{id}",
 		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/x-yaml"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &UpdateMonitorReader{formats: a.formats},

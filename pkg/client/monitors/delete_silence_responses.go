@@ -55,7 +55,7 @@ func NewDeleteSilenceOK() *DeleteSilenceOK {
 /*
 DeleteSilenceOK describes a response with status code 200, with default header values.
 
-DeleteSilenceOK delete silence o k
+NoContentResponse indicates success but that no response body is expected or included.
 */
 type DeleteSilenceOK struct {
 }
