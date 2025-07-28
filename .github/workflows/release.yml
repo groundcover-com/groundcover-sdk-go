@@ -114,7 +114,7 @@ jobs:
       - name: Commit & Push SDK and Version Changes
         id: commit_changes
         run: |
-          git add pkg/client pkg/models pkg/transport pkg/utils pkg/types tests LICENSE README.md go.mod go.sum examples
+          git add client.go pkg/client pkg/models pkg/transport pkg/utils pkg/types pkg/option tests LICENSE README.md go.mod go.sum examples
           
           if git diff --staged --quiet; then
             echo "No changes to SDK files. Skipping commit, tag, and release."
