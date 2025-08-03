@@ -322,9 +322,6 @@ The `examples/` directory contains practical examples demonstrating various use 
 - **[logs](./examples/logs/)** - Search and filter logs with various conditions
 - **[events](./examples/events/)** - Query Kubernetes and infrastructure events
 
-### Advanced Usage
-- **[error-handling](./examples/error-handling/)** - Comprehensive error handling patterns
-
 To run an example:
 
 ```bash
