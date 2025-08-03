@@ -23,9 +23,6 @@ type KeysRequest struct {
 	// Filter is a string to filter the keys by
 	Filter string `json:"Filter,omitempty"`
 
-	// KeyType is the type of keys to filter by
-	KeyType string `json:"KeyType,omitempty"`
-
 	// Limit is the maximum number of keys to return
 	// Required: true
 	Limit *uint32 `json:"Limit"`
