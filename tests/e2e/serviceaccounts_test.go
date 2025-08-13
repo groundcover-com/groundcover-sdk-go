@@ -20,7 +20,7 @@ func createTestPolicy(t *testing.T, client *TestClient) string {
 	createReq := &models.CreatePolicyRequest{
 		Name:        &policyName,
 		Description: policyDesc,
-		Role:        models.RoleMap{"default": "viewer"},
+		Role:        models.RoleMap{"write": ""},
 		DataScope:   &models.DataScope{},
 	}
 
