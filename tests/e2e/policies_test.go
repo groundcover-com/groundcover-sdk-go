@@ -25,7 +25,7 @@ func TestPoliciesEndpoints(t *testing.T) {
 			Name:        &policyName,
 			Description: policyDesc,
 			Role: models.RoleMap{
-				"default": "viewer",
+				"write": "",
 			},
 			DataScope: &models.DataScope{},
 		}
@@ -111,7 +111,7 @@ func TestPoliciesEndpoints(t *testing.T) {
 
 		// 1. Define updates
 		updatedDesc := "Policy updated during E2E testing"
-		updatedRoleMap := models.RoleMap{"default": "admin"} // Change role to admin
+		updatedRoleMap := models.RoleMap{"admin": ""} // Change role to admin
 		// Hardcode initial revision - adjust if API requires different initial value
 		// Alternatively, if createResp *did* return revision, use that.
 		var assumedCurrentRevision int32 = 1 // Adjust this if needed
