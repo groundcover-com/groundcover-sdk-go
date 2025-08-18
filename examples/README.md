@@ -28,22 +28,23 @@ export GC_TRACEPARENT="your-traceparent-header"
 Each example is a standalone Go program. To run an example:
 
 ```bash
-cd examples
-go run logs/main.go
+cd examples/logs/read-to-console
+go run main.go
 ```
 
 Or build and run:
 
 ```bash
-cd examples/logs
+cd examples/logs/read-to-console
 go build -o example
 ./example
 ```
 
-## Available Examples
+## Available Example
 
 ### **[logs](./logs/)** - Search and filter logs
-Search for error-level logs with color-coded output formatting.
+- Read to console: Search logs with color-coded output formatting.
+- Download to file: Search logs and download to file in chunks to support larger amount of logs.
 
 ### **[metrics](./metrics/)** - Query metrics using PromQL
 Execute PromQL queries to get cluster metrics like node count.
