@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	fmt.Println("groundcover Go SDK - Basic Usage Example")
+	fmt.Println("groundcover Go SDK - Metrics Example")
 	fmt.Println("=======================================")
 
 	// Create client using environment variables
@@ -41,7 +41,7 @@ func main() {
 		log.Printf("Error in range query: %v", err)
 	}
 
-	fmt.Println("\n✓ Basic usage examples completed")
+	fmt.Println("\n✓ Metrics example completed")
 }
 
 func simpleInstantQuery(client *client.GroundcoverAPI) error {
