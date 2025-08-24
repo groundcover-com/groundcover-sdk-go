@@ -267,10 +267,10 @@ func NewGetConfigServiceUnavailable() *GetConfigServiceUnavailable {
 /*
 GetConfigServiceUnavailable describes a response with status code 503, with default header values.
 
-emptyLogsPipelineConfigResponse is used for empty responses
+logsPipelineErrorResponse is used for error responses
 */
 type GetConfigServiceUnavailable struct {
-	Payload interface{}
+	Payload *models.ErrorResponse
 }
 
 // IsSuccess returns true when this get config service unavailable response has a 2xx status code
@@ -313,14 +313,16 @@ func (o *GetConfigServiceUnavailable) String() string {
 	return fmt.Sprintf("[GET /api/pipelines/logs/config][%d] getConfigServiceUnavailable %s", 503, payload)
 }
 
-func (o *GetConfigServiceUnavailable) GetPayload() interface{} {
+func (o *GetConfigServiceUnavailable) GetPayload() *models.ErrorResponse {
 	return o.Payload
 }
 
 func (o *GetConfigServiceUnavailable) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.ErrorResponse)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
