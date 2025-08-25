@@ -69,7 +69,7 @@ type WorkloadsListItem struct {
 	Ready bool `json:"ready,omitempty"`
 
 	// resource version
-	ResourceVersion int64 `json:"resourceVersion,omitempty"`
+	ResourceVersion string `json:"resourceVersion,omitempty"`
 
 	// UID
 	UID string `json:"uid,omitempty"`
