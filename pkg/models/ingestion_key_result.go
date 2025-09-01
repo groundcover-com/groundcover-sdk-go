@@ -8,10 +8,8 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // IngestionKeyResult ingestion key result
@@ -21,10 +19,6 @@ type IngestionKeyResult struct {
 
 	// created by
 	CreatedBy string `json:"createdBy,omitempty"`
-
-	// creation date
-	// Format: date-time
-	CreationDate strfmt.DateTime `json:"creationDate,omitempty"`
 
 	// ID
 	ID string `json:"id,omitempty"`
@@ -47,27 +41,6 @@ type IngestionKeyResult struct {
 
 // Validate validates this ingestion key result
 func (m *IngestionKeyResult) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateCreationDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *IngestionKeyResult) validateCreationDate(formats strfmt.Registry) error {
-	if swag.IsZero(m.CreationDate) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("creationDate", "body", "date-time", m.CreationDate.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 
