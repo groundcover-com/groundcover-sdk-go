@@ -199,10 +199,10 @@ func NewGetConfigInternalServerError() *GetConfigInternalServerError {
 /*
 GetConfigInternalServerError describes a response with status code 500, with default header values.
 
-emptyLogsPipelineConfigResponse is used for empty responses
+logsPipelineErrorResponse is used for error responses
 */
 type GetConfigInternalServerError struct {
-	Payload interface{}
+	Payload *models.ErrorResponse
 }
 
 // IsSuccess returns true when this get config internal server error response has a 2xx status code
@@ -245,14 +245,16 @@ func (o *GetConfigInternalServerError) String() string {
 	return fmt.Sprintf("[GET /api/pipelines/logs/config][%d] getConfigInternalServerError %s", 500, payload)
 }
 
-func (o *GetConfigInternalServerError) GetPayload() interface{} {
+func (o *GetConfigInternalServerError) GetPayload() *models.ErrorResponse {
 	return o.Payload
 }
 
 func (o *GetConfigInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.ErrorResponse)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 

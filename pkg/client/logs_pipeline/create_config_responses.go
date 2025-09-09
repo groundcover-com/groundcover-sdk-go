@@ -131,10 +131,10 @@ func NewCreateConfigBadRequest() *CreateConfigBadRequest {
 /*
 CreateConfigBadRequest describes a response with status code 400, with default header values.
 
-emptyLogsPipelineConfigResponse is used for empty responses
+logsPipelineErrorResponse is used for error responses
 */
 type CreateConfigBadRequest struct {
-	Payload interface{}
+	Payload *models.ErrorResponse
 }
 
 // IsSuccess returns true when this create config bad request response has a 2xx status code
@@ -177,14 +177,16 @@ func (o *CreateConfigBadRequest) String() string {
 	return fmt.Sprintf("[POST /api/pipelines/logs/config][%d] createConfigBadRequest %s", 400, payload)
 }
 
-func (o *CreateConfigBadRequest) GetPayload() interface{} {
+func (o *CreateConfigBadRequest) GetPayload() *models.ErrorResponse {
 	return o.Payload
 }
 
 func (o *CreateConfigBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.ErrorResponse)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
@@ -199,10 +201,10 @@ func NewCreateConfigInternalServerError() *CreateConfigInternalServerError {
 /*
 CreateConfigInternalServerError describes a response with status code 500, with default header values.
 
-emptyLogsPipelineConfigResponse is used for empty responses
+logsPipelineErrorResponse is used for error responses
 */
 type CreateConfigInternalServerError struct {
-	Payload interface{}
+	Payload *models.ErrorResponse
 }
 
 // IsSuccess returns true when this create config internal server error response has a 2xx status code
@@ -245,14 +247,16 @@ func (o *CreateConfigInternalServerError) String() string {
 	return fmt.Sprintf("[POST /api/pipelines/logs/config][%d] createConfigInternalServerError %s", 500, payload)
 }
 
-func (o *CreateConfigInternalServerError) GetPayload() interface{} {
+func (o *CreateConfigInternalServerError) GetPayload() *models.ErrorResponse {
 	return o.Payload
 }
 
 func (o *CreateConfigInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.ErrorResponse)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 

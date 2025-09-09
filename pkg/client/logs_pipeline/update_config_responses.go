@@ -131,10 +131,10 @@ func NewUpdateConfigBadRequest() *UpdateConfigBadRequest {
 /*
 UpdateConfigBadRequest describes a response with status code 400, with default header values.
 
-emptyLogsPipelineConfigResponse is used for empty responses
+logsPipelineErrorResponse is used for error responses
 */
 type UpdateConfigBadRequest struct {
-	Payload interface{}
+	Payload *models.ErrorResponse
 }
 
 // IsSuccess returns true when this update config bad request response has a 2xx status code
@@ -177,14 +177,16 @@ func (o *UpdateConfigBadRequest) String() string {
 	return fmt.Sprintf("[PUT /api/pipelines/logs/config][%d] updateConfigBadRequest %s", 400, payload)
 }
 
-func (o *UpdateConfigBadRequest) GetPayload() interface{} {
+func (o *UpdateConfigBadRequest) GetPayload() *models.ErrorResponse {
 	return o.Payload
 }
 
 func (o *UpdateConfigBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.ErrorResponse)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
@@ -199,10 +201,10 @@ func NewUpdateConfigInternalServerError() *UpdateConfigInternalServerError {
 /*
 UpdateConfigInternalServerError describes a response with status code 500, with default header values.
 
-emptyLogsPipelineConfigResponse is used for empty responses
+logsPipelineErrorResponse is used for error responses
 */
 type UpdateConfigInternalServerError struct {
-	Payload interface{}
+	Payload *models.ErrorResponse
 }
 
 // IsSuccess returns true when this update config internal server error response has a 2xx status code
@@ -245,14 +247,16 @@ func (o *UpdateConfigInternalServerError) String() string {
 	return fmt.Sprintf("[PUT /api/pipelines/logs/config][%d] updateConfigInternalServerError %s", 500, payload)
 }
 
-func (o *UpdateConfigInternalServerError) GetPayload() interface{} {
+func (o *UpdateConfigInternalServerError) GetPayload() *models.ErrorResponse {
 	return o.Payload
 }
 
 func (o *UpdateConfigInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.ErrorResponse)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 

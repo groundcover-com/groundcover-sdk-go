@@ -123,10 +123,10 @@ func NewDeleteConfigInternalServerError() *DeleteConfigInternalServerError {
 /*
 DeleteConfigInternalServerError describes a response with status code 500, with default header values.
 
-emptyLogsPipelineConfigResponse is used for empty responses
+logsPipelineErrorResponse is used for error responses
 */
 type DeleteConfigInternalServerError struct {
-	Payload interface{}
+	Payload *models.ErrorResponse
 }
 
 // IsSuccess returns true when this delete config internal server error response has a 2xx status code
@@ -169,14 +169,16 @@ func (o *DeleteConfigInternalServerError) String() string {
 	return fmt.Sprintf("[DELETE /api/pipelines/logs/config][%d] deleteConfigInternalServerError %s", 500, payload)
 }
 
-func (o *DeleteConfigInternalServerError) GetPayload() interface{} {
+func (o *DeleteConfigInternalServerError) GetPayload() *models.ErrorResponse {
 	return o.Payload
 }
 
 func (o *DeleteConfigInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.ErrorResponse)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
