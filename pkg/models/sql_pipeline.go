@@ -16,6 +16,9 @@ import (
 
 // SQLPipeline SqlPipeline defines a pipeline for search queries.
 //
+// When Join is set, the pipeline acts as a container for the join operation ONLY.
+// In this case, no other fields should be used.
+//
 // swagger:model SqlPipeline
 type SQLPipeline struct {
 
@@ -45,6 +48,9 @@ type SQLPipeline struct {
 
 	// having
 	Having *Group `json:"having,omitempty" yaml:"having,omitempty"`
+
+	// join
+	Join *Join `json:"join,omitempty" yaml:"join,omitempty"`
 }
 
 // Validate validates this Sql pipeline
@@ -76,6 +82,10 @@ func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateHaving(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateJoin(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -246,6 +256,25 @@ func (m *SQLPipeline) validateHaving(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SQLPipeline) validateJoin(formats strfmt.Registry) error {
+	if swag.IsZero(m.Join) { // not required
+		return nil
+	}
+
+	if m.Join != nil {
+		if err := m.Join.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("join")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("join")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this Sql pipeline based on the context it is used
 func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -275,6 +304,10 @@ func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Regist
 	}
 
 	if err := m.contextValidateHaving(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateJoin(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -439,6 +472,27 @@ func (m *SQLPipeline) contextValidateHaving(ctx context.Context, formats strfmt.
 				return ve.ValidateName("having")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("having")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SQLPipeline) contextValidateJoin(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Join != nil {
+
+		if swag.IsZero(m.Join) { // not required
+			return nil
+		}
+
+		if err := m.Join.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("join")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("join")
 			}
 			return err
 		}
