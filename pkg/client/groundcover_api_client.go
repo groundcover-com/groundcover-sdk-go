@@ -13,6 +13,7 @@ import (
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/apikeys"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/events"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/ingestionkeys"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/integrations"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/k8s"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/logs"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/logs_pipeline"
@@ -70,6 +71,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Groundcove
 	cli.Apikeys = apikeys.New(transport, formats)
 	cli.Events = events.New(transport, formats)
 	cli.Ingestionkeys = ingestionkeys.New(transport, formats)
+	cli.Integrations = integrations.New(transport, formats)
 	cli.K8s = k8s.New(transport, formats)
 	cli.Logs = logs.New(transport, formats)
 	cli.LogsPipeline = logs_pipeline.New(transport, formats)
@@ -130,6 +132,8 @@ type GroundcoverAPI struct {
 
 	Ingestionkeys ingestionkeys.ClientService
 
+	Integrations integrations.ClientService
+
 	K8s k8s.ClientService
 
 	Logs logs.ClientService
@@ -159,6 +163,7 @@ func (c *GroundcoverAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Apikeys.SetTransport(transport)
 	c.Events.SetTransport(transport)
 	c.Ingestionkeys.SetTransport(transport)
+	c.Integrations.SetTransport(transport)
 	c.K8s.SetTransport(transport)
 	c.Logs.SetTransport(transport)
 	c.LogsPipeline.SetTransport(transport)
