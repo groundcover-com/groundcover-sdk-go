@@ -2,6 +2,11 @@ package e2e
 
 import (
 	"testing"
+
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/integrations"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const testCloudwatchConfig = `stsRegion: us-east-1
@@ -46,10 +51,8 @@ apiConcurrencyLimits:
 withContextTagsOnInfoMetrics: false
 withInventoryDiscovery: false`
 
-// Commenting out for now - the test passes in onprem but for that we need to move to manage API v2,
-// which we aren't ready to do until backends are updated.
 func TestCloudwatch(t *testing.T) {
-	/*ctx, apiClient := setupTestClient(t)
+	ctx, apiClient := setupTestClient(t)
 
 	// 1. CREATE
 	createBody := &models.CreateDataIntegrationConfigRequest{
@@ -112,5 +115,5 @@ func TestCloudwatch(t *testing.T) {
 	require.NoError(t, err, "Get deleted config request failed")
 	require.NotNil(t, getRespOk, "Should get a config response")
 	require.True(t, getRespOk.Payload.IsArchived, "Config should be archived")
-	require.Nil(t, getRespNoContent, "Shouldn't get a 204 No Content response")*/
+	require.Nil(t, getRespNoContent, "Shouldn't get a 204 No Content response")
 }
