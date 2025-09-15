@@ -11,6 +11,7 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/apikeys"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/dashboards"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/events"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/ingestionkeys"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/integrations"
@@ -69,6 +70,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Groundcove
 	cli := new(GroundcoverAPI)
 	cli.Transport = transport
 	cli.Apikeys = apikeys.New(transport, formats)
+	cli.Dashboards = dashboards.New(transport, formats)
 	cli.Events = events.New(transport, formats)
 	cli.Ingestionkeys = ingestionkeys.New(transport, formats)
 	cli.Integrations = integrations.New(transport, formats)
@@ -128,6 +130,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 type GroundcoverAPI struct {
 	Apikeys apikeys.ClientService
 
+	Dashboards dashboards.ClientService
+
 	Events events.ClientService
 
 	Ingestionkeys ingestionkeys.ClientService
@@ -161,6 +165,7 @@ type GroundcoverAPI struct {
 func (c *GroundcoverAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.Apikeys.SetTransport(transport)
+	c.Dashboards.SetTransport(transport)
 	c.Events.SetTransport(transport)
 	c.Ingestionkeys.SetTransport(transport)
 	c.Integrations.SetTransport(transport)

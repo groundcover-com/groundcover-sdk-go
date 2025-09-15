@@ -306,6 +306,7 @@ The SDK is organized by service, available under the client object. For example:
 *   `client.Logs`: For searching logs.
 *   `client.Events`: For searching events.
 *   `client.Traces`: For searching traces.
+*   `client.Dashboards`: For managing dashboards.
 
 Refer to the generated SDK code in the `pkg/client` directory for a full list of services and their operations.
 
@@ -321,6 +322,7 @@ The `examples/` directory contains practical examples demonstrating various use 
 - **[metrics](./examples/metrics/)** - Query metrics using PromQL with instant and range queries
 - **[logs](./examples/logs/)** - Search and filter logs with various conditions
 - **[events](./examples/events/)** - Query Kubernetes and infrastructure events
+- **[dashboards](./examples/dashboards/)** - Complete dashboard lifecycle management with CRUD operations
 
 To run an example:
 

@@ -40,7 +40,10 @@ go build -o example
 ./example
 ```
 
-## Available Example
+## Available Examples
+
+### **[client-options](./client-options/)** - Client configuration
+Different ways to configure the groundcover SDK client with custom options, retry policies, and authentication.
 
 ### **[logs](./logs/)** - Search and filter logs
 - Read to console: Search logs with color-coded output formatting.
@@ -51,6 +54,15 @@ Execute PromQL queries to get cluster metrics like node count.
 
 ### **[events](./events/)** - Event detection
 Monitor and display Kubernetes events with detailed metadata. This example demonstrates searching for OOM (Out of Memory) events.
+
+### **[dashboards](./dashboards/)** - Dashboard management
+Complete dashboard lifecycle management example demonstrating:
+- Create new dashboards with custom presets
+- Get and list dashboards
+- Update dashboard configurations  
+- Archive and restore dashboards
+- Delete dashboards permanently
+- Comprehensive error handling
 
 ## Prerequisites
 
