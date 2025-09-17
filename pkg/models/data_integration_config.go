@@ -20,19 +20,19 @@ import (
 type DataIntegrationConfig struct {
 
 	// cluster
-	Cluster string `json:"cluster,omitempty"`
+	Cluster *string `json:"cluster,omitempty"`
 
 	// config
 	Config string `json:"config,omitempty"`
 
 	// env
-	Env string `json:"env,omitempty"`
+	Env *string `json:"env,omitempty"`
 
 	// ID
 	ID string `json:"id,omitempty"`
 
 	// instance
-	Instance string `json:"instance,omitempty"`
+	Instance *string `json:"instance,omitempty"`
 
 	// is archived
 	IsArchived bool `json:"is_archived,omitempty"`
