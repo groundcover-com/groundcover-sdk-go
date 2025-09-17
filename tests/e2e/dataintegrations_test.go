@@ -23,7 +23,7 @@ awsMetrics:
         length: 300
         nullAsZero: false
 apiConcurrencyLimits:
-  listMetrics: 1
+  listMetrics: 3
   getMetricData: 5
   getMetricStatistics: 5
   listInventory: 10
@@ -66,9 +66,9 @@ func TestCloudwatch(t *testing.T) {
 
 	assert.Equal(t, testCloudwatchConfig, createResp.Payload.Config, "Created config value should match the request")
 	assert.NotEmpty(t, createResp.Payload.ID, "Created config should have an ID")
-	assert.NotEmpty(t, createResp.Payload.CreatedTimestamp, "Created config should have a creation timestamp")
+	assert.NotEmpty(t, createResp.Payload.UpdateTimestamp, "Created config should have an update timestamp")
 	require.False(t, createResp.Payload.IsArchived, "Config should not be archived")
-	originalConfigCreationTimestamp := createResp.Payload.CreatedTimestamp
+	originalConfigCreationTimestamp := createResp.Payload.UpdateTimestamp
 	originalConfigID := createResp.Payload.ID
 
 	// 2. READ
@@ -93,7 +93,7 @@ func TestCloudwatch(t *testing.T) {
 	require.NotNil(t, updateResp, "Update config response should not be nil")
 	require.NotNil(t, updateResp.Payload, "Update config response payload should not be nil")
 	assert.Equal(t, testCloudwatchConfigUpdated, updateResp.Payload.Config, "Updated config value should match the request")
-	assert.NotEmpty(t, updateResp.Payload.CreatedTimestamp, "Updated config should have an update timestamp")
+	assert.NotEmpty(t, updateResp.Payload.UpdateTimestamp, "Updated config should have an update timestamp")
 
 	getRespOk, getRespNoContent, err = apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)
 	require.NoError(t, err, "Get updated config request failed")
@@ -102,13 +102,13 @@ func TestCloudwatch(t *testing.T) {
 	require.NotNil(t, getRespOk.Payload, "Get config response payload should not be nil")
 	require.False(t, getRespOk.Payload.IsArchived, "Config should not be archived")
 	assert.Equal(t, testCloudwatchConfigUpdated, getRespOk.Payload.Config, "Retrieved config should have updated value")
-	assert.Greater(t, updateResp.Payload.CreatedTimestamp, originalConfigCreationTimestamp, "Updated config should have a creation timestamp greater than the original one")
+	assert.Greater(t, updateResp.Payload.UpdateTimestamp, originalConfigCreationTimestamp, "Updated config should have an update timestamp greater than the original one")
 
 	// 4. DELETE
 	deleteParams := integrations.NewDeleteDataIntegrationConfigParamsWithContext(ctx).WithID(originalConfigID).WithType("cloudwatch")
 	_, err = apiClient.Integrations.DeleteDataIntegrationConfig(deleteParams, nil)
 	require.NoError(t, err, "Delete config request failed")
-	t.Log("Successfully deleted logs pipeline config")
+	t.Log("Successfully deleted data integration config")
 
 	// Verify the config was deleted by trying to get it - should return 204 No Content
 	getRespOk, getRespNoContent, err = apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)

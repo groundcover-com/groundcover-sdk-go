@@ -25,13 +25,6 @@ type DataIntegrationConfig struct {
 	// config
 	Config string `json:"config,omitempty"`
 
-	// created by
-	CreatedBy string `json:"created_by,omitempty"`
-
-	// created timestamp
-	// Format: date-time
-	CreatedTimestamp strfmt.DateTime `json:"created_timestamp,omitempty"`
-
 	// env
 	Env string `json:"env,omitempty"`
 
@@ -49,13 +42,20 @@ type DataIntegrationConfig struct {
 
 	// type
 	Type string `json:"type,omitempty"`
+
+	// update timestamp
+	// Format: date-time
+	UpdateTimestamp strfmt.DateTime `json:"update_timestamp,omitempty"`
+
+	// updated by
+	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
 // Validate validates this data integration config
 func (m *DataIntegrationConfig) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateCreatedTimestamp(formats); err != nil {
+	if err := m.validateUpdateTimestamp(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -65,12 +65,12 @@ func (m *DataIntegrationConfig) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *DataIntegrationConfig) validateCreatedTimestamp(formats strfmt.Registry) error {
-	if swag.IsZero(m.CreatedTimestamp) { // not required
+func (m *DataIntegrationConfig) validateUpdateTimestamp(formats strfmt.Registry) error {
+	if swag.IsZero(m.UpdateTimestamp) { // not required
 		return nil
 	}
 
-	if err := validate.FormatOf("created_timestamp", "body", "date-time", m.CreatedTimestamp.String(), formats); err != nil {
+	if err := validate.FormatOf("update_timestamp", "body", "date-time", m.UpdateTimestamp.String(), formats); err != nil {
 		return err
 	}
 
