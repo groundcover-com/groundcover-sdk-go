@@ -62,7 +62,7 @@ type ClientService interface {
 
 	DescribeDataIntegrationConfig(params *DescribeDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DescribeDataIntegrationConfigOK, error)
 
-	GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, *GetDataIntegrationConfigNoContent, error)
+	GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, error)
 
 	GetDataIntegrationConfigs(params *GetDataIntegrationConfigsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsOK, *GetDataIntegrationConfigsNoContent, error)
 
@@ -132,6 +132,7 @@ func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfig
 @Param instance query string false "Instance name"
 @Success 200 {object} EmptyDataIntegrationConfigResponseWrapper
 @Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
+@Failure 404 {object} DataIntegrationConfigErrorResponseWrapper
 @Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
 @Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
 @Router /api/integrations/v1/data/config/{type}/{id} [DELETE]
@@ -219,14 +220,15 @@ func (a *Client) DescribeDataIntegrationConfig(params *DescribeDataIntegrationCo
 @Produce json
 @Param type path string true "Data Integration type"
 @Param id path string true "Data Integration ID"
+@Param includeArchived query bool false "Include archived (deleted) configurations"
 @Success 200 {object} DataIntegrationConfigResponseWrapper
-@Success 204 {object} EmptyDataIntegrationConfigResponseWrapper
 @Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
+@Failure 404 {object} DataIntegrationConfigErrorResponseWrapper
 @Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
 @Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
 @Router /api/integrations/v1/data/config/{type}/{id} [GET]
 */
-func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, *GetDataIntegrationConfigNoContent, error) {
+func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetDataIntegrationConfigParams()
@@ -250,16 +252,15 @@ func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams
 
 	result, err := a.transport.Submit(op)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	switch value := result.(type) {
-	case *GetDataIntegrationConfigOK:
-		return value, nil, nil
-	case *GetDataIntegrationConfigNoContent:
-		return nil, value, nil
+	success, ok := result.(*GetDataIntegrationConfigOK)
+	if ok {
+		return success, nil
 	}
+	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for integrations: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for getDataIntegrationConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -371,6 +372,7 @@ func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfi
 @Param request body updateDataIntegrationConfigRequestParams true "Request body"
 @Success 200 {object} DataIntegrationConfigResponseWrapper
 @Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
+@Failure 404 {object} DataIntegrationConfigErrorResponseWrapper
 @Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
 @Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
 @Router /api/integrations/v1/data/config/{type}/{id} [PUT]

@@ -87,10 +87,9 @@ func TestCloudwatch(t *testing.T) {
 
 	// 2. READ
 	getParams := integrations.NewGetDataIntegrationConfigParamsWithContext(ctx).WithID(originalConfigID).WithType("cloudwatch")
-	getRespOk, getRespNoContent, err := apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)
+	getRespOk, err := apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)
 
 	require.NoError(t, err, "Get config request failed")
-	require.Nil(t, getRespNoContent, "Shouldn't get a 204 No Content response")
 	require.NotNil(t, getRespOk, "Get config response should not be nil")
 	require.NotNil(t, getRespOk.Payload, "Get config response payload should not be nil")
 	require.False(t, getRespOk.Payload.IsArchived, "Config should not be archived")
@@ -109,9 +108,8 @@ func TestCloudwatch(t *testing.T) {
 	assert.Equal(t, testCloudwatchConfigUpdated, updateResp.Payload.Config, "Updated config value should match the request")
 	assert.NotEmpty(t, updateResp.Payload.UpdateTimestamp, "Updated config should have an update timestamp")
 
-	getRespOk, getRespNoContent, err = apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)
+	getRespOk, err = apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)
 	require.NoError(t, err, "Get updated config request failed")
-	require.Nil(t, getRespNoContent, "Shouldn't get a 204 No Content response")
 	require.NotNil(t, getRespOk, "Get config response should not be nil")
 	require.NotNil(t, getRespOk.Payload, "Get config response payload should not be nil")
 	require.False(t, getRespOk.Payload.IsArchived, "Config should not be archived")
@@ -124,10 +122,8 @@ func TestCloudwatch(t *testing.T) {
 	require.NoError(t, err, "Delete config request failed")
 	t.Log("Successfully deleted data integration config")
 
-	// Verify the config was deleted by trying to get it - should return 204 No Content
-	getRespOk, getRespNoContent, err = apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)
-	require.NoError(t, err, "Get deleted config request failed")
-	require.NotNil(t, getRespOk, "Should get a config response")
-	require.True(t, getRespOk.Payload.IsArchived, "Config should be archived")
-	require.Nil(t, getRespNoContent, "Shouldn't get a 204 No Content response")
+	// Verify the config was deleted by trying to get it without includeArchived - should return 404
+	getRespOk, err = apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)
+	require.Error(t, err, "Get deleted config request should fail")
+	require.Nil(t, getRespOk, "Should not get a config response")
 }

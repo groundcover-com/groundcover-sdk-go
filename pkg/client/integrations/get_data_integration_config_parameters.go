@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewGetDataIntegrationConfigParams creates a new GetDataIntegrationConfigParams object,
@@ -66,6 +67,12 @@ type GetDataIntegrationConfigParams struct {
 	   Data Integration ID
 	*/
 	ID string
+
+	/* IncludeArchived.
+
+	   Include archived (deleted) configurations
+	*/
+	IncludeArchived *bool
 
 	/* Type.
 
@@ -137,6 +144,17 @@ func (o *GetDataIntegrationConfigParams) SetID(id string) {
 	o.ID = id
 }
 
+// WithIncludeArchived adds the includeArchived to the get data integration config params
+func (o *GetDataIntegrationConfigParams) WithIncludeArchived(includeArchived *bool) *GetDataIntegrationConfigParams {
+	o.SetIncludeArchived(includeArchived)
+	return o
+}
+
+// SetIncludeArchived adds the includeArchived to the get data integration config params
+func (o *GetDataIntegrationConfigParams) SetIncludeArchived(includeArchived *bool) {
+	o.IncludeArchived = includeArchived
+}
+
 // WithType adds the typeVar to the get data integration config params
 func (o *GetDataIntegrationConfigParams) WithType(typeVar string) *GetDataIntegrationConfigParams {
 	o.SetType(typeVar)
@@ -159,6 +177,23 @@ func (o *GetDataIntegrationConfigParams) WriteToRequest(r runtime.ClientRequest,
 	// path param id
 	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
+	}
+
+	if o.IncludeArchived != nil {
+
+		// query param includeArchived
+		var qrIncludeArchived bool
+
+		if o.IncludeArchived != nil {
+			qrIncludeArchived = *o.IncludeArchived
+		}
+		qIncludeArchived := swag.FormatBool(qrIncludeArchived)
+		if qIncludeArchived != "" {
+
+			if err := r.SetQueryParam("includeArchived", qIncludeArchived); err != nil {
+				return err
+			}
+		}
 	}
 
 	// path param type

@@ -30,14 +30,14 @@ func (o *GetDataIntegrationConfigReader) ReadResponse(response runtime.ClientRes
 			return nil, err
 		}
 		return result, nil
-	case 204:
-		result := NewGetDataIntegrationConfigNoContent()
+	case 400:
+		result := NewGetDataIntegrationConfigBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
-		return result, nil
-	case 400:
-		result := NewGetDataIntegrationConfigBadRequest()
+		return nil, result
+	case 404:
+		result := NewGetDataIntegrationConfigNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -129,74 +129,6 @@ func (o *GetDataIntegrationConfigOK) readResponse(response runtime.ClientRespons
 	return nil
 }
 
-// NewGetDataIntegrationConfigNoContent creates a GetDataIntegrationConfigNoContent with default headers values
-func NewGetDataIntegrationConfigNoContent() *GetDataIntegrationConfigNoContent {
-	return &GetDataIntegrationConfigNoContent{}
-}
-
-/*
-GetDataIntegrationConfigNoContent describes a response with status code 204, with default header values.
-
-GetDataIntegrationConfigNoContent get data integration config no content
-*/
-type GetDataIntegrationConfigNoContent struct {
-	Payload interface{}
-}
-
-// IsSuccess returns true when this get data integration config no content response has a 2xx status code
-func (o *GetDataIntegrationConfigNoContent) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this get data integration config no content response has a 3xx status code
-func (o *GetDataIntegrationConfigNoContent) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get data integration config no content response has a 4xx status code
-func (o *GetDataIntegrationConfigNoContent) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get data integration config no content response has a 5xx status code
-func (o *GetDataIntegrationConfigNoContent) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get data integration config no content response a status code equal to that given
-func (o *GetDataIntegrationConfigNoContent) IsCode(code int) bool {
-	return code == 204
-}
-
-// Code gets the status code for the get data integration config no content response
-func (o *GetDataIntegrationConfigNoContent) Code() int {
-	return 204
-}
-
-func (o *GetDataIntegrationConfigNoContent) Error() string {
-	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/integrations/v1/data/config/{type}/{id}][%d] getDataIntegrationConfigNoContent %s", 204, payload)
-}
-
-func (o *GetDataIntegrationConfigNoContent) String() string {
-	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/integrations/v1/data/config/{type}/{id}][%d] getDataIntegrationConfigNoContent %s", 204, payload)
-}
-
-func (o *GetDataIntegrationConfigNoContent) GetPayload() interface{} {
-	return o.Payload
-}
-
-func (o *GetDataIntegrationConfigNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
 // NewGetDataIntegrationConfigBadRequest creates a GetDataIntegrationConfigBadRequest with default headers values
 func NewGetDataIntegrationConfigBadRequest() *GetDataIntegrationConfigBadRequest {
 	return &GetDataIntegrationConfigBadRequest{}
@@ -256,6 +188,76 @@ func (o *GetDataIntegrationConfigBadRequest) GetPayload() *models.ErrorResponse 
 }
 
 func (o *GetDataIntegrationConfigBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ErrorResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetDataIntegrationConfigNotFound creates a GetDataIntegrationConfigNotFound with default headers values
+func NewGetDataIntegrationConfigNotFound() *GetDataIntegrationConfigNotFound {
+	return &GetDataIntegrationConfigNotFound{}
+}
+
+/*
+GetDataIntegrationConfigNotFound describes a response with status code 404, with default header values.
+
+GetDataIntegrationConfigNotFound get data integration config not found
+*/
+type GetDataIntegrationConfigNotFound struct {
+	Payload *models.ErrorResponse
+}
+
+// IsSuccess returns true when this get data integration config not found response has a 2xx status code
+func (o *GetDataIntegrationConfigNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get data integration config not found response has a 3xx status code
+func (o *GetDataIntegrationConfigNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get data integration config not found response has a 4xx status code
+func (o *GetDataIntegrationConfigNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get data integration config not found response has a 5xx status code
+func (o *GetDataIntegrationConfigNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get data integration config not found response a status code equal to that given
+func (o *GetDataIntegrationConfigNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get data integration config not found response
+func (o *GetDataIntegrationConfigNotFound) Code() int {
+	return 404
+}
+
+func (o *GetDataIntegrationConfigNotFound) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /api/integrations/v1/data/config/{type}/{id}][%d] getDataIntegrationConfigNotFound %s", 404, payload)
+}
+
+func (o *GetDataIntegrationConfigNotFound) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /api/integrations/v1/data/config/{type}/{id}][%d] getDataIntegrationConfigNotFound %s", 404, payload)
+}
+
+func (o *GetDataIntegrationConfigNotFound) GetPayload() *models.ErrorResponse {
+	return o.Payload
+}
+
+func (o *GetDataIntegrationConfigNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ErrorResponse)
 

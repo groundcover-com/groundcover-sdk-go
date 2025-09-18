@@ -36,6 +36,12 @@ func (o *DeleteDataIntegrationConfigReader) ReadResponse(response runtime.Client
 			return nil, err
 		}
 		return nil, result
+	case 404:
+		result := NewDeleteDataIntegrationConfigNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewDeleteDataIntegrationConfigInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -180,6 +186,76 @@ func (o *DeleteDataIntegrationConfigBadRequest) GetPayload() *models.ErrorRespon
 }
 
 func (o *DeleteDataIntegrationConfigBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ErrorResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewDeleteDataIntegrationConfigNotFound creates a DeleteDataIntegrationConfigNotFound with default headers values
+func NewDeleteDataIntegrationConfigNotFound() *DeleteDataIntegrationConfigNotFound {
+	return &DeleteDataIntegrationConfigNotFound{}
+}
+
+/*
+DeleteDataIntegrationConfigNotFound describes a response with status code 404, with default header values.
+
+DeleteDataIntegrationConfigNotFound delete data integration config not found
+*/
+type DeleteDataIntegrationConfigNotFound struct {
+	Payload *models.ErrorResponse
+}
+
+// IsSuccess returns true when this delete data integration config not found response has a 2xx status code
+func (o *DeleteDataIntegrationConfigNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete data integration config not found response has a 3xx status code
+func (o *DeleteDataIntegrationConfigNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete data integration config not found response has a 4xx status code
+func (o *DeleteDataIntegrationConfigNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete data integration config not found response has a 5xx status code
+func (o *DeleteDataIntegrationConfigNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete data integration config not found response a status code equal to that given
+func (o *DeleteDataIntegrationConfigNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the delete data integration config not found response
+func (o *DeleteDataIntegrationConfigNotFound) Code() int {
+	return 404
+}
+
+func (o *DeleteDataIntegrationConfigNotFound) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /api/integrations/v1/data/config/{type}/{id}][%d] deleteDataIntegrationConfigNotFound %s", 404, payload)
+}
+
+func (o *DeleteDataIntegrationConfigNotFound) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /api/integrations/v1/data/config/{type}/{id}][%d] deleteDataIntegrationConfigNotFound %s", 404, payload)
+}
+
+func (o *DeleteDataIntegrationConfigNotFound) GetPayload() *models.ErrorResponse {
+	return o.Payload
+}
+
+func (o *DeleteDataIntegrationConfigNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ErrorResponse)
 
