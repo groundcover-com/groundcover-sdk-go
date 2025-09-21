@@ -23,12 +23,6 @@ type CreateDataIntegrationConfigRequest struct {
 	// config
 	Config string `json:"config,omitempty"`
 
-	// env
-	Env *string `json:"env,omitempty"`
-
-	// instance
-	Instance *string `json:"instance,omitempty"`
-
 	// is paused
 	IsPaused bool `json:"is_paused,omitempty"`
 }

@@ -31,6 +31,9 @@ type SQLPipeline struct {
 	// limit
 	Limit uint64 `json:"limit,omitempty" yaml:"limit,omitempty"`
 
+	// math expressions
+	MathExpressions []*MathExpression `json:"mathExpression" yaml:"mathExpression"`
+
 	// offset
 	Offset uint64 `json:"offset,omitempty" yaml:"offset,omitempty"`
 
@@ -62,6 +65,10 @@ func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateGroupBy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMathExpressions(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -137,6 +144,32 @@ func (m *SQLPipeline) validateGroupBy(formats strfmt.Registry) error {
 					return ve.ValidateName("groupBy" + "." + strconv.Itoa(i))
 				} else if ce, ok := err.(*errors.CompositeError); ok {
 					return ce.ValidateName("groupBy" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *SQLPipeline) validateMathExpressions(formats strfmt.Registry) error {
+	if swag.IsZero(m.MathExpressions) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.MathExpressions); i++ {
+		if swag.IsZero(m.MathExpressions[i]) { // not required
+			continue
+		}
+
+		if m.MathExpressions[i] != nil {
+			if err := m.MathExpressions[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("mathExpression" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("mathExpression" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -287,6 +320,10 @@ func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateMathExpressions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateOrderBy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -357,6 +394,31 @@ func (m *SQLPipeline) contextValidateGroupBy(ctx context.Context, formats strfmt
 					return ve.ValidateName("groupBy" + "." + strconv.Itoa(i))
 				} else if ce, ok := err.(*errors.CompositeError); ok {
 					return ce.ValidateName("groupBy" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *SQLPipeline) contextValidateMathExpressions(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.MathExpressions); i++ {
+
+		if m.MathExpressions[i] != nil {
+
+			if swag.IsZero(m.MathExpressions[i]) { // not required
+				return nil
+			}
+
+			if err := m.MathExpressions[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("mathExpression" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("mathExpression" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

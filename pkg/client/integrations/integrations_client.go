@@ -79,10 +79,10 @@ type ClientService interface {
 @Produce json
 @Param type path string true "Data Integration type"
 @Param request body createDataIntegrationConfigRequestParams true "Request body"
-@Success 201 {object} DataIntegrationConfigResponseWrapper
-@Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
+@Success 201 {object} config.DataIntegrationConfig
+@Failure 400 {object} api.ErrorResponse
+@Failure 500 {object} api.ErrorResponse
+@Failure 503 {object} api.ErrorResponse
 @Router /api/integrations/v1/data/config/{type} [POST]
 */
 func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateDataIntegrationConfigCreated, error) {
@@ -130,11 +130,11 @@ func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfig
 @Param env query string false "Environment name"
 @Param cluster query string false "Cluster name"
 @Param instance query string false "Instance name"
-@Success 200 {object} EmptyDataIntegrationConfigResponseWrapper
-@Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 404 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
+@Success 200 {object}
+@Failure 400 {object} api.ErrorResponse
+@Failure 404 {object} api.ErrorResponse
+@Failure 500 {object} api.ErrorResponse
+@Failure 503 {object} api.ErrorResponse
 @Router /api/integrations/v1/data/config/{type}/{id} [DELETE]
 */
 func (a *Client) DeleteDataIntegrationConfig(params *DeleteDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteDataIntegrationConfigOK, error) {
@@ -221,11 +221,11 @@ func (a *Client) DescribeDataIntegrationConfig(params *DescribeDataIntegrationCo
 @Param type path string true "Data Integration type"
 @Param id path string true "Data Integration ID"
 @Param includeArchived query bool false "Include archived (deleted) configurations"
-@Success 200 {object} DataIntegrationConfigResponseWrapper
-@Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 404 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
+@Success 200 {object} config.DataIntegrationConfig
+@Failure 400 {object} api.ErrorResponse
+@Failure 404 {object} api.ErrorResponse
+@Failure 500 {object} api.ErrorResponse
+@Failure 503 {object} api.ErrorResponse
 @Router /api/integrations/v1/data/config/{type}/{id} [GET]
 */
 func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, error) {
@@ -269,11 +269,11 @@ func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams
 
 @Produce json
 @Param includeArchived query bool false "Include archived (deleted) configurations"
-@Success 200 {object} DataIntegrationConfigsResponseWrapper
-@Success 204 {object} EmptyDataIntegrationConfigResponseWrapper
-@Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
+@Success 200 {object} []config.DataIntegrationConfig
+@Success 204 {object}
+@Failure 400 {object} api.ErrorResponse
+@Failure 500 {object} api.ErrorResponse
+@Failure 503 {object} api.ErrorResponse
 @Router /api/integrations/v1/data/config [GET]
 */
 func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsOK, *GetDataIntegrationConfigsNoContent, error) {
@@ -319,11 +319,11 @@ func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsPara
 @Produce json
 @Param type path string true "Data Integration type"
 @Param includeArchived query bool false "Include archived (deleted) configurations"
-@Success 200 {object} DataIntegrationConfigsResponseWrapper
-@Success 204 {object} EmptyDataIntegrationConfigResponseWrapper
-@Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
+@Success 200 {object} []config.DataIntegrationConfig
+@Success 204 {object}
+@Failure 400 {object} api.ErrorResponse
+@Failure 500 {object} api.ErrorResponse
+@Failure 503 {object} api.ErrorResponse
 @Router /api/integrations/v1/data/config/{type} [GET]
 */
 func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfigsByTypeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsByTypeOK, *GetDataIntegrationConfigsByTypeNoContent, error) {
@@ -370,11 +370,11 @@ func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfi
 @Param type path string true "Data Integration type"
 @Param id path string true "Data Integration ID"
 @Param request body updateDataIntegrationConfigRequestParams true "Request body"
-@Success 200 {object} DataIntegrationConfigResponseWrapper
-@Failure 400 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 404 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 500 {object} DataIntegrationConfigErrorResponseWrapper
-@Failure 503 {object} DataIntegrationConfigErrorResponseWrapper
+@Success 200 {object} config.DataIntegrationConfig
+@Failure 400 {object} api.ErrorResponse
+@Failure 404 {object} api.ErrorResponse
+@Failure 500 {object} api.ErrorResponse
+@Failure 503 {object} api.ErrorResponse
 @Router /api/integrations/v1/data/config/{type}/{id} [PUT]
 */
 func (a *Client) UpdateDataIntegrationConfig(params *UpdateDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDataIntegrationConfigOK, error) {
