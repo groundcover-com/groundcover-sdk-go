@@ -22,6 +22,9 @@ type Description struct {
 
 	// options
 	Options interface{} `json:"options,omitempty"`
+
+	// version
+	Version int64 `json:"version,omitempty"`
 }
 
 // Validate validates this description

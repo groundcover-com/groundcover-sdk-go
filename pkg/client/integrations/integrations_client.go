@@ -130,7 +130,7 @@ func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfig
 @Param env query string false "Environment name"
 @Param cluster query string false "Cluster name"
 @Param instance query string false "Instance name"
-@Success 200 {object}
+@Success 200
 @Failure 400 {object} api.ErrorResponse
 @Failure 404 {object} api.ErrorResponse
 @Failure 500 {object} api.ErrorResponse
@@ -270,7 +270,7 @@ func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams
 @Produce json
 @Param includeArchived query bool false "Include archived (deleted) configurations"
 @Success 200 {object} []config.DataIntegrationConfig
-@Success 204 {object}
+@Success 204
 @Failure 400 {object} api.ErrorResponse
 @Failure 500 {object} api.ErrorResponse
 @Failure 503 {object} api.ErrorResponse
@@ -320,7 +320,7 @@ func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsPara
 @Param type path string true "Data Integration type"
 @Param includeArchived query bool false "Include archived (deleted) configurations"
 @Success 200 {object} []config.DataIntegrationConfig
-@Success 204 {object}
+@Success 204
 @Failure 400 {object} api.ErrorResponse
 @Failure 500 {object} api.ErrorResponse
 @Failure 503 {object} api.ErrorResponse
