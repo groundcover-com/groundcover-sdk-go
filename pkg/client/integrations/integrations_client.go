@@ -60,7 +60,7 @@ type ClientService interface {
 
 	DeleteDataIntegrationConfig(params *DeleteDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteDataIntegrationConfigOK, error)
 
-	DescribeDataIntegrationConfig(params *DescribeDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DescribeDataIntegrationConfigOK, error)
+	DescribeDataIntegration(params *DescribeDataIntegrationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DescribeDataIntegrationOK, error)
 
 	GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, error)
 
@@ -174,24 +174,29 @@ func (a *Client) DeleteDataIntegrationConfig(params *DeleteDataIntegrationConfig
 }
 
 /*
-DescribeDataIntegrationConfig returns the configuration schema defaults and available options for a specific data integration type
+	DescribeDataIntegration @Accept json
 
-This endpoint is useful for understanding what configuration options are available for a given integration type.
+@Produce json
+@Param type path string true "Data Integration type"
+@Success 200 {object} common.Description
+@Failure 400 {object} api.ErrorResponse
+@Failure 500 {object} api.ErrorResponse
+@Router /api/integrations/v1/data/describe/{type} [GET]
 */
-func (a *Client) DescribeDataIntegrationConfig(params *DescribeDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DescribeDataIntegrationConfigOK, error) {
+func (a *Client) DescribeDataIntegration(params *DescribeDataIntegrationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DescribeDataIntegrationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDescribeDataIntegrationConfigParams()
+		params = NewDescribeDataIntegrationParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "describeDataIntegrationConfig",
+		ID:                 "describeDataIntegration",
 		Method:             "GET",
 		PathPattern:        "/api/integrations/v1/data/describe/{type}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &DescribeDataIntegrationConfigReader{formats: a.formats},
+		Reader:             &DescribeDataIntegrationReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -204,13 +209,13 @@ func (a *Client) DescribeDataIntegrationConfig(params *DescribeDataIntegrationCo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*DescribeDataIntegrationConfigOK)
+	success, ok := result.(*DescribeDataIntegrationOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for describeDataIntegrationConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for describeDataIntegration: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
