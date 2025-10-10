@@ -7,6 +7,7 @@ package integrations
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetDataIntegrationConfigsReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetDataIntegrationConfigsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetDataIntegrationConfigsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetDataIntegrationConfigsOK()
@@ -120,7 +121,7 @@ func (o *GetDataIntegrationConfigsOK) GetPayload() []*models.DataIntegrationConf
 func (o *GetDataIntegrationConfigsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -138,7 +139,7 @@ GetDataIntegrationConfigsNoContent describes a response with status code 204, wi
 GetDataIntegrationConfigsNoContent get data integration configs no content
 */
 type GetDataIntegrationConfigsNoContent struct {
-	Payload interface{}
+	Payload any
 }
 
 // IsSuccess returns true when this get data integration configs no content response has a 2xx status code
@@ -181,14 +182,14 @@ func (o *GetDataIntegrationConfigsNoContent) String() string {
 	return fmt.Sprintf("[GET /api/integrations/v1/data/config][%d] getDataIntegrationConfigsNoContent %s", 204, payload)
 }
 
-func (o *GetDataIntegrationConfigsNoContent) GetPayload() interface{} {
+func (o *GetDataIntegrationConfigsNoContent) GetPayload() any {
 	return o.Payload
 }
 
 func (o *GetDataIntegrationConfigsNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -258,7 +259,7 @@ func (o *GetDataIntegrationConfigsBadRequest) readResponse(response runtime.Clie
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -328,7 +329,7 @@ func (o *GetDataIntegrationConfigsInternalServerError) readResponse(response run
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -398,7 +399,7 @@ func (o *GetDataIntegrationConfigsServiceUnavailable) readResponse(response runt
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

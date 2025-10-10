@@ -8,6 +8,7 @@ package ingestionkeys
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type DeleteIngestionKeyReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *DeleteIngestionKeyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *DeleteIngestionKeyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 202:
 		result := NewDeleteIngestionKeyAccepted()
@@ -172,7 +173,7 @@ func (o *DeleteIngestionKeyBadRequest) readResponse(response runtime.ClientRespo
 	o.Payload = new(DeleteIngestionKeyBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -242,7 +243,7 @@ func (o *DeleteIngestionKeyNotFound) readResponse(response runtime.ClientRespons
 	o.Payload = new(DeleteIngestionKeyNotFoundBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -312,7 +313,7 @@ func (o *DeleteIngestionKeyInternalServerError) readResponse(response runtime.Cl
 	o.Payload = new(DeleteIngestionKeyInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

@@ -127,7 +127,7 @@ type ClientService interface {
 CreateMonitor Create Monitor
 */
 func (a *Client) CreateMonitor(params *CreateMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateMonitorOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCreateMonitorParams()
 	}
@@ -147,17 +147,22 @@ func (a *Client) CreateMonitor(params *CreateMonitorParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CreateMonitorOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for createMonitor: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -168,7 +173,7 @@ CreateSilence creates silence
 Creates a new silence for monitoring alerts.
 */
 func (a *Client) CreateSilence(params *CreateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateSilenceOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCreateSilenceParams()
 	}
@@ -188,17 +193,22 @@ func (a *Client) CreateSilence(params *CreateSilenceParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CreateSilenceOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for createSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -207,7 +217,7 @@ func (a *Client) CreateSilence(params *CreateSilenceParams, authInfo runtime.Cli
 DeleteMonitor Delete Monitor
 */
 func (a *Client) DeleteMonitor(params *DeleteMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteMonitorOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDeleteMonitorParams()
 	}
@@ -227,17 +237,22 @@ func (a *Client) DeleteMonitor(params *DeleteMonitorParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DeleteMonitorOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for deleteMonitor: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -248,7 +263,7 @@ DeleteSilence deletes silence
 Deletes a silence by its UUID.
 */
 func (a *Client) DeleteSilence(params *DeleteSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteSilenceOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDeleteSilenceParams()
 	}
@@ -268,17 +283,22 @@ func (a *Client) DeleteSilence(params *DeleteSilenceParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DeleteSilenceOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for deleteSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -289,7 +309,7 @@ GetAllSilences gets all silences
 Retrieves all silences with optional filtering.
 */
 func (a *Client) GetAllSilences(params *GetAllSilencesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetAllSilencesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetAllSilencesParams()
 	}
@@ -309,17 +329,22 @@ func (a *Client) GetAllSilences(params *GetAllSilencesParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetAllSilencesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getAllSilences: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -328,7 +353,7 @@ func (a *Client) GetAllSilences(params *GetAllSilencesParams, authInfo runtime.C
 GetMonitor Get Monitor Definition (YAML)
 */
 func (a *Client) GetMonitor(params *GetMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMonitorOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetMonitorParams()
 	}
@@ -348,17 +373,22 @@ func (a *Client) GetMonitor(params *GetMonitorParams, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetMonitorOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getMonitor: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -369,7 +399,7 @@ GetSilence gets silence by ID
 Retrieves a specific silence by its UUID.
 */
 func (a *Client) GetSilence(params *GetSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetSilenceOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetSilenceParams()
 	}
@@ -389,17 +419,22 @@ func (a *Client) GetSilence(params *GetSilenceParams, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetSilenceOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -408,7 +443,7 @@ func (a *Client) GetSilence(params *GetSilenceParams, authInfo runtime.ClientAut
 ListMonitors List Monitors
 */
 func (a *Client) ListMonitors(params *ListMonitorsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ListMonitorsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewListMonitorsParams()
 	}
@@ -428,17 +463,22 @@ func (a *Client) ListMonitors(params *ListMonitorsParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ListMonitorsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for listMonitors: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -447,7 +487,7 @@ func (a *Client) ListMonitors(params *ListMonitorsParams, authInfo runtime.Clien
 UpdateMonitor Update Monitor
 */
 func (a *Client) UpdateMonitor(params *UpdateMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateMonitorAccepted, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUpdateMonitorParams()
 	}
@@ -467,17 +507,22 @@ func (a *Client) UpdateMonitor(params *UpdateMonitorParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UpdateMonitorAccepted)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for updateMonitor: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -488,7 +533,7 @@ UpdateSilence updates silence
 Updates an existing silence by its UUID.
 */
 func (a *Client) UpdateSilence(params *UpdateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateSilenceOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUpdateSilenceParams()
 	}
@@ -508,17 +553,22 @@ func (a *Client) UpdateSilence(params *UpdateSilenceParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UpdateSilenceOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for updateSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

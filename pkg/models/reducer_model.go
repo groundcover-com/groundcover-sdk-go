@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -70,11 +71,15 @@ func (m *ReducerModel) validateRelativeTimerange(formats strfmt.Registry) error 
 
 	if m.RelativeTimerange != nil {
 		if err := m.RelativeTimerange.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("relativeTimerange")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("relativeTimerange")
 			}
+
 			return err
 		}
 	}
@@ -105,11 +110,15 @@ func (m *ReducerModel) contextValidateRelativeTimerange(ctx context.Context, for
 		}
 
 		if err := m.RelativeTimerange.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("relativeTimerange")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("relativeTimerange")
 			}
+
 			return err
 		}
 	}

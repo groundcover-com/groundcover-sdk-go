@@ -7,6 +7,7 @@ package logs_pipeline
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type DeleteConfigReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *DeleteConfigReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *DeleteConfigReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewDeleteConfigOK()
@@ -58,7 +59,7 @@ DeleteConfigOK describes a response with status code 200, with default header va
 emptyLogsPipelineConfigResponse is used for empty responses
 */
 type DeleteConfigOK struct {
-	Payload interface{}
+	Payload any
 }
 
 // IsSuccess returns true when this delete config o k response has a 2xx status code
@@ -101,14 +102,14 @@ func (o *DeleteConfigOK) String() string {
 	return fmt.Sprintf("[DELETE /api/pipelines/logs/config][%d] deleteConfigOK %s", 200, payload)
 }
 
-func (o *DeleteConfigOK) GetPayload() interface{} {
+func (o *DeleteConfigOK) GetPayload() any {
 	return o.Payload
 }
 
 func (o *DeleteConfigOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -178,7 +179,7 @@ func (o *DeleteConfigInternalServerError) readResponse(response runtime.ClientRe
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -248,7 +249,7 @@ func (o *DeleteConfigServiceUnavailable) readResponse(response runtime.ClientRes
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

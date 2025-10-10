@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -50,11 +51,15 @@ func (m *JoinCondition) validateLeftColumn(formats strfmt.Registry) error {
 
 	if m.LeftColumn != nil {
 		if err := m.LeftColumn.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("leftColumn")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("leftColumn")
 			}
+
 			return err
 		}
 	}
@@ -69,11 +74,15 @@ func (m *JoinCondition) validateRightColumn(formats strfmt.Registry) error {
 
 	if m.RightColumn != nil {
 		if err := m.RightColumn.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("rightColumn")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("rightColumn")
 			}
+
 			return err
 		}
 	}
@@ -108,11 +117,15 @@ func (m *JoinCondition) contextValidateLeftColumn(ctx context.Context, formats s
 		}
 
 		if err := m.LeftColumn.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("leftColumn")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("leftColumn")
 			}
+
 			return err
 		}
 	}
@@ -129,11 +142,15 @@ func (m *JoinCondition) contextValidateRightColumn(ctx context.Context, formats 
 		}
 
 		if err := m.RightColumn.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("rightColumn")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("rightColumn")
 			}
+
 			return err
 		}
 	}

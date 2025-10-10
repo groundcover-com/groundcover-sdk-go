@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -66,11 +67,15 @@ func (m *Model) validateQueries(formats strfmt.Registry) error {
 
 		if m.Queries[i] != nil {
 			if err := m.Queries[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("queries" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("queries" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -92,11 +97,15 @@ func (m *Model) validateReducers(formats strfmt.Registry) error {
 
 		if m.Reducers[i] != nil {
 			if err := m.Reducers[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("reducers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("reducers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -118,11 +127,15 @@ func (m *Model) validateThresholds(formats strfmt.Registry) error {
 
 		if m.Thresholds[i] != nil {
 			if err := m.Thresholds[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("thresholds" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("thresholds" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -165,11 +178,15 @@ func (m *Model) contextValidateQueries(ctx context.Context, formats strfmt.Regis
 			}
 
 			if err := m.Queries[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("queries" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("queries" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -190,11 +207,15 @@ func (m *Model) contextValidateReducers(ctx context.Context, formats strfmt.Regi
 			}
 
 			if err := m.Reducers[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("reducers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("reducers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -215,11 +236,15 @@ func (m *Model) contextValidateThresholds(ctx context.Context, formats strfmt.Re
 			}
 
 			if err := m.Thresholds[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("thresholds" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("thresholds" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

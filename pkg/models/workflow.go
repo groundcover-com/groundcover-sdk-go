@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -167,11 +168,15 @@ func (m *Workflow) validateProviders(formats strfmt.Registry) error {
 
 		if m.Providers[i] != nil {
 			if err := m.Providers[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("providers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("providers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -193,11 +198,15 @@ func (m *Workflow) validateTriggers(formats strfmt.Registry) error {
 
 		if m.Triggers[i] != nil {
 			if err := m.Triggers[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("triggers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("triggers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -236,11 +245,15 @@ func (m *Workflow) contextValidateProviders(ctx context.Context, formats strfmt.
 			}
 
 			if err := m.Providers[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("providers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("providers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -261,11 +274,15 @@ func (m *Workflow) contextValidateTriggers(ctx context.Context, formats strfmt.R
 			}
 
 			if err := m.Triggers[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("triggers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("triggers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

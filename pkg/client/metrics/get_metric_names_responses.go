@@ -8,6 +8,7 @@ package metrics
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -24,7 +25,7 @@ type GetMetricNamesReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetMetricNamesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetMetricNamesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetMetricNamesOK()
@@ -112,7 +113,7 @@ func (o *GetMetricNamesOK) readResponse(response runtime.ClientResponse, consume
 	o.Payload = new(models.MetricsNamesResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -182,7 +183,7 @@ func (o *GetMetricNamesBadRequest) readResponse(response runtime.ClientResponse,
 	o.Payload = new(GetMetricNamesBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -252,7 +253,7 @@ func (o *GetMetricNamesInternalServerError) readResponse(response runtime.Client
 	o.Payload = new(GetMetricNamesInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

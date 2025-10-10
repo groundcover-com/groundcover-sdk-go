@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -19,7 +20,7 @@ import (
 type Filter struct {
 
 	// value
-	Value interface{} `json:"value,omitempty" yaml:"value,omitempty"`
+	Value any `json:"value,omitempty" yaml:"value,omitempty"`
 
 	// op
 	Op Op `json:"op,omitempty" yaml:"op,omitempty"`
@@ -45,11 +46,15 @@ func (m *Filter) validateOp(formats strfmt.Registry) error {
 	}
 
 	if err := m.Op.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("op")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("op")
 		}
+
 		return err
 	}
 
@@ -77,11 +82,15 @@ func (m *Filter) contextValidateOp(ctx context.Context, formats strfmt.Registry)
 	}
 
 	if err := m.Op.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("op")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("op")
 		}
+
 		return err
 	}
 

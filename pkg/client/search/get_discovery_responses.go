@@ -8,6 +8,7 @@ package search
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -24,7 +25,7 @@ type GetDiscoveryReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetDiscoveryReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetDiscoveryReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetDiscoveryOK()
@@ -112,7 +113,7 @@ func (o *GetDiscoveryOK) readResponse(response runtime.ClientResponse, consumer 
 	o.Payload = new(models.DiscoveryResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -182,7 +183,7 @@ func (o *GetDiscoveryBadRequest) readResponse(response runtime.ClientResponse, c
 	o.Payload = new(GetDiscoveryBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -252,7 +253,7 @@ func (o *GetDiscoveryInternalServerError) readResponse(response runtime.ClientRe
 	o.Payload = new(GetDiscoveryInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

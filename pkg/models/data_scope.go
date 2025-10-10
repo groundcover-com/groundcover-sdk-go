@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -50,11 +51,15 @@ func (m *DataScope) validateAdvanced(formats strfmt.Registry) error {
 
 	if m.Advanced != nil {
 		if err := m.Advanced.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("advanced")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("advanced")
 			}
+
 			return err
 		}
 	}
@@ -69,11 +74,15 @@ func (m *DataScope) validateSimple(formats strfmt.Registry) error {
 
 	if m.Simple != nil {
 		if err := m.Simple.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("simple")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("simple")
 			}
+
 			return err
 		}
 	}
@@ -108,11 +117,15 @@ func (m *DataScope) contextValidateAdvanced(ctx context.Context, formats strfmt.
 		}
 
 		if err := m.Advanced.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("advanced")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("advanced")
 			}
+
 			return err
 		}
 	}
@@ -129,11 +142,15 @@ func (m *DataScope) contextValidateSimple(ctx context.Context, formats strfmt.Re
 		}
 
 		if err := m.Simple.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("simple")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("simple")
 			}
+
 			return err
 		}
 	}

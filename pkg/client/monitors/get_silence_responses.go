@@ -8,6 +8,7 @@ package monitors
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -24,7 +25,7 @@ type GetSilenceReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetSilenceReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetSilenceReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetSilenceOK()
@@ -118,7 +119,7 @@ func (o *GetSilenceOK) readResponse(response runtime.ClientResponse, consumer ru
 	o.Payload = new(models.Silence)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -188,7 +189,7 @@ func (o *GetSilenceBadRequest) readResponse(response runtime.ClientResponse, con
 	o.Payload = new(GetSilenceBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -258,7 +259,7 @@ func (o *GetSilenceNotFound) readResponse(response runtime.ClientResponse, consu
 	o.Payload = new(GetSilenceNotFoundBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -328,7 +329,7 @@ func (o *GetSilenceInternalServerError) readResponse(response runtime.ClientResp
 	o.Payload = new(GetSilenceInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

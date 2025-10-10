@@ -8,6 +8,7 @@ package serviceaccounts
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -24,7 +25,7 @@ type UpdateServiceAccountReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *UpdateServiceAccountReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *UpdateServiceAccountReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewUpdateServiceAccountOK()
@@ -118,7 +119,7 @@ func (o *UpdateServiceAccountOK) readResponse(response runtime.ClientResponse, c
 	o.Payload = new(models.UpdateServiceAccountResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -188,7 +189,7 @@ func (o *UpdateServiceAccountBadRequest) readResponse(response runtime.ClientRes
 	o.Payload = new(UpdateServiceAccountBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -258,7 +259,7 @@ func (o *UpdateServiceAccountNotFound) readResponse(response runtime.ClientRespo
 	o.Payload = new(UpdateServiceAccountNotFoundBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -328,7 +329,7 @@ func (o *UpdateServiceAccountInternalServerError) readResponse(response runtime.
 	o.Payload = new(UpdateServiceAccountInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

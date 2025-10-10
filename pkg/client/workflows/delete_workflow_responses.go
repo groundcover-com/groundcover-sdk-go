@@ -8,6 +8,7 @@ package workflows
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type DeleteWorkflowReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *DeleteWorkflowReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *DeleteWorkflowReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewDeleteWorkflowOK()
@@ -64,7 +65,7 @@ DeleteWorkflowOK describes a response with status code 200, with default header 
 DeleteWorkflowOK delete workflow o k
 */
 type DeleteWorkflowOK struct {
-	Payload interface{}
+	Payload any
 }
 
 // IsSuccess returns true when this delete workflow o k response has a 2xx status code
@@ -107,14 +108,14 @@ func (o *DeleteWorkflowOK) String() string {
 	return fmt.Sprintf("[DELETE /api/workflows/{id}][%d] deleteWorkflowOK %s", 200, payload)
 }
 
-func (o *DeleteWorkflowOK) GetPayload() interface{} {
+func (o *DeleteWorkflowOK) GetPayload() any {
 	return o.Payload
 }
 
 func (o *DeleteWorkflowOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -184,7 +185,7 @@ func (o *DeleteWorkflowBadRequest) readResponse(response runtime.ClientResponse,
 	o.Payload = new(DeleteWorkflowBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -254,7 +255,7 @@ func (o *DeleteWorkflowUnauthorized) readResponse(response runtime.ClientRespons
 	o.Payload = new(DeleteWorkflowUnauthorizedBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -324,7 +325,7 @@ func (o *DeleteWorkflowInternalServerError) readResponse(response runtime.Client
 	o.Payload = new(DeleteWorkflowInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

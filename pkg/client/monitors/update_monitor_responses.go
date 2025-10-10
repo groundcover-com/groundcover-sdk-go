@@ -8,6 +8,7 @@ package monitors
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type UpdateMonitorReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *UpdateMonitorReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *UpdateMonitorReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 202:
 		result := NewUpdateMonitorAccepted()
@@ -178,7 +179,7 @@ func (o *UpdateMonitorBadRequest) readResponse(response runtime.ClientResponse, 
 	o.Payload = new(UpdateMonitorBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -248,7 +249,7 @@ func (o *UpdateMonitorNotFound) readResponse(response runtime.ClientResponse, co
 	o.Payload = new(UpdateMonitorNotFoundBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -318,7 +319,7 @@ func (o *UpdateMonitorConflict) readResponse(response runtime.ClientResponse, co
 	o.Payload = new(UpdateMonitorConflictBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -388,7 +389,7 @@ func (o *UpdateMonitorInternalServerError) readResponse(response runtime.ClientR
 	o.Payload = new(UpdateMonitorInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

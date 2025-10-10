@@ -86,7 +86,7 @@ type ClientService interface {
 @Router /api/integrations/v1/data/config/{type} [POST]
 */
 func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateDataIntegrationConfigCreated, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCreateDataIntegrationConfigParams()
 	}
@@ -106,17 +106,22 @@ func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfig
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CreateDataIntegrationConfigCreated)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for createDataIntegrationConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -138,7 +143,7 @@ func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfig
 @Router /api/integrations/v1/data/config/{type}/{id} [DELETE]
 */
 func (a *Client) DeleteDataIntegrationConfig(params *DeleteDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteDataIntegrationConfigOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDeleteDataIntegrationConfigParams()
 	}
@@ -158,17 +163,22 @@ func (a *Client) DeleteDataIntegrationConfig(params *DeleteDataIntegrationConfig
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DeleteDataIntegrationConfigOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for deleteDataIntegrationConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -184,7 +194,7 @@ func (a *Client) DeleteDataIntegrationConfig(params *DeleteDataIntegrationConfig
 @Router /api/integrations/v1/data/describe/{type} [GET]
 */
 func (a *Client) DescribeDataIntegration(params *DescribeDataIntegrationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DescribeDataIntegrationOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDescribeDataIntegrationParams()
 	}
@@ -204,17 +214,22 @@ func (a *Client) DescribeDataIntegration(params *DescribeDataIntegrationParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DescribeDataIntegrationOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for describeDataIntegration: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -234,7 +249,7 @@ func (a *Client) DescribeDataIntegration(params *DescribeDataIntegrationParams, 
 @Router /api/integrations/v1/data/config/{type}/{id} [GET]
 */
 func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetDataIntegrationConfigParams()
 	}
@@ -254,17 +269,22 @@ func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetDataIntegrationConfigOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getDataIntegrationConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -282,7 +302,7 @@ func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams
 @Router /api/integrations/v1/data/config [GET]
 */
 func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsOK, *GetDataIntegrationConfigsNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetDataIntegrationConfigsParams()
 	}
@@ -302,18 +322,22 @@ func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsPara
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	// several success responses have to be checked
 	switch value := result.(type) {
 	case *GetDataIntegrationConfigsOK:
 		return value, nil, nil
 	case *GetDataIntegrationConfigsNoContent:
 		return nil, value, nil
 	}
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for integrations: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -332,7 +356,7 @@ func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsPara
 @Router /api/integrations/v1/data/config/{type} [GET]
 */
 func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfigsByTypeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsByTypeOK, *GetDataIntegrationConfigsByTypeNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetDataIntegrationConfigsByTypeParams()
 	}
@@ -352,18 +376,22 @@ func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfi
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	// several success responses have to be checked
 	switch value := result.(type) {
 	case *GetDataIntegrationConfigsByTypeOK:
 		return value, nil, nil
 	case *GetDataIntegrationConfigsByTypeNoContent:
 		return nil, value, nil
 	}
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for integrations: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -383,7 +411,7 @@ func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfi
 @Router /api/integrations/v1/data/config/{type}/{id} [PUT]
 */
 func (a *Client) UpdateDataIntegrationConfig(params *UpdateDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDataIntegrationConfigOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUpdateDataIntegrationConfigParams()
 	}
@@ -403,17 +431,22 @@ func (a *Client) UpdateDataIntegrationConfig(params *UpdateDataIntegrationConfig
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UpdateDataIntegrationConfigOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for updateDataIntegrationConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

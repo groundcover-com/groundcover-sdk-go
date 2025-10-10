@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -98,11 +99,15 @@ func (m *QueryRequest) validateConditions(formats strfmt.Registry) error {
 
 		if m.Conditions[i] != nil {
 			if err := m.Conditions[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -131,11 +136,15 @@ func (m *QueryRequest) validatePipeline(formats strfmt.Registry) error {
 
 	if m.Pipeline != nil {
 		if err := m.Pipeline.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Pipeline")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Pipeline")
 			}
+
 			return err
 		}
 	}
@@ -143,7 +152,7 @@ func (m *QueryRequest) validatePipeline(formats strfmt.Registry) error {
 	return nil
 }
 
-var queryRequestTypeQueryTypePropEnum []interface{}
+var queryRequestTypeQueryTypePropEnum []any
 
 func init() {
 	var res []string
@@ -204,11 +213,15 @@ func (m *QueryRequest) validateSubPipelines(formats strfmt.Registry) error {
 
 	if m.SubPipelines != nil {
 		if err := m.SubPipelines.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("SubPipelines")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("SubPipelines")
 			}
+
 			return err
 		}
 	}
@@ -249,11 +262,15 @@ func (m *QueryRequest) contextValidateConditions(ctx context.Context, formats st
 			}
 
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -272,11 +289,15 @@ func (m *QueryRequest) contextValidatePipeline(ctx context.Context, formats strf
 		}
 
 		if err := m.Pipeline.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Pipeline")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Pipeline")
 			}
+
 			return err
 		}
 	}
@@ -291,11 +312,15 @@ func (m *QueryRequest) contextValidateSubPipelines(ctx context.Context, formats 
 	}
 
 	if err := m.SubPipelines.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("SubPipelines")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("SubPipelines")
 		}
+
 		return err
 	}
 

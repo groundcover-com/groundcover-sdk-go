@@ -18,7 +18,7 @@ import (
 type ErrorResponse struct {
 
 	// details
-	Details interface{} `json:"details,omitempty"`
+	Details any `json:"details,omitempty"`
 
 	// docs URL
 	DocsURL string `json:"docs_url,omitempty"`

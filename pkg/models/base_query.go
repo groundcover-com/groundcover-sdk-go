@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -101,11 +102,15 @@ func (m *BaseQuery) validateConditions(formats strfmt.Registry) error {
 
 		if m.Conditions[i] != nil {
 			if err := m.Conditions[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -122,11 +127,15 @@ func (m *BaseQuery) validatePipeline(formats strfmt.Registry) error {
 
 	if m.Pipeline != nil {
 		if err := m.Pipeline.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("pipeline")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("pipeline")
 			}
+
 			return err
 		}
 	}
@@ -141,11 +150,15 @@ func (m *BaseQuery) validateRelativeTimerange(formats strfmt.Registry) error {
 
 	if m.RelativeTimerange != nil {
 		if err := m.RelativeTimerange.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("relativeTimerange")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("relativeTimerange")
 			}
+
 			return err
 		}
 	}
@@ -160,11 +173,15 @@ func (m *BaseQuery) validateRollup(formats strfmt.Registry) error {
 
 	if m.Rollup != nil {
 		if err := m.Rollup.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("rollup")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("rollup")
 			}
+
 			return err
 		}
 	}
@@ -179,11 +196,15 @@ func (m *BaseQuery) validateSQLPipeline(formats strfmt.Registry) error {
 
 	if m.SQLPipeline != nil {
 		if err := m.SQLPipeline.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("sqlPipeline")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("sqlPipeline")
 			}
+
 			return err
 		}
 	}
@@ -232,11 +253,15 @@ func (m *BaseQuery) contextValidateConditions(ctx context.Context, formats strfm
 			}
 
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -255,11 +280,15 @@ func (m *BaseQuery) contextValidatePipeline(ctx context.Context, formats strfmt.
 		}
 
 		if err := m.Pipeline.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("pipeline")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("pipeline")
 			}
+
 			return err
 		}
 	}
@@ -276,11 +305,15 @@ func (m *BaseQuery) contextValidateRelativeTimerange(ctx context.Context, format
 		}
 
 		if err := m.RelativeTimerange.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("relativeTimerange")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("relativeTimerange")
 			}
+
 			return err
 		}
 	}
@@ -297,11 +330,15 @@ func (m *BaseQuery) contextValidateRollup(ctx context.Context, formats strfmt.Re
 		}
 
 		if err := m.Rollup.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("rollup")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("rollup")
 			}
+
 			return err
 		}
 	}
@@ -318,11 +355,15 @@ func (m *BaseQuery) contextValidateSQLPipeline(ctx context.Context, formats strf
 		}
 
 		if err := m.SQLPipeline.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("sqlPipeline")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("sqlPipeline")
 			}
+
 			return err
 		}
 	}

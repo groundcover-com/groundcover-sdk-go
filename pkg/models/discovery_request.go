@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -85,11 +86,15 @@ func (m *DiscoveryRequest) validateConditions(formats strfmt.Registry) error {
 
 		if m.Conditions[i] != nil {
 			if err := m.Conditions[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -106,11 +111,15 @@ func (m *DiscoveryRequest) validateFilterGroup(formats strfmt.Registry) error {
 
 	if m.FilterGroup != nil {
 		if err := m.FilterGroup.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("FilterGroup")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("FilterGroup")
 			}
+
 			return err
 		}
 	}
@@ -139,11 +148,15 @@ func (m *DiscoveryRequest) validateSources(formats strfmt.Registry) error {
 
 		if m.Sources[i] != nil {
 			if err := m.Sources[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -153,7 +166,7 @@ func (m *DiscoveryRequest) validateSources(formats strfmt.Registry) error {
 	return nil
 }
 
-var discoveryRequestTypeTypePropEnum []interface{}
+var discoveryRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
@@ -232,11 +245,15 @@ func (m *DiscoveryRequest) contextValidateConditions(ctx context.Context, format
 			}
 
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -255,11 +272,15 @@ func (m *DiscoveryRequest) contextValidateFilterGroup(ctx context.Context, forma
 		}
 
 		if err := m.FilterGroup.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("FilterGroup")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("FilterGroup")
 			}
+
 			return err
 		}
 	}
@@ -278,11 +299,15 @@ func (m *DiscoveryRequest) contextValidateSources(ctx context.Context, formats s
 			}
 
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

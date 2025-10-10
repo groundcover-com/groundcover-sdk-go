@@ -8,6 +8,7 @@ package dashboards
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -24,7 +25,7 @@ type RestoreDashboardReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *RestoreDashboardReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *RestoreDashboardReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 202:
 		result := NewRestoreDashboardAccepted()
@@ -118,7 +119,7 @@ func (o *RestoreDashboardAccepted) readResponse(response runtime.ClientResponse,
 	o.Payload = new(models.View)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -188,7 +189,7 @@ func (o *RestoreDashboardBadRequest) readResponse(response runtime.ClientRespons
 	o.Payload = new(RestoreDashboardBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -258,7 +259,7 @@ func (o *RestoreDashboardNotFound) readResponse(response runtime.ClientResponse,
 	o.Payload = new(RestoreDashboardNotFoundBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -328,7 +329,7 @@ func (o *RestoreDashboardInternalServerError) readResponse(response runtime.Clie
 	o.Payload = new(RestoreDashboardInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -140,11 +141,15 @@ func (m *Policy) validateDataScope(formats strfmt.Registry) error {
 
 	if m.DataScope != nil {
 		if err := m.DataScope.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("dataScope")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("dataScope")
 			}
+
 			return err
 		}
 	}
@@ -159,11 +164,15 @@ func (m *Policy) validateRole(formats strfmt.Registry) error {
 
 	if m.Role != nil {
 		if err := m.Role.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("role")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("role")
 			}
+
 			return err
 		}
 	}
@@ -223,7 +232,7 @@ func (m *Policy) ContextValidate(ctx context.Context, formats strfmt.Registry) e
 
 func (m *Policy) contextValidateCreatedBy(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "createdBy", "body", string(m.CreatedBy)); err != nil {
+	if err := validate.ReadOnly(ctx, "createdBy", "body", m.CreatedBy); err != nil {
 		return err
 	}
 
@@ -232,7 +241,7 @@ func (m *Policy) contextValidateCreatedBy(ctx context.Context, formats strfmt.Re
 
 func (m *Policy) contextValidateCreatedTimestamp(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "createdTimestamp", "body", strfmt.DateTime(m.CreatedTimestamp)); err != nil {
+	if err := validate.ReadOnly(ctx, "createdTimestamp", "body", m.CreatedTimestamp); err != nil {
 		return err
 	}
 
@@ -250,7 +259,7 @@ func (m *Policy) contextValidateReadOnly(ctx context.Context, formats strfmt.Reg
 
 func (m *Policy) contextValidateRevisionNumber(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "revisionNumber", "body", int32(m.RevisionNumber)); err != nil {
+	if err := validate.ReadOnly(ctx, "revisionNumber", "body", m.RevisionNumber); err != nil {
 		return err
 	}
 
@@ -259,7 +268,7 @@ func (m *Policy) contextValidateRevisionNumber(ctx context.Context, formats strf
 
 func (m *Policy) contextValidateTenantUUID(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "tenantUuid", "body", string(m.TenantUUID)); err != nil {
+	if err := validate.ReadOnly(ctx, "tenantUuid", "body", m.TenantUUID); err != nil {
 		return err
 	}
 
@@ -268,7 +277,7 @@ func (m *Policy) contextValidateTenantUUID(ctx context.Context, formats strfmt.R
 
 func (m *Policy) contextValidateUUID(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "uuid", "body", string(m.UUID)); err != nil {
+	if err := validate.ReadOnly(ctx, "uuid", "body", m.UUID); err != nil {
 		return err
 	}
 
@@ -277,7 +286,7 @@ func (m *Policy) contextValidateUUID(ctx context.Context, formats strfmt.Registr
 
 func (m *Policy) contextValidateUpdatedBy(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "updatedBy", "body", string(m.UpdatedBy)); err != nil {
+	if err := validate.ReadOnly(ctx, "updatedBy", "body", m.UpdatedBy); err != nil {
 		return err
 	}
 
@@ -286,7 +295,7 @@ func (m *Policy) contextValidateUpdatedBy(ctx context.Context, formats strfmt.Re
 
 func (m *Policy) contextValidateUpdatedTimestamp(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "updatedTimestamp", "body", strfmt.DateTime(m.UpdatedTimestamp)); err != nil {
+	if err := validate.ReadOnly(ctx, "updatedTimestamp", "body", m.UpdatedTimestamp); err != nil {
 		return err
 	}
 
@@ -302,11 +311,15 @@ func (m *Policy) contextValidateDataScope(ctx context.Context, formats strfmt.Re
 		}
 
 		if err := m.DataScope.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("dataScope")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("dataScope")
 			}
+
 			return err
 		}
 	}
@@ -321,11 +334,15 @@ func (m *Policy) contextValidateRole(ctx context.Context, formats strfmt.Registr
 	}
 
 	if err := m.Role.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("role")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("role")
 		}
+
 		return err
 	}
 

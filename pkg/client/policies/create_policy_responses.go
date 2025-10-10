@@ -8,6 +8,7 @@ package policies
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -24,7 +25,7 @@ type CreatePolicyReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *CreatePolicyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *CreatePolicyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 201:
 		result := NewCreatePolicyCreated()
@@ -112,7 +113,7 @@ func (o *CreatePolicyCreated) readResponse(response runtime.ClientResponse, cons
 	o.Payload = new(models.Policy)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -182,7 +183,7 @@ func (o *CreatePolicyBadRequest) readResponse(response runtime.ClientResponse, c
 	o.Payload = new(CreatePolicyBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -252,7 +253,7 @@ func (o *CreatePolicyInternalServerError) readResponse(response runtime.ClientRe
 	o.Payload = new(CreatePolicyInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

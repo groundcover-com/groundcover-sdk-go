@@ -71,7 +71,7 @@ ClustersList gets clusters list
 Retrieves a list of Kubernetes clusters based on provided source filters.
 */
 func (a *Client) ClustersList(params *ClustersListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ClustersListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewClustersListParams()
 	}
@@ -91,17 +91,22 @@ func (a *Client) ClustersList(params *ClustersListParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ClustersListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for clustersList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -112,7 +117,7 @@ GetEventsOverTime gets kubernetes events over a specified time range
 Retrieves and filters Kubernetes events, allowing for sorting and pagination.
 */
 func (a *Client) GetEventsOverTime(params *GetEventsOverTimeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEventsOverTimeOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetEventsOverTimeParams()
 	}
@@ -132,17 +137,22 @@ func (a *Client) GetEventsOverTime(params *GetEventsOverTimeParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetEventsOverTimeOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getEventsOverTime: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -153,7 +163,7 @@ WorkloadsList gets workloads list
 Retrieves a list of Kubernetes workloads based on provided source filters, conditions, sorting, and pagination.
 */
 func (a *Client) WorkloadsList(params *WorkloadsListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*WorkloadsListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewWorkloadsListParams()
 	}
@@ -173,17 +183,22 @@ func (a *Client) WorkloadsList(params *WorkloadsListParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*WorkloadsListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for workloadsList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

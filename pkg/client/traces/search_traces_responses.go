@@ -8,6 +8,7 @@ package traces
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type SearchTracesReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *SearchTracesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *SearchTracesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewSearchTracesOK()
@@ -58,7 +59,7 @@ SearchTracesOK describes a response with status code 200, with default header va
 SearchTracesOK search traces o k
 */
 type SearchTracesOK struct {
-	Payload interface{}
+	Payload any
 }
 
 // IsSuccess returns true when this search traces o k response has a 2xx status code
@@ -101,14 +102,14 @@ func (o *SearchTracesOK) String() string {
 	return fmt.Sprintf("[POST /api/traces/v2/search][%d] searchTracesOK %s", 200, payload)
 }
 
-func (o *SearchTracesOK) GetPayload() interface{} {
+func (o *SearchTracesOK) GetPayload() any {
 	return o.Payload
 }
 
 func (o *SearchTracesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -178,7 +179,7 @@ func (o *SearchTracesBadRequest) readResponse(response runtime.ClientResponse, c
 	o.Payload = new(SearchTracesBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -248,7 +249,7 @@ func (o *SearchTracesInternalServerError) readResponse(response runtime.ClientRe
 	o.Payload = new(SearchTracesInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

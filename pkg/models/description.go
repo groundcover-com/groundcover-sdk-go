@@ -18,10 +18,10 @@ import (
 type Description struct {
 
 	// defaults
-	Defaults interface{} `json:"defaults,omitempty"`
+	Defaults any `json:"defaults,omitempty"`
 
 	// options
-	Options interface{} `json:"options,omitempty"`
+	Options any `json:"options,omitempty"`
 
 	// version
 	Version int64 `json:"version,omitempty"`

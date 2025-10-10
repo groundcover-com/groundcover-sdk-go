@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -95,11 +96,15 @@ func (m *TracesSearchRequest) validatePipeline(formats strfmt.Registry) error {
 
 	if m.Pipeline != nil {
 		if err := m.Pipeline.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Pipeline")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Pipeline")
 			}
+
 			return err
 		}
 	}
@@ -119,11 +124,15 @@ func (m *TracesSearchRequest) validateSources(formats strfmt.Registry) error {
 
 		if m.Sources[i] != nil {
 			if err := m.Sources[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -173,11 +182,15 @@ func (m *TracesSearchRequest) contextValidatePipeline(ctx context.Context, forma
 		}
 
 		if err := m.Pipeline.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Pipeline")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Pipeline")
 			}
+
 			return err
 		}
 	}
@@ -196,11 +209,15 @@ func (m *TracesSearchRequest) contextValidateSources(ctx context.Context, format
 			}
 
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

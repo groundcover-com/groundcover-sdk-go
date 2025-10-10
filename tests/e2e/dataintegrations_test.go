@@ -38,7 +38,7 @@ const testCloudwatchConfig = `{
     "listInventory": 10
   },
   "withContextTagsOnInfoMetrics": false,
-  "withInventoryDiscovery": false
+  "withInventoryDiscovery": true
 }`
 
 const testCloudwatchConfigUpdated = `{
@@ -70,7 +70,7 @@ const testCloudwatchConfigUpdated = `{
     "listInventory": 10
   },
   "withContextTagsOnInfoMetrics": false,
-  "withInventoryDiscovery": false
+  "withInventoryDiscovery": true
 }`
 
 func TestCloudwatch(t *testing.T) {

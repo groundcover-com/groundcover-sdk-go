@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -103,11 +104,15 @@ func (m *GetEventsOverTimeRequest) validateConditions(formats strfmt.Registry) e
 
 		if m.Conditions[i] != nil {
 			if err := m.Conditions[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -130,7 +135,7 @@ func (m *GetEventsOverTimeRequest) validateEnd(formats strfmt.Registry) error {
 	return nil
 }
 
-var getEventsOverTimeRequestTypeSortByPropEnum []interface{}
+var getEventsOverTimeRequestTypeSortByPropEnum []any
 
 func init() {
 	var res []string
@@ -200,7 +205,7 @@ func (m *GetEventsOverTimeRequest) validateSortBy(formats strfmt.Registry) error
 	return nil
 }
 
-var getEventsOverTimeRequestTypeSortOrderPropEnum []interface{}
+var getEventsOverTimeRequestTypeSortOrderPropEnum []any
 
 func init() {
 	var res []string
@@ -255,11 +260,15 @@ func (m *GetEventsOverTimeRequest) validateSources(formats strfmt.Registry) erro
 
 		if m.Sources[i] != nil {
 			if err := m.Sources[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -311,11 +320,15 @@ func (m *GetEventsOverTimeRequest) contextValidateConditions(ctx context.Context
 			}
 
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -336,11 +349,15 @@ func (m *GetEventsOverTimeRequest) contextValidateSources(ctx context.Context, f
 			}
 
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

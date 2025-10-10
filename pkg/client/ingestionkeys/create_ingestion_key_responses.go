@@ -8,6 +8,7 @@ package ingestionkeys
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -24,7 +25,7 @@ type CreateIngestionKeyReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *CreateIngestionKeyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *CreateIngestionKeyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 201:
 		result := NewCreateIngestionKeyCreated()
@@ -118,7 +119,7 @@ func (o *CreateIngestionKeyCreated) readResponse(response runtime.ClientResponse
 	o.Payload = new(models.IngestionKeyResult)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -188,7 +189,7 @@ func (o *CreateIngestionKeyBadRequest) readResponse(response runtime.ClientRespo
 	o.Payload = new(CreateIngestionKeyBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -258,7 +259,7 @@ func (o *CreateIngestionKeyConflict) readResponse(response runtime.ClientRespons
 	o.Payload = new(CreateIngestionKeyConflictBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -328,7 +329,7 @@ func (o *CreateIngestionKeyInternalServerError) readResponse(response runtime.Cl
 	o.Payload = new(CreateIngestionKeyInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

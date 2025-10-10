@@ -7,6 +7,7 @@ package integrations
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type DeleteDataIntegrationConfigReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *DeleteDataIntegrationConfigReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *DeleteDataIntegrationConfigReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewDeleteDataIntegrationConfigOK()
@@ -70,7 +71,7 @@ DeleteDataIntegrationConfigOK describes a response with status code 200, with de
 DeleteDataIntegrationConfigOK delete data integration config o k
 */
 type DeleteDataIntegrationConfigOK struct {
-	Payload interface{}
+	Payload any
 }
 
 // IsSuccess returns true when this delete data integration config o k response has a 2xx status code
@@ -113,14 +114,14 @@ func (o *DeleteDataIntegrationConfigOK) String() string {
 	return fmt.Sprintf("[DELETE /api/integrations/v1/data/config/{type}/{id}][%d] deleteDataIntegrationConfigOK %s", 200, payload)
 }
 
-func (o *DeleteDataIntegrationConfigOK) GetPayload() interface{} {
+func (o *DeleteDataIntegrationConfigOK) GetPayload() any {
 	return o.Payload
 }
 
 func (o *DeleteDataIntegrationConfigOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -190,7 +191,7 @@ func (o *DeleteDataIntegrationConfigBadRequest) readResponse(response runtime.Cl
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -260,7 +261,7 @@ func (o *DeleteDataIntegrationConfigNotFound) readResponse(response runtime.Clie
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -330,7 +331,7 @@ func (o *DeleteDataIntegrationConfigInternalServerError) readResponse(response r
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -400,7 +401,7 @@ func (o *DeleteDataIntegrationConfigServiceUnavailable) readResponse(response ru
 	o.Payload = new(models.ErrorResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

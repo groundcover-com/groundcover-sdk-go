@@ -18,7 +18,7 @@ import (
 type Provider struct {
 
 	// Provider identifier
-	ID interface{} `json:"id,omitempty"`
+	ID any `json:"id,omitempty"`
 
 	// Whether the provider is installed
 	Installed bool `json:"installed,omitempty"`

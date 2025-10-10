@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -115,7 +116,7 @@ func (m *MonitorModel) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var monitorModelTypeExecutionErrorStatePropEnum []interface{}
+var monitorModelTypeExecutionErrorStatePropEnum []any
 
 func init() {
 	var res []string
@@ -160,7 +161,7 @@ func (m *MonitorModel) validateExecutionErrorState(formats strfmt.Registry) erro
 	return nil
 }
 
-var monitorModelTypeMeasurementTypePropEnum []interface{}
+var monitorModelTypeMeasurementTypePropEnum []any
 
 func init() {
 	var res []string
@@ -202,7 +203,7 @@ func (m *MonitorModel) validateMeasurementType(formats strfmt.Registry) error {
 	return nil
 }
 
-var monitorModelTypeNoDataStatePropEnum []interface{}
+var monitorModelTypeNoDataStatePropEnum []any
 
 func init() {
 	var res []string
@@ -263,11 +264,15 @@ func (m *MonitorModel) validateCatalog(formats strfmt.Registry) error {
 
 	if m.Catalog != nil {
 		if err := m.Catalog.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("catalog")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("catalog")
 			}
+
 			return err
 		}
 	}
@@ -282,11 +287,15 @@ func (m *MonitorModel) validateDisplay(formats strfmt.Registry) error {
 
 	if m.Display != nil {
 		if err := m.Display.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("display")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("display")
 			}
+
 			return err
 		}
 	}
@@ -301,11 +310,15 @@ func (m *MonitorModel) validateEvaluationInterval(formats strfmt.Registry) error
 
 	if m.EvaluationInterval != nil {
 		if err := m.EvaluationInterval.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("evaluationInterval")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("evaluationInterval")
 			}
+
 			return err
 		}
 	}
@@ -320,11 +333,15 @@ func (m *MonitorModel) validateModel(formats strfmt.Registry) error {
 
 	if m.Model != nil {
 		if err := m.Model.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("model")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("model")
 			}
+
 			return err
 		}
 	}
@@ -367,11 +384,15 @@ func (m *MonitorModel) contextValidateCatalog(ctx context.Context, formats strfm
 		}
 
 		if err := m.Catalog.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("catalog")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("catalog")
 			}
+
 			return err
 		}
 	}
@@ -388,11 +409,15 @@ func (m *MonitorModel) contextValidateDisplay(ctx context.Context, formats strfm
 		}
 
 		if err := m.Display.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("display")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("display")
 			}
+
 			return err
 		}
 	}
@@ -409,11 +434,15 @@ func (m *MonitorModel) contextValidateEvaluationInterval(ctx context.Context, fo
 		}
 
 		if err := m.EvaluationInterval.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("evaluationInterval")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("evaluationInterval")
 			}
+
 			return err
 		}
 	}
@@ -430,11 +459,15 @@ func (m *MonitorModel) contextValidateModel(ctx context.Context, formats strfmt.
 		}
 
 		if err := m.Model.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("model")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("model")
 			}
+
 			return err
 		}
 	}

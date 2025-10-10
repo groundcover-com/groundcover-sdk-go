@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -114,11 +115,15 @@ func (m *ValuesRequest) validateConditions(formats strfmt.Registry) error {
 
 		if m.Conditions[i] != nil {
 			if err := m.Conditions[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -148,11 +153,15 @@ func (m *ValuesRequest) validateFilterGroup(formats strfmt.Registry) error {
 
 	if m.FilterGroup != nil {
 		if err := m.FilterGroup.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("FilterGroup")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("FilterGroup")
 			}
+
 			return err
 		}
 	}
@@ -190,11 +199,15 @@ func (m *ValuesRequest) validateSources(formats strfmt.Registry) error {
 
 		if m.Sources[i] != nil {
 			if err := m.Sources[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -217,7 +230,7 @@ func (m *ValuesRequest) validateStart(formats strfmt.Registry) error {
 	return nil
 }
 
-var valuesRequestTypeTypePropEnum []interface{}
+var valuesRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
@@ -296,11 +309,15 @@ func (m *ValuesRequest) contextValidateConditions(ctx context.Context, formats s
 			}
 
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -319,11 +336,15 @@ func (m *ValuesRequest) contextValidateFilterGroup(ctx context.Context, formats 
 		}
 
 		if err := m.FilterGroup.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("FilterGroup")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("FilterGroup")
 			}
+
 			return err
 		}
 	}
@@ -342,11 +363,15 @@ func (m *ValuesRequest) contextValidateSources(ctx context.Context, formats strf
 			}
 
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

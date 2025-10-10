@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -71,11 +72,15 @@ func (m *AdvancedDataScope) validateEvents(formats strfmt.Registry) error {
 
 	if m.Events != nil {
 		if err := m.Events.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("events")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("events")
 			}
+
 			return err
 		}
 	}
@@ -90,11 +95,15 @@ func (m *AdvancedDataScope) validateLogs(formats strfmt.Registry) error {
 
 	if m.Logs != nil {
 		if err := m.Logs.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("logs")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("logs")
 			}
+
 			return err
 		}
 	}
@@ -109,11 +118,15 @@ func (m *AdvancedDataScope) validateMetrics(formats strfmt.Registry) error {
 
 	if m.Metrics != nil {
 		if err := m.Metrics.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("metrics")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("metrics")
 			}
+
 			return err
 		}
 	}
@@ -128,11 +141,15 @@ func (m *AdvancedDataScope) validateTraces(formats strfmt.Registry) error {
 
 	if m.Traces != nil {
 		if err := m.Traces.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("traces")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("traces")
 			}
+
 			return err
 		}
 	}
@@ -147,11 +164,15 @@ func (m *AdvancedDataScope) validateWorkloads(formats strfmt.Registry) error {
 
 	if m.Workloads != nil {
 		if err := m.Workloads.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("workloads")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("workloads")
 			}
+
 			return err
 		}
 	}
@@ -198,11 +219,15 @@ func (m *AdvancedDataScope) contextValidateEvents(ctx context.Context, formats s
 		}
 
 		if err := m.Events.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("events")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("events")
 			}
+
 			return err
 		}
 	}
@@ -219,11 +244,15 @@ func (m *AdvancedDataScope) contextValidateLogs(ctx context.Context, formats str
 		}
 
 		if err := m.Logs.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("logs")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("logs")
 			}
+
 			return err
 		}
 	}
@@ -240,11 +269,15 @@ func (m *AdvancedDataScope) contextValidateMetrics(ctx context.Context, formats 
 		}
 
 		if err := m.Metrics.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("metrics")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("metrics")
 			}
+
 			return err
 		}
 	}
@@ -261,11 +294,15 @@ func (m *AdvancedDataScope) contextValidateTraces(ctx context.Context, formats s
 		}
 
 		if err := m.Traces.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("traces")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("traces")
 			}
+
 			return err
 		}
 	}
@@ -282,11 +319,15 @@ func (m *AdvancedDataScope) contextValidateWorkloads(ctx context.Context, format
 		}
 
 		if err := m.Workloads.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("workloads")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("workloads")
 			}
+
 			return err
 		}
 	}

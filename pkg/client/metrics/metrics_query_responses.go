@@ -8,6 +8,7 @@ package metrics
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type MetricsQueryReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *MetricsQueryReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *MetricsQueryReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewMetricsQueryOK()
@@ -58,7 +59,7 @@ MetricsQueryOK describes a response with status code 200, with default header va
 MetricsQueryOK metrics query o k
 */
 type MetricsQueryOK struct {
-	Payload interface{}
+	Payload any
 }
 
 // IsSuccess returns true when this metrics query o k response has a 2xx status code
@@ -101,14 +102,14 @@ func (o *MetricsQueryOK) String() string {
 	return fmt.Sprintf("[POST /api/metrics/query][%d] metricsQueryOK %s", 200, payload)
 }
 
-func (o *MetricsQueryOK) GetPayload() interface{} {
+func (o *MetricsQueryOK) GetPayload() any {
 	return o.Payload
 }
 
 func (o *MetricsQueryOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -178,7 +179,7 @@ func (o *MetricsQueryBadRequest) readResponse(response runtime.ClientResponse, c
 	o.Payload = new(MetricsQueryBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -248,7 +249,7 @@ func (o *MetricsQueryInternalServerError) readResponse(response runtime.ClientRe
 	o.Payload = new(MetricsQueryInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

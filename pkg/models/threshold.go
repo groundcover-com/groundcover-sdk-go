@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -89,7 +90,7 @@ func (m *Threshold) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-var thresholdTypeOperatorPropEnum []interface{}
+var thresholdTypeOperatorPropEnum []any
 
 func init() {
 	var res []string
@@ -154,11 +155,15 @@ func (m *Threshold) validateRelativeTimerange(formats strfmt.Registry) error {
 
 	if m.RelativeTimerange != nil {
 		if err := m.RelativeTimerange.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("relativeTimerange")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("relativeTimerange")
 			}
+
 			return err
 		}
 	}
@@ -189,11 +194,15 @@ func (m *Threshold) contextValidateRelativeTimerange(ctx context.Context, format
 		}
 
 		if err := m.RelativeTimerange.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("relativeTimerange")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("relativeTimerange")
 			}
+
 			return err
 		}
 	}

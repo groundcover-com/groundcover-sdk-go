@@ -63,7 +63,7 @@ func (m *CreateIngestionKeyRequest) validateName(formats strfmt.Registry) error 
 	return nil
 }
 
-var createIngestionKeyRequestTypeTypePropEnum []interface{}
+var createIngestionKeyRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string

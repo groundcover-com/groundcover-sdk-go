@@ -8,6 +8,7 @@ package dashboards
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type DeleteDashboardReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *DeleteDashboardReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *DeleteDashboardReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewDeleteDashboardOK()
@@ -64,7 +65,7 @@ DeleteDashboardOK describes a response with status code 200, with default header
 DeleteDashboardResponseWrapper defines the response structure for deleting a dashboard.
 */
 type DeleteDashboardOK struct {
-	Payload interface{}
+	Payload any
 }
 
 // IsSuccess returns true when this delete dashboard o k response has a 2xx status code
@@ -107,14 +108,14 @@ func (o *DeleteDashboardOK) String() string {
 	return fmt.Sprintf("[DELETE /api/dashboards/{id}][%d] deleteDashboardOK %s", 200, payload)
 }
 
-func (o *DeleteDashboardOK) GetPayload() interface{} {
+func (o *DeleteDashboardOK) GetPayload() any {
 	return o.Payload
 }
 
 func (o *DeleteDashboardOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -184,7 +185,7 @@ func (o *DeleteDashboardBadRequest) readResponse(response runtime.ClientResponse
 	o.Payload = new(DeleteDashboardBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -254,7 +255,7 @@ func (o *DeleteDashboardNotFound) readResponse(response runtime.ClientResponse, 
 	o.Payload = new(DeleteDashboardNotFoundBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -324,7 +325,7 @@ func (o *DeleteDashboardInternalServerError) readResponse(response runtime.Clien
 	o.Payload = new(DeleteDashboardInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

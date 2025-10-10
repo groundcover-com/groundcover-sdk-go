@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -77,11 +78,15 @@ func (m *UpdatePolicyRequest) validateDataScope(formats strfmt.Registry) error {
 
 	if m.DataScope != nil {
 		if err := m.DataScope.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("dataScope")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("dataScope")
 			}
+
 			return err
 		}
 	}
@@ -96,11 +101,15 @@ func (m *UpdatePolicyRequest) validateRole(formats strfmt.Registry) error {
 
 	if m.Role != nil {
 		if err := m.Role.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("role")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("role")
 			}
+
 			return err
 		}
 	}
@@ -135,11 +144,15 @@ func (m *UpdatePolicyRequest) contextValidateDataScope(ctx context.Context, form
 		}
 
 		if err := m.DataScope.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("dataScope")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("dataScope")
 			}
+
 			return err
 		}
 	}
@@ -154,11 +167,15 @@ func (m *UpdatePolicyRequest) contextValidateRole(ctx context.Context, formats s
 	}
 
 	if err := m.Role.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("role")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("role")
 		}
+
 		return err
 	}
 

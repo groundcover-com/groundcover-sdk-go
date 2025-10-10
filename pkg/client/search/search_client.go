@@ -69,7 +69,7 @@ type ClientService interface {
 GetDiscovery gets discovery retrieves search discovery results based on the provided request parameters
 */
 func (a *Client) GetDiscovery(params *GetDiscoveryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDiscoveryOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetDiscoveryParams()
 	}
@@ -89,17 +89,22 @@ func (a *Client) GetDiscovery(params *GetDiscoveryParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetDiscoveryOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getDiscovery: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -108,7 +113,7 @@ func (a *Client) GetDiscovery(params *GetDiscoveryParams, authInfo runtime.Clien
 GetKeys gets keys retrieves search keys based on the provided request parameters
 */
 func (a *Client) GetKeys(params *GetKeysParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetKeysOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetKeysParams()
 	}
@@ -128,17 +133,22 @@ func (a *Client) GetKeys(params *GetKeysParams, authInfo runtime.ClientAuthInfoW
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetKeysOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getKeys: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -147,7 +157,7 @@ func (a *Client) GetKeys(params *GetKeysParams, authInfo runtime.ClientAuthInfoW
 GetValues gets values retrieves search values based on the provided request parameters
 */
 func (a *Client) GetValues(params *GetValuesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetValuesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetValuesParams()
 	}
@@ -167,17 +177,22 @@ func (a *Client) GetValues(params *GetValuesParams, authInfo runtime.ClientAuthI
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetValuesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getValues: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

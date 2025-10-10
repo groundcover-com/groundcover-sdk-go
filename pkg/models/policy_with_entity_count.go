@@ -106,7 +106,7 @@ func (m *PolicyWithEntityCount) ContextValidate(ctx context.Context, formats str
 
 func (m *PolicyWithEntityCount) contextValidateEntityCount(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "entityCount", "body", int64(m.EntityCount)); err != nil {
+	if err := validate.ReadOnly(ctx, "entityCount", "body", m.EntityCount); err != nil {
 		return err
 	}
 

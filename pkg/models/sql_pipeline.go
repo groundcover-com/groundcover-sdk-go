@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -114,11 +115,15 @@ func (m *SQLPipeline) validateExcept(formats strfmt.Registry) error {
 
 		if m.Except[i] != nil {
 			if err := m.Except[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("except" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("except" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -140,11 +145,15 @@ func (m *SQLPipeline) validateGroupBy(formats strfmt.Registry) error {
 
 		if m.GroupBy[i] != nil {
 			if err := m.GroupBy[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("groupBy" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("groupBy" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -166,11 +175,15 @@ func (m *SQLPipeline) validateMathExpressions(formats strfmt.Registry) error {
 
 		if m.MathExpressions[i] != nil {
 			if err := m.MathExpressions[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("mathExpression" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("mathExpression" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -192,11 +205,15 @@ func (m *SQLPipeline) validateOrderBy(formats strfmt.Registry) error {
 
 		if m.OrderBy[i] != nil {
 			if err := m.OrderBy[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("orderBy" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("orderBy" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -218,11 +235,15 @@ func (m *SQLPipeline) validateSelectors(formats strfmt.Registry) error {
 
 		if m.Selectors[i] != nil {
 			if err := m.Selectors[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("selectors" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("selectors" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -239,11 +260,15 @@ func (m *SQLPipeline) validateFilters(formats strfmt.Registry) error {
 
 	if m.Filters != nil {
 		if err := m.Filters.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("filters")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("filters")
 			}
+
 			return err
 		}
 	}
@@ -258,11 +283,15 @@ func (m *SQLPipeline) validateFrom(formats strfmt.Registry) error {
 
 	if m.From != nil {
 		if err := m.From.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("from")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("from")
 			}
+
 			return err
 		}
 	}
@@ -277,11 +306,15 @@ func (m *SQLPipeline) validateHaving(formats strfmt.Registry) error {
 
 	if m.Having != nil {
 		if err := m.Having.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("having")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("having")
 			}
+
 			return err
 		}
 	}
@@ -296,11 +329,15 @@ func (m *SQLPipeline) validateJoin(formats strfmt.Registry) error {
 
 	if m.Join != nil {
 		if err := m.Join.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("join")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("join")
 			}
+
 			return err
 		}
 	}
@@ -365,11 +402,15 @@ func (m *SQLPipeline) contextValidateExcept(ctx context.Context, formats strfmt.
 			}
 
 			if err := m.Except[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("except" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("except" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -390,11 +431,15 @@ func (m *SQLPipeline) contextValidateGroupBy(ctx context.Context, formats strfmt
 			}
 
 			if err := m.GroupBy[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("groupBy" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("groupBy" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -415,11 +460,15 @@ func (m *SQLPipeline) contextValidateMathExpressions(ctx context.Context, format
 			}
 
 			if err := m.MathExpressions[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("mathExpression" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("mathExpression" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -440,11 +489,15 @@ func (m *SQLPipeline) contextValidateOrderBy(ctx context.Context, formats strfmt
 			}
 
 			if err := m.OrderBy[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("orderBy" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("orderBy" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -465,11 +518,15 @@ func (m *SQLPipeline) contextValidateSelectors(ctx context.Context, formats strf
 			}
 
 			if err := m.Selectors[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("selectors" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("selectors" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -488,11 +545,15 @@ func (m *SQLPipeline) contextValidateFilters(ctx context.Context, formats strfmt
 		}
 
 		if err := m.Filters.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("filters")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("filters")
 			}
+
 			return err
 		}
 	}
@@ -509,11 +570,15 @@ func (m *SQLPipeline) contextValidateFrom(ctx context.Context, formats strfmt.Re
 		}
 
 		if err := m.From.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("from")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("from")
 			}
+
 			return err
 		}
 	}
@@ -530,11 +595,15 @@ func (m *SQLPipeline) contextValidateHaving(ctx context.Context, formats strfmt.
 		}
 
 		if err := m.Having.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("having")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("having")
 			}
+
 			return err
 		}
 	}
@@ -551,11 +620,15 @@ func (m *SQLPipeline) contextValidateJoin(ctx context.Context, formats strfmt.Re
 		}
 
 		if err := m.Join.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("join")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("join")
 			}
+
 			return err
 		}
 	}

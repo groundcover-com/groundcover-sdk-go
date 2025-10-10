@@ -8,6 +8,7 @@ package k8s
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -24,7 +25,7 @@ type GetEventsOverTimeReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetEventsOverTimeReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetEventsOverTimeReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetEventsOverTimeOK()
@@ -112,7 +113,7 @@ func (o *GetEventsOverTimeOK) readResponse(response runtime.ClientResponse, cons
 	o.Payload = new(models.GetEventsOverTimeResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -182,7 +183,7 @@ func (o *GetEventsOverTimeBadRequest) readResponse(response runtime.ClientRespon
 	o.Payload = new(GetEventsOverTimeBadRequestBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -252,7 +253,7 @@ func (o *GetEventsOverTimeInternalServerError) readResponse(response runtime.Cli
 	o.Payload = new(GetEventsOverTimeInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
