@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	stderrors "errors"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -22,31 +23,28 @@ type MathExpression struct {
 	// alias
 	Alias string `json:"alias,omitempty"`
 
+	// args
+	Args []*MathExpression `json:"args"`
+
 	// scalar
 	Scalar string `json:"scalar,omitempty"`
 
 	// column
 	Column *Column `json:"column,omitempty"`
 
-	// left expression
-	LeftExpression *MathExpression `json:"left_expression,omitempty"`
-
 	// math operator
 	MathOperator MathOperator `json:"math_operator,omitempty"`
-
-	// right expression
-	RightExpression *MathExpression `json:"right_expression,omitempty"`
 }
 
 // Validate validates this math expression
 func (m *MathExpression) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateColumn(formats); err != nil {
+	if err := m.validateArgs(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateLeftExpression(formats); err != nil {
+	if err := m.validateColumn(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -54,13 +52,39 @@ func (m *MathExpression) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateRightExpression(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *MathExpression) validateArgs(formats strfmt.Registry) error {
+	if swag.IsZero(m.Args) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Args); i++ {
+		if swag.IsZero(m.Args[i]) { // not required
+			continue
+		}
+
+		if m.Args[i] != nil {
+			if err := m.Args[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("args" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("args" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
@@ -78,29 +102,6 @@ func (m *MathExpression) validateColumn(formats strfmt.Registry) error {
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("column")
-			}
-
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *MathExpression) validateLeftExpression(formats strfmt.Registry) error {
-	if swag.IsZero(m.LeftExpression) { // not required
-		return nil
-	}
-
-	if m.LeftExpression != nil {
-		if err := m.LeftExpression.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("left_expression")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("left_expression")
 			}
 
 			return err
@@ -131,38 +132,15 @@ func (m *MathExpression) validateMathOperator(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *MathExpression) validateRightExpression(formats strfmt.Registry) error {
-	if swag.IsZero(m.RightExpression) { // not required
-		return nil
-	}
-
-	if m.RightExpression != nil {
-		if err := m.RightExpression.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("right_expression")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("right_expression")
-			}
-
-			return err
-		}
-	}
-
-	return nil
-}
-
 // ContextValidate validate this math expression based on the context it is used
 func (m *MathExpression) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.contextValidateColumn(ctx, formats); err != nil {
+	if err := m.contextValidateArgs(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateLeftExpression(ctx, formats); err != nil {
+	if err := m.contextValidateColumn(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -170,13 +148,38 @@ func (m *MathExpression) ContextValidate(ctx context.Context, formats strfmt.Reg
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateRightExpression(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *MathExpression) contextValidateArgs(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Args); i++ {
+
+		if m.Args[i] != nil {
+
+			if swag.IsZero(m.Args[i]) { // not required
+				return nil
+			}
+
+			if err := m.Args[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("args" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("args" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
@@ -205,31 +208,6 @@ func (m *MathExpression) contextValidateColumn(ctx context.Context, formats strf
 	return nil
 }
 
-func (m *MathExpression) contextValidateLeftExpression(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.LeftExpression != nil {
-
-		if swag.IsZero(m.LeftExpression) { // not required
-			return nil
-		}
-
-		if err := m.LeftExpression.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("left_expression")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("left_expression")
-			}
-
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (m *MathExpression) contextValidateMathOperator(ctx context.Context, formats strfmt.Registry) error {
 
 	if swag.IsZero(m.MathOperator) { // not required
@@ -247,31 +225,6 @@ func (m *MathExpression) contextValidateMathOperator(ctx context.Context, format
 		}
 
 		return err
-	}
-
-	return nil
-}
-
-func (m *MathExpression) contextValidateRightExpression(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.RightExpression != nil {
-
-		if swag.IsZero(m.RightExpression) { // not required
-			return nil
-		}
-
-		if err := m.RightExpression.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("right_expression")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("right_expression")
-			}
-
-			return err
-		}
 	}
 
 	return nil
