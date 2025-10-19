@@ -62,7 +62,7 @@ func NewApplyPolicyOK() *ApplyPolicyOK {
 /*
 ApplyPolicyOK describes a response with status code 200, with default header values.
 
-ApplyPolicyOK apply policy o k
+NoContentResponse indicates success but that no response body is expected or included.
 */
 type ApplyPolicyOK struct {
 }
