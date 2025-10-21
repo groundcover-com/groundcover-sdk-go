@@ -49,6 +49,12 @@ func (o *UpdateMonitorReader) ReadResponse(response runtime.ClientResponse, cons
 			return nil, err
 		}
 		return nil, result
+	case 422:
+		result := NewUpdateMonitorUnprocessableEntity()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewUpdateMonitorInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -68,7 +74,7 @@ func NewUpdateMonitorAccepted() *UpdateMonitorAccepted {
 /*
 UpdateMonitorAccepted describes a response with status code 202, with default header values.
 
-NoContentResponse indicates success but that no response body is expected or included.
+UpdateMonitorAccepted update monitor accepted
 */
 type UpdateMonitorAccepted struct {
 }
@@ -326,6 +332,76 @@ func (o *UpdateMonitorConflict) readResponse(response runtime.ClientResponse, co
 	return nil
 }
 
+// NewUpdateMonitorUnprocessableEntity creates a UpdateMonitorUnprocessableEntity with default headers values
+func NewUpdateMonitorUnprocessableEntity() *UpdateMonitorUnprocessableEntity {
+	return &UpdateMonitorUnprocessableEntity{}
+}
+
+/*
+UpdateMonitorUnprocessableEntity describes a response with status code 422, with default header values.
+
+ErrorResponse defines a common error response structure.
+*/
+type UpdateMonitorUnprocessableEntity struct {
+	Payload *UpdateMonitorUnprocessableEntityBody
+}
+
+// IsSuccess returns true when this update monitor unprocessable entity response has a 2xx status code
+func (o *UpdateMonitorUnprocessableEntity) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update monitor unprocessable entity response has a 3xx status code
+func (o *UpdateMonitorUnprocessableEntity) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update monitor unprocessable entity response has a 4xx status code
+func (o *UpdateMonitorUnprocessableEntity) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update monitor unprocessable entity response has a 5xx status code
+func (o *UpdateMonitorUnprocessableEntity) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update monitor unprocessable entity response a status code equal to that given
+func (o *UpdateMonitorUnprocessableEntity) IsCode(code int) bool {
+	return code == 422
+}
+
+// Code gets the status code for the update monitor unprocessable entity response
+func (o *UpdateMonitorUnprocessableEntity) Code() int {
+	return 422
+}
+
+func (o *UpdateMonitorUnprocessableEntity) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /api/monitors/{id}][%d] updateMonitorUnprocessableEntity %s", 422, payload)
+}
+
+func (o *UpdateMonitorUnprocessableEntity) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /api/monitors/{id}][%d] updateMonitorUnprocessableEntity %s", 422, payload)
+}
+
+func (o *UpdateMonitorUnprocessableEntity) GetPayload() *UpdateMonitorUnprocessableEntityBody {
+	return o.Payload
+}
+
+func (o *UpdateMonitorUnprocessableEntity) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(UpdateMonitorUnprocessableEntityBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
 // NewUpdateMonitorInternalServerError creates a UpdateMonitorInternalServerError with default headers values
 func NewUpdateMonitorInternalServerError() *UpdateMonitorInternalServerError {
 	return &UpdateMonitorInternalServerError{}
@@ -541,6 +617,44 @@ func (o *UpdateMonitorNotFoundBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *UpdateMonitorNotFoundBody) UnmarshalBinary(b []byte) error {
 	var res UpdateMonitorNotFoundBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*
+UpdateMonitorUnprocessableEntityBody update monitor unprocessable entity body
+swagger:model UpdateMonitorUnprocessableEntityBody
+*/
+type UpdateMonitorUnprocessableEntityBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this update monitor unprocessable entity body
+func (o *UpdateMonitorUnprocessableEntityBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update monitor unprocessable entity body based on context it is used
+func (o *UpdateMonitorUnprocessableEntityBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdateMonitorUnprocessableEntityBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdateMonitorUnprocessableEntityBody) UnmarshalBinary(b []byte) error {
+	var res UpdateMonitorUnprocessableEntityBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

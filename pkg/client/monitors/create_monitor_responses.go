@@ -51,6 +51,12 @@ func (o *CreateMonitorReader) ReadResponse(response runtime.ClientResponse, cons
 			return nil, err
 		}
 		return nil, result
+	case 422:
+		result := NewCreateMonitorUnprocessableEntity()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewCreateMonitorInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -342,6 +348,76 @@ func (o *CreateMonitorConflict) readResponse(response runtime.ClientResponse, co
 	return nil
 }
 
+// NewCreateMonitorUnprocessableEntity creates a CreateMonitorUnprocessableEntity with default headers values
+func NewCreateMonitorUnprocessableEntity() *CreateMonitorUnprocessableEntity {
+	return &CreateMonitorUnprocessableEntity{}
+}
+
+/*
+CreateMonitorUnprocessableEntity describes a response with status code 422, with default header values.
+
+ErrorResponse defines a common error response structure.
+*/
+type CreateMonitorUnprocessableEntity struct {
+	Payload *CreateMonitorUnprocessableEntityBody
+}
+
+// IsSuccess returns true when this create monitor unprocessable entity response has a 2xx status code
+func (o *CreateMonitorUnprocessableEntity) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create monitor unprocessable entity response has a 3xx status code
+func (o *CreateMonitorUnprocessableEntity) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create monitor unprocessable entity response has a 4xx status code
+func (o *CreateMonitorUnprocessableEntity) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create monitor unprocessable entity response has a 5xx status code
+func (o *CreateMonitorUnprocessableEntity) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create monitor unprocessable entity response a status code equal to that given
+func (o *CreateMonitorUnprocessableEntity) IsCode(code int) bool {
+	return code == 422
+}
+
+// Code gets the status code for the create monitor unprocessable entity response
+func (o *CreateMonitorUnprocessableEntity) Code() int {
+	return 422
+}
+
+func (o *CreateMonitorUnprocessableEntity) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /api/monitors][%d] createMonitorUnprocessableEntity %s", 422, payload)
+}
+
+func (o *CreateMonitorUnprocessableEntity) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /api/monitors][%d] createMonitorUnprocessableEntity %s", 422, payload)
+}
+
+func (o *CreateMonitorUnprocessableEntity) GetPayload() *CreateMonitorUnprocessableEntityBody {
+	return o.Payload
+}
+
+func (o *CreateMonitorUnprocessableEntity) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(CreateMonitorUnprocessableEntityBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
 // NewCreateMonitorInternalServerError creates a CreateMonitorInternalServerError with default headers values
 func NewCreateMonitorInternalServerError() *CreateMonitorInternalServerError {
 	return &CreateMonitorInternalServerError{}
@@ -350,7 +426,7 @@ func NewCreateMonitorInternalServerError() *CreateMonitorInternalServerError {
 /*
 CreateMonitorInternalServerError describes a response with status code 500, with default header values.
 
-NoContentResponse indicates success but that no response body is expected or included.
+CreateMonitorInternalServerError create monitor internal server error
 */
 type CreateMonitorInternalServerError struct {
 }
@@ -505,6 +581,44 @@ func (o *CreateMonitorForbiddenBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *CreateMonitorForbiddenBody) UnmarshalBinary(b []byte) error {
 	var res CreateMonitorForbiddenBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*
+CreateMonitorUnprocessableEntityBody create monitor unprocessable entity body
+swagger:model CreateMonitorUnprocessableEntityBody
+*/
+type CreateMonitorUnprocessableEntityBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this create monitor unprocessable entity body
+func (o *CreateMonitorUnprocessableEntityBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this create monitor unprocessable entity body based on context it is used
+func (o *CreateMonitorUnprocessableEntityBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CreateMonitorUnprocessableEntityBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CreateMonitorUnprocessableEntityBody) UnmarshalBinary(b []byte) error {
+	var res CreateMonitorUnprocessableEntityBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
