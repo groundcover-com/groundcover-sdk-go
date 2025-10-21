@@ -23,25 +23,25 @@ import (
 type DiscoveryRequest struct {
 
 	// Conditions specifies additional conditions to filter the discovery results.
-	Conditions []*Condition `json:"Conditions"`
+	Conditions []*Condition `json:"conditions"`
 
 	// Filter specifies a search filter to apply to the discovery results.
-	Filter string `json:"Filter,omitempty"`
-
-	// filter group
-	FilterGroup *Group `json:"FilterGroup,omitempty"`
+	Filter string `json:"filter,omitempty"`
 
 	// Limit specifies the maximum number of results to return.
 	// Required: true
-	Limit *uint32 `json:"Limit"`
+	Limit *uint32 `json:"limit"`
 
 	// Sources specifies the sources to filter the discovery results.
-	Sources []*Condition `json:"Sources"`
+	Sources []*Condition `json:"sources"`
 
 	// Type specifies the type of discovery to perform.
 	// Required: true
 	// Enum: ["logs"," traces"," events"]
-	Type *string `json:"Type"`
+	Type *string `json:"type"`
+
+	// filter group
+	FilterGroup *Group `json:"filterGroup,omitempty"`
 }
 
 // Validate validates this discovery request
@@ -49,10 +49,6 @@ func (m *DiscoveryRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateConditions(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateFilterGroup(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -65,6 +61,10 @@ func (m *DiscoveryRequest) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateFilterGroup(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -88,11 +88,11 @@ func (m *DiscoveryRequest) validateConditions(formats strfmt.Registry) error {
 			if err := m.Conditions[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -104,32 +104,9 @@ func (m *DiscoveryRequest) validateConditions(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *DiscoveryRequest) validateFilterGroup(formats strfmt.Registry) error {
-	if swag.IsZero(m.FilterGroup) { // not required
-		return nil
-	}
-
-	if m.FilterGroup != nil {
-		if err := m.FilterGroup.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("FilterGroup")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("FilterGroup")
-			}
-
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (m *DiscoveryRequest) validateLimit(formats strfmt.Registry) error {
 
-	if err := validate.Required("Limit", "body", m.Limit); err != nil {
+	if err := validate.Required("limit", "body", m.Limit); err != nil {
 		return err
 	}
 
@@ -150,11 +127,11 @@ func (m *DiscoveryRequest) validateSources(formats strfmt.Registry) error {
 			if err := m.Sources[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -200,13 +177,36 @@ func (m *DiscoveryRequest) validateTypeEnum(path, location string, value string)
 
 func (m *DiscoveryRequest) validateType(formats strfmt.Registry) error {
 
-	if err := validate.Required("Type", "body", m.Type); err != nil {
+	if err := validate.Required("type", "body", m.Type); err != nil {
 		return err
 	}
 
 	// value enum
-	if err := m.validateTypeEnum("Type", "body", *m.Type); err != nil {
+	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *DiscoveryRequest) validateFilterGroup(formats strfmt.Registry) error {
+	if swag.IsZero(m.FilterGroup) { // not required
+		return nil
+	}
+
+	if m.FilterGroup != nil {
+		if err := m.FilterGroup.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("filterGroup")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("filterGroup")
+			}
+
+			return err
+		}
 	}
 
 	return nil
@@ -220,11 +220,11 @@ func (m *DiscoveryRequest) ContextValidate(ctx context.Context, formats strfmt.R
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateFilterGroup(ctx, formats); err != nil {
+	if err := m.contextValidateSources(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateSources(ctx, formats); err != nil {
+	if err := m.contextValidateFilterGroup(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -247,11 +247,40 @@ func (m *DiscoveryRequest) contextValidateConditions(ctx context.Context, format
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *DiscoveryRequest) contextValidateSources(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Sources); i++ {
+
+		if m.Sources[i] != nil {
+
+			if swag.IsZero(m.Sources[i]) { // not required
+				return nil
+			}
+
+			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -274,44 +303,15 @@ func (m *DiscoveryRequest) contextValidateFilterGroup(ctx context.Context, forma
 		if err := m.FilterGroup.ContextValidate(ctx, formats); err != nil {
 			ve := new(errors.Validation)
 			if stderrors.As(err, &ve) {
-				return ve.ValidateName("FilterGroup")
+				return ve.ValidateName("filterGroup")
 			}
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
-				return ce.ValidateName("FilterGroup")
+				return ce.ValidateName("filterGroup")
 			}
 
 			return err
 		}
-	}
-
-	return nil
-}
-
-func (m *DiscoveryRequest) contextValidateSources(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Sources); i++ {
-
-		if m.Sources[i] != nil {
-
-			if swag.IsZero(m.Sources[i]) { // not required
-				return nil
-			}
-
-			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
-				}
-
-				return err
-			}
-		}
-
 	}
 
 	return nil

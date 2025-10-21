@@ -65,6 +65,7 @@ ApplyPolicyOK describes a response with status code 200, with default header val
 ApplyPolicyOK apply policy o k
 */
 type ApplyPolicyOK struct {
+	Payload any
 }
 
 // IsSuccess returns true when this apply policy o k response has a 2xx status code
@@ -98,14 +99,25 @@ func (o *ApplyPolicyOK) Code() int {
 }
 
 func (o *ApplyPolicyOK) Error() string {
-	return fmt.Sprintf("[POST /api/rbac/policy/apply][%d] applyPolicyOK", 200)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /api/rbac/policy/apply][%d] applyPolicyOK %s", 200, payload)
 }
 
 func (o *ApplyPolicyOK) String() string {
-	return fmt.Sprintf("[POST /api/rbac/policy/apply][%d] applyPolicyOK", 200)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /api/rbac/policy/apply][%d] applyPolicyOK %s", 200, payload)
+}
+
+func (o *ApplyPolicyOK) GetPayload() any {
+	return o.Payload
 }
 
 func (o *ApplyPolicyOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
 
 	return nil
 }

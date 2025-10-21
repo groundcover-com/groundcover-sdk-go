@@ -22,8 +22,8 @@ import (
 // swagger:model GetEventsOverTimeRequest
 type GetEventsOverTimeRequest struct {
 
-	// Conditions to filter events.
-	Conditions []*Condition `json:"Conditions"`
+	// conditions
+	Conditions []*Condition `json:"conditions"`
 
 	// End timestamp for the query range.
 	// Required: true
@@ -31,31 +31,37 @@ type GetEventsOverTimeRequest struct {
 	End *strfmt.DateTime `json:"End"`
 
 	// Maximum number of events to return.
-	Limit uint32 `json:"Limit,omitempty"`
+	Limit uint32 `json:"limit,omitempty"`
+
+	// search
+	Search string `json:"search,omitempty"`
 
 	// Number of events to skip (for pagination).
-	Skip uint32 `json:"Skip,omitempty"`
+	Skip uint32 `json:"skip,omitempty"`
 
 	// Field to sort events by.
 	// Required: true
 	// Enum: ["timestamp","namespace","instance","object_kind","firstSeen","lastSeen","type","reason","count","workload","cluster"]
-	SortBy *string `json:"SortBy"`
+	SortBy *string `json:"sortBy"`
 
 	// Sort order.
 	// Required: true
 	// Enum: ["asc","desc"]
-	SortOrder *string `json:"SortOrder"`
+	SortOrder *string `json:"sortOrder"`
 
 	// Source filters for events.
-	Sources []*Condition `json:"Sources"`
+	Sources []*Condition `json:"sources"`
 
 	// Start timestamp for the query range.
 	// Required: true
 	// Format: date-time
-	Start *strfmt.DateTime `json:"Start"`
+	Start *strfmt.DateTime `json:"start"`
 
 	// Include raw event data in the response.
-	WithRawEvents bool `json:"WithRawEvents,omitempty"`
+	WithRawEvents bool `json:"withRawEvents,omitempty"`
+
+	// group
+	Group *Group `json:"group,omitempty"`
 }
 
 // Validate validates this get events over time request
@@ -86,6 +92,10 @@ func (m *GetEventsOverTimeRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateGroup(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -106,11 +116,11 @@ func (m *GetEventsOverTimeRequest) validateConditions(formats strfmt.Registry) e
 			if err := m.Conditions[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -193,12 +203,12 @@ func (m *GetEventsOverTimeRequest) validateSortByEnum(path, location string, val
 
 func (m *GetEventsOverTimeRequest) validateSortBy(formats strfmt.Registry) error {
 
-	if err := validate.Required("SortBy", "body", m.SortBy); err != nil {
+	if err := validate.Required("sortBy", "body", m.SortBy); err != nil {
 		return err
 	}
 
 	// value enum
-	if err := m.validateSortByEnum("SortBy", "body", *m.SortBy); err != nil {
+	if err := m.validateSortByEnum("sortBy", "body", *m.SortBy); err != nil {
 		return err
 	}
 
@@ -236,12 +246,12 @@ func (m *GetEventsOverTimeRequest) validateSortOrderEnum(path, location string, 
 
 func (m *GetEventsOverTimeRequest) validateSortOrder(formats strfmt.Registry) error {
 
-	if err := validate.Required("SortOrder", "body", m.SortOrder); err != nil {
+	if err := validate.Required("sortOrder", "body", m.SortOrder); err != nil {
 		return err
 	}
 
 	// value enum
-	if err := m.validateSortOrderEnum("SortOrder", "body", *m.SortOrder); err != nil {
+	if err := m.validateSortOrderEnum("sortOrder", "body", *m.SortOrder); err != nil {
 		return err
 	}
 
@@ -262,11 +272,11 @@ func (m *GetEventsOverTimeRequest) validateSources(formats strfmt.Registry) erro
 			if err := m.Sources[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -280,12 +290,35 @@ func (m *GetEventsOverTimeRequest) validateSources(formats strfmt.Registry) erro
 
 func (m *GetEventsOverTimeRequest) validateStart(formats strfmt.Registry) error {
 
-	if err := validate.Required("Start", "body", m.Start); err != nil {
+	if err := validate.Required("start", "body", m.Start); err != nil {
 		return err
 	}
 
-	if err := validate.FormatOf("Start", "body", "date-time", m.Start.String(), formats); err != nil {
+	if err := validate.FormatOf("start", "body", "date-time", m.Start.String(), formats); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *GetEventsOverTimeRequest) validateGroup(formats strfmt.Registry) error {
+	if swag.IsZero(m.Group) { // not required
+		return nil
+	}
+
+	if m.Group != nil {
+		if err := m.Group.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("group")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("group")
+			}
+
+			return err
+		}
 	}
 
 	return nil
@@ -300,6 +333,10 @@ func (m *GetEventsOverTimeRequest) ContextValidate(ctx context.Context, formats 
 	}
 
 	if err := m.contextValidateSources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateGroup(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -322,11 +359,11 @@ func (m *GetEventsOverTimeRequest) contextValidateConditions(ctx context.Context
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -351,17 +388,42 @@ func (m *GetEventsOverTimeRequest) contextValidateSources(ctx context.Context, f
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *GetEventsOverTimeRequest) contextValidateGroup(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Group != nil {
+
+		if swag.IsZero(m.Group) { // not required
+			return nil
+		}
+
+		if err := m.Group.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("group")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("group")
+			}
+
+			return err
+		}
 	}
 
 	return nil

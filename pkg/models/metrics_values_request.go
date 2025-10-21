@@ -22,30 +22,30 @@ import (
 type MetricsValuesRequest struct {
 
 	// conditions
-	Conditions []*Condition `json:"Conditions"`
+	Conditions []*Condition `json:"conditions"`
 
 	// end
 	// Format: date-time
-	End strfmt.DateTime `json:"End,omitempty"`
+	End strfmt.DateTime `json:"end,omitempty"`
 
 	// filter
-	Filter string `json:"Filter,omitempty"`
+	Filter string `json:"filter,omitempty"`
 
 	// key
-	Key string `json:"Key,omitempty"`
+	Key string `json:"key,omitempty"`
 
 	// limit
-	Limit uint32 `json:"Limit,omitempty"`
+	Limit uint32 `json:"limit,omitempty"`
 
 	// name
-	Name string `json:"Name,omitempty"`
+	Name string `json:"name,omitempty"`
 
 	// sources
-	Sources []*Condition `json:"Sources"`
+	Sources []*Condition `json:"sources"`
 
 	// start
 	// Format: date-time
-	Start strfmt.DateTime `json:"Start,omitempty"`
+	Start strfmt.DateTime `json:"start,omitempty"`
 }
 
 // Validate validates this metrics values request
@@ -88,11 +88,11 @@ func (m *MetricsValuesRequest) validateConditions(formats strfmt.Registry) error
 			if err := m.Conditions[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -109,7 +109,7 @@ func (m *MetricsValuesRequest) validateEnd(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.FormatOf("End", "body", "date-time", m.End.String(), formats); err != nil {
+	if err := validate.FormatOf("end", "body", "date-time", m.End.String(), formats); err != nil {
 		return err
 	}
 
@@ -130,11 +130,11 @@ func (m *MetricsValuesRequest) validateSources(formats strfmt.Registry) error {
 			if err := m.Sources[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -151,7 +151,7 @@ func (m *MetricsValuesRequest) validateStart(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.FormatOf("Start", "body", "date-time", m.Start.String(), formats); err != nil {
+	if err := validate.FormatOf("start", "body", "date-time", m.Start.String(), formats); err != nil {
 		return err
 	}
 
@@ -189,11 +189,11 @@ func (m *MetricsValuesRequest) contextValidateConditions(ctx context.Context, fo
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -218,11 +218,11 @@ func (m *MetricsValuesRequest) contextValidateSources(ctx context.Context, forma
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err

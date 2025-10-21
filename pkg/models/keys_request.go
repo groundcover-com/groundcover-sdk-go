@@ -22,18 +22,18 @@ import (
 type KeysRequest struct {
 
 	// Filter is a string to filter the keys by
-	Filter string `json:"Filter,omitempty"`
+	Filter string `json:"filter,omitempty"`
 
 	// Limit is the maximum number of keys to return
 	// Required: true
-	Limit *uint32 `json:"Limit"`
+	Limit *uint32 `json:"limit"`
 
 	// Sources is a list of sources to filter the keys by
-	Sources []*Condition `json:"Sources"`
+	Sources []*Condition `json:"sources"`
 
 	// Type is the type of search keys to retrieve
 	// Required: true
-	Type *string `json:"Type"`
+	Type *string `json:"type"`
 }
 
 // Validate validates this keys request
@@ -60,7 +60,7 @@ func (m *KeysRequest) Validate(formats strfmt.Registry) error {
 
 func (m *KeysRequest) validateLimit(formats strfmt.Registry) error {
 
-	if err := validate.Required("Limit", "body", m.Limit); err != nil {
+	if err := validate.Required("limit", "body", m.Limit); err != nil {
 		return err
 	}
 
@@ -81,11 +81,11 @@ func (m *KeysRequest) validateSources(formats strfmt.Registry) error {
 			if err := m.Sources[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -99,7 +99,7 @@ func (m *KeysRequest) validateSources(formats strfmt.Registry) error {
 
 func (m *KeysRequest) validateType(formats strfmt.Registry) error {
 
-	if err := validate.Required("Type", "body", m.Type); err != nil {
+	if err := validate.Required("type", "body", m.Type); err != nil {
 		return err
 	}
 
@@ -133,11 +133,11 @@ func (m *KeysRequest) contextValidateSources(ctx context.Context, formats strfmt
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err

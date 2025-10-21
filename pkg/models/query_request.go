@@ -17,36 +17,38 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// QueryRequest query request
+// QueryRequest QueryRequest represents a request to query metrics
 //
 // swagger:model QueryRequest
 type QueryRequest struct {
 
-	// conditions
+	// Additional conditions to apply
 	Conditions []*Condition `json:"Conditions"`
 
-	// end
+	// End time for the query
 	// Format: date-time
 	End strfmt.DateTime `json:"End,omitempty"`
 
-	// filters
+	// LogsQL filters to apply
 	Filters string `json:"Filters,omitempty"`
 
 	// pipeline
 	Pipeline *PromqlPipeline `json:"Pipeline,omitempty"`
 
-	// promql
+	// Direct PromQL query string
 	Promql string `json:"Promql,omitempty"`
 
-	// query type
+	// Query type: either "range" or "instant"
+	// range MetricsQueryTypeRange
+	// instant MetricsQueryTypeInstant
 	// Enum: ["range","instant"]
 	QueryType string `json:"QueryType,omitempty"`
 
-	// start
+	// Start time for the query
 	// Format: date-time
 	Start strfmt.DateTime `json:"Start,omitempty"`
 
-	// step
+	// Step duration for range queries (e.g., "1m", "5m")
 	Step string `json:"Step,omitempty"`
 
 	// sub pipelines

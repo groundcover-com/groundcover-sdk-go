@@ -58,6 +58,8 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	ClustersList(params *ClustersListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ClustersListOK, error)
 
+	EventsSearch(params *EventsSearchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EventsSearchOK, error)
+
 	GetEventsOverTime(params *GetEventsOverTimeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEventsOverTimeOK, error)
 
 	WorkloadsList(params *WorkloadsListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*WorkloadsListOK, error)
@@ -108,6 +110,50 @@ func (a *Client) ClustersList(params *ClustersListParams, authInfo runtime.Clien
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for clustersList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+EventsSearch Events search
+*/
+func (a *Client) EventsSearch(params *EventsSearchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EventsSearchOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewEventsSearchParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "eventsSearch",
+		Method:             "POST",
+		PathPattern:        "/api/k8s/v2/events/search",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &EventsSearchReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*EventsSearchOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for eventsSearch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

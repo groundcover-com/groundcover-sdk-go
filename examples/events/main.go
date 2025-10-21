@@ -10,7 +10,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/groundcover-com/groundcover-sdk-go"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client"
-	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/events"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/k8s"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/utils"
 )
@@ -55,12 +55,12 @@ func searchOOMEvents(ctx context.Context, gcClient *client.GroundcoverAPI) error
 		Query: "type:container_crash reason:OOMKilled | limit 10",
 	}
 
-	params := events.NewSearchEventsParams().
+	params := k8s.NewEventsSearchParams().
 		WithContext(ctx).
 		WithTimeout(30 * time.Second).
 		WithBody(searchRequest)
 
-	resp, err := gcClient.Events.SearchEvents(params, nil)
+	resp, err := gcClient.K8s.EventsSearch(params, nil)
 	if err != nil {
 		return fmt.Errorf("failed to search events: %w", err)
 	}

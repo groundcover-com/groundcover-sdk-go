@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	eventsClient "github.com/groundcover-com/groundcover-sdk-go/pkg/client/events"
+	k8sClient "github.com/groundcover-com/groundcover-sdk-go/pkg/client/k8s"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
 )
 
@@ -30,10 +30,10 @@ func TestEventsSearchE2E(t *testing.T) {
 		}
 
 		// Create parameters
-		params := eventsClient.NewSearchEventsParamsWithContext(ctx).WithBody(body)
+		params := k8sClient.NewEventsSearchParamsWithContext(ctx).WithBody(body)
 
 		// Execute the search
-		resp, err := apiClient.Events.SearchEvents(params, nil)
+		resp, err := apiClient.K8s.EventsSearch(params, nil)
 
 		// Assertions
 		require.NoError(t, err, "Events search request failed")

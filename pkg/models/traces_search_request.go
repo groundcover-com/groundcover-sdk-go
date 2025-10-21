@@ -22,32 +22,32 @@ import (
 type TracesSearchRequest struct {
 
 	// EnableStream indicates if the response should be streamed
-	EnableStream bool `json:"EnableStream,omitempty"`
+	EnableStream bool `json:"enableStream,omitempty"`
 
 	// End time of the search range
 	// Required: true
 	// Format: date-time
-	End *strfmt.DateTime `json:"End"`
+	End *strfmt.DateTime `json:"end"`
 
 	// Extra filters to apply on the traces
-	Filters string `json:"Filters,omitempty"`
-
-	// pipeline
-	Pipeline *SQLPipeline `json:"Pipeline,omitempty"`
+	Filters string `json:"filters,omitempty"`
 
 	// LogsQL Query to filter traces
-	Query string `json:"Query,omitempty"`
+	Query string `json:"query,omitempty"`
 
 	// Sources to filter traces
-	Sources []*Condition `json:"Sources"`
+	Sources []*Condition `json:"sources"`
 
 	// Start time of the search range
 	// Required: true
 	// Format: date-time
-	Start *strfmt.DateTime `json:"Start"`
+	Start *strfmt.DateTime `json:"start"`
 
 	// TryToUseBuckets indicates if the search should be run using buckets
-	TryToUseBuckets bool `json:"TryToUseBuckets,omitempty"`
+	TryToUseBuckets bool `json:"tryToUseBuckets,omitempty"`
+
+	// pipeline
+	Pipeline *SQLPipeline `json:"pipeline,omitempty"`
 }
 
 // Validate validates this traces search request
@@ -55,10 +55,6 @@ func (m *TracesSearchRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateEnd(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validatePipeline(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -70,6 +66,10 @@ func (m *TracesSearchRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validatePipeline(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -78,35 +78,12 @@ func (m *TracesSearchRequest) Validate(formats strfmt.Registry) error {
 
 func (m *TracesSearchRequest) validateEnd(formats strfmt.Registry) error {
 
-	if err := validate.Required("End", "body", m.End); err != nil {
+	if err := validate.Required("end", "body", m.End); err != nil {
 		return err
 	}
 
-	if err := validate.FormatOf("End", "body", "date-time", m.End.String(), formats); err != nil {
+	if err := validate.FormatOf("end", "body", "date-time", m.End.String(), formats); err != nil {
 		return err
-	}
-
-	return nil
-}
-
-func (m *TracesSearchRequest) validatePipeline(formats strfmt.Registry) error {
-	if swag.IsZero(m.Pipeline) { // not required
-		return nil
-	}
-
-	if m.Pipeline != nil {
-		if err := m.Pipeline.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("Pipeline")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("Pipeline")
-			}
-
-			return err
-		}
 	}
 
 	return nil
@@ -126,11 +103,11 @@ func (m *TracesSearchRequest) validateSources(formats strfmt.Registry) error {
 			if err := m.Sources[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -144,12 +121,35 @@ func (m *TracesSearchRequest) validateSources(formats strfmt.Registry) error {
 
 func (m *TracesSearchRequest) validateStart(formats strfmt.Registry) error {
 
-	if err := validate.Required("Start", "body", m.Start); err != nil {
+	if err := validate.Required("start", "body", m.Start); err != nil {
 		return err
 	}
 
-	if err := validate.FormatOf("Start", "body", "date-time", m.Start.String(), formats); err != nil {
+	if err := validate.FormatOf("start", "body", "date-time", m.Start.String(), formats); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *TracesSearchRequest) validatePipeline(formats strfmt.Registry) error {
+	if swag.IsZero(m.Pipeline) { // not required
+		return nil
+	}
+
+	if m.Pipeline != nil {
+		if err := m.Pipeline.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("pipeline")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("pipeline")
+			}
+
+			return err
+		}
 	}
 
 	return nil
@@ -159,42 +159,17 @@ func (m *TracesSearchRequest) validateStart(formats strfmt.Registry) error {
 func (m *TracesSearchRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.contextValidatePipeline(ctx, formats); err != nil {
+	if err := m.contextValidateSources(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateSources(ctx, formats); err != nil {
+	if err := m.contextValidatePipeline(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *TracesSearchRequest) contextValidatePipeline(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Pipeline != nil {
-
-		if swag.IsZero(m.Pipeline) { // not required
-			return nil
-		}
-
-		if err := m.Pipeline.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("Pipeline")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("Pipeline")
-			}
-
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -211,17 +186,42 @@ func (m *TracesSearchRequest) contextValidateSources(ctx context.Context, format
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *TracesSearchRequest) contextValidatePipeline(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Pipeline != nil {
+
+		if swag.IsZero(m.Pipeline) { // not required
+			return nil
+		}
+
+		if err := m.Pipeline.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("pipeline")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("pipeline")
+			}
+
+			return err
+		}
 	}
 
 	return nil

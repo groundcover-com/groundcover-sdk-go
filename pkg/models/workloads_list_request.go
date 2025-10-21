@@ -21,22 +21,22 @@ import (
 type WorkloadsListRequest struct {
 
 	// conditions
-	Conditions []*Condition `json:"Conditions"`
+	Conditions []*Condition `json:"conditions"`
 
 	// limit
-	Limit uint32 `json:"Limit,omitempty"`
+	Limit uint32 `json:"limit,omitempty"`
 
 	// order
-	Order string `json:"Order,omitempty"`
+	Order string `json:"order,omitempty"`
 
 	// skip
-	Skip uint32 `json:"Skip,omitempty"`
+	Skip uint32 `json:"skip,omitempty"`
 
 	// sort by
-	SortBy string `json:"SortBy,omitempty"`
+	SortBy string `json:"sortBy,omitempty"`
 
 	// sources
-	Sources []*Condition `json:"Sources"`
+	Sources []*Condition `json:"sources"`
 }
 
 // Validate validates this workloads list request
@@ -71,11 +71,11 @@ func (m *WorkloadsListRequest) validateConditions(formats strfmt.Registry) error
 			if err := m.Conditions[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -101,11 +101,11 @@ func (m *WorkloadsListRequest) validateSources(formats strfmt.Registry) error {
 			if err := m.Sources[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -148,11 +148,11 @@ func (m *WorkloadsListRequest) contextValidateConditions(ctx context.Context, fo
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -177,11 +177,11 @@ func (m *WorkloadsListRequest) contextValidateSources(ctx context.Context, forma
 			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err

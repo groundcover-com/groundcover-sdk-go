@@ -23,42 +23,42 @@ import (
 type ValuesRequest struct {
 
 	// Conditions specifies additional conditions to filter the search values
-	Conditions []*Condition `json:"Conditions"`
+	Conditions []*Condition `json:"conditions"`
 
 	// EnableStream indicates whether to enable streaming of results
-	EnableStream bool `json:"EnableStream,omitempty"`
+	EnableStream bool `json:"enableStream,omitempty"`
 
 	// End time for the search
 	// Required: true
 	// Format: date-time
-	End *strfmt.DateTime `json:"End"`
+	End *strfmt.DateTime `json:"end"`
 
 	// Filter to apply to the search values
-	Filter string `json:"Filter,omitempty"`
-
-	// filter group
-	FilterGroup *Group `json:"FilterGroup,omitempty"`
+	Filter string `json:"filter,omitempty"`
 
 	// Key to search for values
 	// Required: true
-	Key *string `json:"Key"`
+	Key *string `json:"key"`
 
 	// Limit specifies the maximum number of results to return
 	// Required: true
-	Limit *uint32 `json:"Limit"`
+	Limit *uint32 `json:"limit"`
 
 	// Sources specifies the sources to filter the search values
-	Sources []*Condition `json:"Sources"`
+	Sources []*Condition `json:"sources"`
 
 	// Start time for the search
 	// Required: true
 	// Format: date-time
-	Start *strfmt.DateTime `json:"Start"`
+	Start *strfmt.DateTime `json:"start"`
 
 	// Type of the search values
 	// Required: true
 	// Enum: ["logs"," traces"," events"]
-	Type *string `json:"Type"`
+	Type *string `json:"type"`
+
+	// filter group
+	FilterGroup *Group `json:"filterGroup,omitempty"`
 }
 
 // Validate validates this values request
@@ -70,10 +70,6 @@ func (m *ValuesRequest) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateEnd(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateFilterGroup(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -97,6 +93,10 @@ func (m *ValuesRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateFilterGroup(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -117,11 +117,11 @@ func (m *ValuesRequest) validateConditions(formats strfmt.Registry) error {
 			if err := m.Conditions[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -135,35 +135,12 @@ func (m *ValuesRequest) validateConditions(formats strfmt.Registry) error {
 
 func (m *ValuesRequest) validateEnd(formats strfmt.Registry) error {
 
-	if err := validate.Required("End", "body", m.End); err != nil {
+	if err := validate.Required("end", "body", m.End); err != nil {
 		return err
 	}
 
-	if err := validate.FormatOf("End", "body", "date-time", m.End.String(), formats); err != nil {
+	if err := validate.FormatOf("end", "body", "date-time", m.End.String(), formats); err != nil {
 		return err
-	}
-
-	return nil
-}
-
-func (m *ValuesRequest) validateFilterGroup(formats strfmt.Registry) error {
-	if swag.IsZero(m.FilterGroup) { // not required
-		return nil
-	}
-
-	if m.FilterGroup != nil {
-		if err := m.FilterGroup.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("FilterGroup")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("FilterGroup")
-			}
-
-			return err
-		}
 	}
 
 	return nil
@@ -171,7 +148,7 @@ func (m *ValuesRequest) validateFilterGroup(formats strfmt.Registry) error {
 
 func (m *ValuesRequest) validateKey(formats strfmt.Registry) error {
 
-	if err := validate.Required("Key", "body", m.Key); err != nil {
+	if err := validate.Required("key", "body", m.Key); err != nil {
 		return err
 	}
 
@@ -180,7 +157,7 @@ func (m *ValuesRequest) validateKey(formats strfmt.Registry) error {
 
 func (m *ValuesRequest) validateLimit(formats strfmt.Registry) error {
 
-	if err := validate.Required("Limit", "body", m.Limit); err != nil {
+	if err := validate.Required("limit", "body", m.Limit); err != nil {
 		return err
 	}
 
@@ -201,11 +178,11 @@ func (m *ValuesRequest) validateSources(formats strfmt.Registry) error {
 			if err := m.Sources[i].Validate(formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -219,11 +196,11 @@ func (m *ValuesRequest) validateSources(formats strfmt.Registry) error {
 
 func (m *ValuesRequest) validateStart(formats strfmt.Registry) error {
 
-	if err := validate.Required("Start", "body", m.Start); err != nil {
+	if err := validate.Required("start", "body", m.Start); err != nil {
 		return err
 	}
 
-	if err := validate.FormatOf("Start", "body", "date-time", m.Start.String(), formats); err != nil {
+	if err := validate.FormatOf("start", "body", "date-time", m.Start.String(), formats); err != nil {
 		return err
 	}
 
@@ -264,13 +241,36 @@ func (m *ValuesRequest) validateTypeEnum(path, location string, value string) er
 
 func (m *ValuesRequest) validateType(formats strfmt.Registry) error {
 
-	if err := validate.Required("Type", "body", m.Type); err != nil {
+	if err := validate.Required("type", "body", m.Type); err != nil {
 		return err
 	}
 
 	// value enum
-	if err := m.validateTypeEnum("Type", "body", *m.Type); err != nil {
+	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *ValuesRequest) validateFilterGroup(formats strfmt.Registry) error {
+	if swag.IsZero(m.FilterGroup) { // not required
+		return nil
+	}
+
+	if m.FilterGroup != nil {
+		if err := m.FilterGroup.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("filterGroup")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("filterGroup")
+			}
+
+			return err
+		}
 	}
 
 	return nil
@@ -284,11 +284,11 @@ func (m *ValuesRequest) ContextValidate(ctx context.Context, formats strfmt.Regi
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateFilterGroup(ctx, formats); err != nil {
+	if err := m.contextValidateSources(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateSources(ctx, formats); err != nil {
+	if err := m.contextValidateFilterGroup(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -311,11 +311,40 @@ func (m *ValuesRequest) contextValidateConditions(ctx context.Context, formats s
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
 				ve := new(errors.Validation)
 				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
 				ce := new(errors.CompositeError)
 				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Conditions" + "." + strconv.Itoa(i))
+					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *ValuesRequest) contextValidateSources(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Sources); i++ {
+
+		if m.Sources[i] != nil {
+
+			if swag.IsZero(m.Sources[i]) { // not required
+				return nil
+			}
+
+			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("sources" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("sources" + "." + strconv.Itoa(i))
 				}
 
 				return err
@@ -338,44 +367,15 @@ func (m *ValuesRequest) contextValidateFilterGroup(ctx context.Context, formats 
 		if err := m.FilterGroup.ContextValidate(ctx, formats); err != nil {
 			ve := new(errors.Validation)
 			if stderrors.As(err, &ve) {
-				return ve.ValidateName("FilterGroup")
+				return ve.ValidateName("filterGroup")
 			}
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
-				return ce.ValidateName("FilterGroup")
+				return ce.ValidateName("filterGroup")
 			}
 
 			return err
 		}
-	}
-
-	return nil
-}
-
-func (m *ValuesRequest) contextValidateSources(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Sources); i++ {
-
-		if m.Sources[i] != nil {
-
-			if swag.IsZero(m.Sources[i]) { // not required
-				return nil
-			}
-
-			if err := m.Sources[i].ContextValidate(ctx, formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
-					return ve.ValidateName("Sources" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
-					return ce.ValidateName("Sources" + "." + strconv.Itoa(i))
-				}
-
-				return err
-			}
-		}
-
 	}
 
 	return nil
