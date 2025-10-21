@@ -62,7 +62,7 @@ func NewDeleteMonitorOK() *DeleteMonitorOK {
 /*
 DeleteMonitorOK describes a response with status code 200, with default header values.
 
-DeleteMonitorOK delete monitor o k
+NoContentResponse indicates success but that no response body is expected or included.
 */
 type DeleteMonitorOK struct {
 }
