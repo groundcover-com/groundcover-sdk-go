@@ -62,7 +62,7 @@ func NewDeleteIngestionKeyAccepted() *DeleteIngestionKeyAccepted {
 /*
 DeleteIngestionKeyAccepted describes a response with status code 202, with default header values.
 
-DeleteIngestionKeyAccepted delete ingestion key accepted
+NoContentResponse indicates success but that no response body is expected or included.
 */
 type DeleteIngestionKeyAccepted struct {
 }
