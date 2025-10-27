@@ -31,9 +31,9 @@ type KeysRequest struct {
 	// Sources is a list of sources to filter the keys by
 	Sources []*Condition `json:"sources"`
 
-	// Type is the type of search keys to retrieve
+	// type
 	// Required: true
-	Type *string `json:"type"`
+	Type StringOrStringSlice `json:"type"`
 }
 
 // Validate validates this keys request
@@ -103,6 +103,19 @@ func (m *KeysRequest) validateType(formats strfmt.Registry) error {
 		return err
 	}
 
+	if err := m.Type.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
+	}
+
 	return nil
 }
 
@@ -111,6 +124,10 @@ func (m *KeysRequest) ContextValidate(ctx context.Context, formats strfmt.Regist
 	var res []error
 
 	if err := m.contextValidateSources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -144,6 +161,24 @@ func (m *KeysRequest) contextValidateSources(ctx context.Context, formats strfmt
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *KeysRequest) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Type.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
 	}
 
 	return nil

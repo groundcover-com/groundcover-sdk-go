@@ -25,6 +25,9 @@ type KeyItem struct {
 
 	// key type
 	KeyType string `json:"keyType,omitempty"`
+
+	// type
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this key item
