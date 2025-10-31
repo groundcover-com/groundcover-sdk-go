@@ -41,7 +41,7 @@ func TestEventsSearchE2E(t *testing.T) {
 		require.NotNil(t, resp.Payload, "Events search response payload should not be nil")
 
 		var result struct {
-			Count int32 `json:"count()"`
+			Count int64 `json:"count()"`
 		}
 
 		payloadSlice, ok := resp.Payload.([]interface{})
@@ -53,6 +53,6 @@ func TestEventsSearchE2E(t *testing.T) {
 		err = json.Unmarshal(jsonBytes, &result)
 		require.NoError(t, err, "Failed to unmarshal events search response payload")
 
-		assert.Greater(t, result.Count, int32(0), "Events search should return a count greater than 0")
+		assert.Greater(t, result.Count, int64(0), "Events search should return a count greater than 0")
 	})
 }
