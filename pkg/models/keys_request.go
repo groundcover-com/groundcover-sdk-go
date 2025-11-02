@@ -21,24 +21,39 @@ import (
 // swagger:model KeysRequest
 type KeysRequest struct {
 
+	// End is the end time for the metrics keys query
+	// Format: date-time
+	End strfmt.DateTime `json:"end,omitempty"`
+
 	// Filter is a string to filter the keys by
-	Filter string `json:"filter,omitempty"`
+	FilterKey string `json:"filterKey,omitempty"`
 
 	// Limit is the maximum number of keys to return
 	// Required: true
 	Limit *uint32 `json:"limit"`
 
+	// Name specifies the metric name to get keys for.
+	MetricNames []string `json:"metricNames"`
+
 	// Sources is a list of sources to filter the keys by
 	Sources []*Condition `json:"sources"`
 
-	// type
+	// Start is the start time for the metrics keys query
+	// Format: date-time
+	Start strfmt.DateTime `json:"start,omitempty"`
+
+	// Types is a slice of types of search keys to retrieve
 	// Required: true
-	Type StringOrStringSlice `json:"type"`
+	Types []string `json:"types"`
 }
 
 // Validate validates this keys request
 func (m *KeysRequest) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateEnd(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateLimit(formats); err != nil {
 		res = append(res, err)
@@ -48,13 +63,29 @@ func (m *KeysRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateType(formats); err != nil {
+	if err := m.validateStart(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTypes(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *KeysRequest) validateEnd(formats strfmt.Registry) error {
+	if swag.IsZero(m.End) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("end", "body", "date-time", m.End.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -97,22 +128,21 @@ func (m *KeysRequest) validateSources(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *KeysRequest) validateType(formats strfmt.Registry) error {
+func (m *KeysRequest) validateStart(formats strfmt.Registry) error {
+	if swag.IsZero(m.Start) { // not required
+		return nil
+	}
 
-	if err := validate.Required("type", "body", m.Type); err != nil {
+	if err := validate.FormatOf("start", "body", "date-time", m.Start.String(), formats); err != nil {
 		return err
 	}
 
-	if err := m.Type.Validate(formats); err != nil {
-		ve := new(errors.Validation)
-		if stderrors.As(err, &ve) {
-			return ve.ValidateName("type")
-		}
-		ce := new(errors.CompositeError)
-		if stderrors.As(err, &ce) {
-			return ce.ValidateName("type")
-		}
+	return nil
+}
 
+func (m *KeysRequest) validateTypes(formats strfmt.Registry) error {
+
+	if err := validate.Required("types", "body", m.Types); err != nil {
 		return err
 	}
 
@@ -124,10 +154,6 @@ func (m *KeysRequest) ContextValidate(ctx context.Context, formats strfmt.Regist
 	var res []error
 
 	if err := m.contextValidateSources(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -161,24 +187,6 @@ func (m *KeysRequest) contextValidateSources(ctx context.Context, formats strfmt
 			}
 		}
 
-	}
-
-	return nil
-}
-
-func (m *KeysRequest) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
-
-	if err := m.Type.ContextValidate(ctx, formats); err != nil {
-		ve := new(errors.Validation)
-		if stderrors.As(err, &ve) {
-			return ve.ValidateName("type")
-		}
-		ce := new(errors.CompositeError)
-		if stderrors.As(err, &ce) {
-			return ce.ValidateName("type")
-		}
-
-		return err
 	}
 
 	return nil
