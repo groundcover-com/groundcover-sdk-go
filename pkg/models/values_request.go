@@ -7,7 +7,6 @@ package models
 
 import (
 	"context"
-	"encoding/json"
 	stderrors "errors"
 	"strconv"
 
@@ -22,40 +21,33 @@ import (
 // swagger:model ValuesRequest
 type ValuesRequest struct {
 
-	// Conditions specifies additional conditions to filter the search values
-	Conditions []*Condition `json:"conditions"`
-
-	// EnableStream indicates whether to enable streaming of results
-	EnableStream bool `json:"enableStream,omitempty"`
-
 	// End time for the search
-	// Required: true
 	// Format: date-time
-	End *strfmt.DateTime `json:"end"`
+	End strfmt.DateTime `json:"end,omitempty"`
 
-	// Filter to apply to the search values
-	Filter string `json:"filter,omitempty"`
+	// Filter value to search for values
+	FilterValue string `json:"filterValue,omitempty"`
 
 	// Key to search for values
 	// Required: true
 	Key *string `json:"key"`
 
-	// Limit specifies the maximum number of results to return
-	// Required: true
-	Limit *uint32 `json:"limit"`
+	// Limit is the maximum number of results to return
+	Limit uint32 `json:"limit,omitempty"`
 
-	// Sources specifies the sources to filter the search values
+	// Metric names to get values for
+	MetricNames []string `json:"metricNames"`
+
+	// Sources is a list of sources to filter the values by
 	Sources []*Condition `json:"sources"`
 
 	// Start time for the search
-	// Required: true
 	// Format: date-time
-	Start *strfmt.DateTime `json:"start"`
+	Start strfmt.DateTime `json:"start,omitempty"`
 
-	// Type of the search values
+	// Types is a slice of types of search values to retrieve
 	// Required: true
-	// Enum: ["logs"," traces"," events"]
-	Type *string `json:"type"`
+	Types []string `json:"types"`
 
 	// filter group
 	FilterGroup *Group `json:"filterGroup,omitempty"`
@@ -65,19 +57,11 @@ type ValuesRequest struct {
 func (m *ValuesRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateConditions(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateEnd(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateKey(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateLimit(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -89,7 +73,7 @@ func (m *ValuesRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateType(formats); err != nil {
+	if err := m.validateTypes(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -103,40 +87,9 @@ func (m *ValuesRequest) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *ValuesRequest) validateConditions(formats strfmt.Registry) error {
-	if swag.IsZero(m.Conditions) { // not required
-		return nil
-	}
-
-	for i := 0; i < len(m.Conditions); i++ {
-		if swag.IsZero(m.Conditions[i]) { // not required
-			continue
-		}
-
-		if m.Conditions[i] != nil {
-			if err := m.Conditions[i].Validate(formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
-					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
-					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
-				}
-
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
 func (m *ValuesRequest) validateEnd(formats strfmt.Registry) error {
-
-	if err := validate.Required("end", "body", m.End); err != nil {
-		return err
+	if swag.IsZero(m.End) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("end", "body", "date-time", m.End.String(), formats); err != nil {
@@ -149,15 +102,6 @@ func (m *ValuesRequest) validateEnd(formats strfmt.Registry) error {
 func (m *ValuesRequest) validateKey(formats strfmt.Registry) error {
 
 	if err := validate.Required("key", "body", m.Key); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ValuesRequest) validateLimit(formats strfmt.Registry) error {
-
-	if err := validate.Required("limit", "body", m.Limit); err != nil {
 		return err
 	}
 
@@ -195,9 +139,8 @@ func (m *ValuesRequest) validateSources(formats strfmt.Registry) error {
 }
 
 func (m *ValuesRequest) validateStart(formats strfmt.Registry) error {
-
-	if err := validate.Required("start", "body", m.Start); err != nil {
-		return err
+	if swag.IsZero(m.Start) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("start", "body", "date-time", m.Start.String(), formats); err != nil {
@@ -207,46 +150,9 @@ func (m *ValuesRequest) validateStart(formats strfmt.Registry) error {
 	return nil
 }
 
-var valuesRequestTypeTypePropEnum []any
+func (m *ValuesRequest) validateTypes(formats strfmt.Registry) error {
 
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["logs"," traces"," events"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		valuesRequestTypeTypePropEnum = append(valuesRequestTypeTypePropEnum, v)
-	}
-}
-
-const (
-
-	// ValuesRequestTypeLogs captures enum value "logs"
-	ValuesRequestTypeLogs string = "logs"
-
-	// ValuesRequestTypeTraces captures enum value " traces"
-	ValuesRequestTypeTraces string = " traces"
-
-	// ValuesRequestTypeEvents captures enum value " events"
-	ValuesRequestTypeEvents string = " events"
-)
-
-// prop value enum
-func (m *ValuesRequest) validateTypeEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, valuesRequestTypeTypePropEnum, true); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *ValuesRequest) validateType(formats strfmt.Registry) error {
-
-	if err := validate.Required("type", "body", m.Type); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
+	if err := validate.Required("types", "body", m.Types); err != nil {
 		return err
 	}
 
@@ -280,10 +186,6 @@ func (m *ValuesRequest) validateFilterGroup(formats strfmt.Registry) error {
 func (m *ValuesRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.contextValidateConditions(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.contextValidateSources(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -295,35 +197,6 @@ func (m *ValuesRequest) ContextValidate(ctx context.Context, formats strfmt.Regi
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *ValuesRequest) contextValidateConditions(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Conditions); i++ {
-
-		if m.Conditions[i] != nil {
-
-			if swag.IsZero(m.Conditions[i]) { // not required
-				return nil
-			}
-
-			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
-					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
-					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
-				}
-
-				return err
-			}
-		}
-
-	}
-
 	return nil
 }
 
