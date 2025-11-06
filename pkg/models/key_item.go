@@ -23,11 +23,11 @@ type KeyItem struct {
 	// key
 	Key string `json:"key,omitempty"`
 
-	// key type
-	KeyType string `json:"keyType,omitempty"`
+	// metric names
+	MetricNames []string `json:"metricNames"`
 
-	// type
-	Type string `json:"type,omitempty"`
+	// types
+	Types []string `json:"types"`
 }
 
 // Validate validates this key item

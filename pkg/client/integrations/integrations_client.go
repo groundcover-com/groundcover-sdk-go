@@ -74,16 +74,7 @@ type ClientService interface {
 }
 
 /*
-	CreateDataIntegrationConfig @Accept json
-
-@Produce json
-@Param type path string true "Data Integration type"
-@Param request body createDataIntegrationConfigRequestParams true "Request body"
-@Success 201 {object} config.DataIntegrationConfig
-@Failure 400 {object} api.ErrorResponse
-@Failure 500 {object} api.ErrorResponse
-@Failure 503 {object} api.ErrorResponse
-@Router /api/integrations/v1/data/config/{type} [POST]
+CreateDataIntegrationConfig create data integration config API
 */
 func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateDataIntegrationConfigCreated, error) {
 	// NOTE: parameters are not validated before sending
@@ -127,20 +118,7 @@ func (a *Client) CreateDataIntegrationConfig(params *CreateDataIntegrationConfig
 }
 
 /*
-	DeleteDataIntegrationConfig @Accept json
-
-@Produce json
-@Param type path string true "Data Integration type"
-@Param id path string true "Data Integration ID"
-@Param env query string false "Environment name"
-@Param cluster query string false "Cluster name"
-@Param instance query string false "Instance name"
-@Success 200
-@Failure 400 {object} api.ErrorResponse
-@Failure 404 {object} api.ErrorResponse
-@Failure 500 {object} api.ErrorResponse
-@Failure 503 {object} api.ErrorResponse
-@Router /api/integrations/v1/data/config/{type}/{id} [DELETE]
+DeleteDataIntegrationConfig delete data integration config API
 */
 func (a *Client) DeleteDataIntegrationConfig(params *DeleteDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteDataIntegrationConfigOK, error) {
 	// NOTE: parameters are not validated before sending
@@ -184,14 +162,7 @@ func (a *Client) DeleteDataIntegrationConfig(params *DeleteDataIntegrationConfig
 }
 
 /*
-	DescribeDataIntegration @Accept json
-
-@Produce json
-@Param type path string true "Data Integration type"
-@Success 200 {object} common.Description
-@Failure 400 {object} api.ErrorResponse
-@Failure 500 {object} api.ErrorResponse
-@Router /api/integrations/v1/data/describe/{type} [GET]
+DescribeDataIntegration describe data integration API
 */
 func (a *Client) DescribeDataIntegration(params *DescribeDataIntegrationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DescribeDataIntegrationOK, error) {
 	// NOTE: parameters are not validated before sending
@@ -235,18 +206,7 @@ func (a *Client) DescribeDataIntegration(params *DescribeDataIntegrationParams, 
 }
 
 /*
-	GetDataIntegrationConfig @Accept json
-
-@Produce json
-@Param type path string true "Data Integration type"
-@Param id path string true "Data Integration ID"
-@Param includeArchived query bool false "Include archived (deleted) configurations"
-@Success 200 {object} config.DataIntegrationConfig
-@Failure 400 {object} api.ErrorResponse
-@Failure 404 {object} api.ErrorResponse
-@Failure 500 {object} api.ErrorResponse
-@Failure 503 {object} api.ErrorResponse
-@Router /api/integrations/v1/data/config/{type}/{id} [GET]
+GetDataIntegrationConfig get data integration config API
 */
 func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, error) {
 	// NOTE: parameters are not validated before sending
@@ -290,16 +250,7 @@ func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams
 }
 
 /*
-	GetDataIntegrationConfigs @Accept json
-
-@Produce json
-@Param includeArchived query bool false "Include archived (deleted) configurations"
-@Success 200 {object} []config.DataIntegrationConfig
-@Success 204
-@Failure 400 {object} api.ErrorResponse
-@Failure 500 {object} api.ErrorResponse
-@Failure 503 {object} api.ErrorResponse
-@Router /api/integrations/v1/data/config [GET]
+GetDataIntegrationConfigs get data integration configs API
 */
 func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsOK, *GetDataIntegrationConfigsNoContent, error) {
 	// NOTE: parameters are not validated before sending
@@ -343,17 +294,7 @@ func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsPara
 }
 
 /*
-	GetDataIntegrationConfigsByType @Accept json
-
-@Produce json
-@Param type path string true "Data Integration type"
-@Param includeArchived query bool false "Include archived (deleted) configurations"
-@Success 200 {object} []config.DataIntegrationConfig
-@Success 204
-@Failure 400 {object} api.ErrorResponse
-@Failure 500 {object} api.ErrorResponse
-@Failure 503 {object} api.ErrorResponse
-@Router /api/integrations/v1/data/config/{type} [GET]
+GetDataIntegrationConfigsByType get data integration configs by type API
 */
 func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfigsByTypeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsByTypeOK, *GetDataIntegrationConfigsByTypeNoContent, error) {
 	// NOTE: parameters are not validated before sending
@@ -397,18 +338,7 @@ func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfi
 }
 
 /*
-	UpdateDataIntegrationConfig @Accept json
-
-@Produce json
-@Param type path string true "Data Integration type"
-@Param id path string true "Data Integration ID"
-@Param request body updateDataIntegrationConfigRequestParams true "Request body"
-@Success 200 {object} config.DataIntegrationConfig
-@Failure 400 {object} api.ErrorResponse
-@Failure 404 {object} api.ErrorResponse
-@Failure 500 {object} api.ErrorResponse
-@Failure 503 {object} api.ErrorResponse
-@Router /api/integrations/v1/data/config/{type}/{id} [PUT]
+UpdateDataIntegrationConfig update data integration config API
 */
 func (a *Client) UpdateDataIntegrationConfig(params *UpdateDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDataIntegrationConfigOK, error) {
 	// NOTE: parameters are not validated before sending

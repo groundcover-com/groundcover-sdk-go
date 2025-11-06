@@ -63,11 +63,8 @@ GetKeysParams contains all the parameters to send to the API endpoint
 */
 type GetKeysParams struct {
 
-	/* Body.
-
-	   Keys request
-	*/
-	Body *models.KeysRequest
+	// Body.
+	Body *models.KeysRequestV2
 
 	timeout    time.Duration
 	Context    context.Context
@@ -123,13 +120,13 @@ func (o *GetKeysParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the get keys params
-func (o *GetKeysParams) WithBody(body *models.KeysRequest) *GetKeysParams {
+func (o *GetKeysParams) WithBody(body *models.KeysRequestV2) *GetKeysParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the get keys params
-func (o *GetKeysParams) SetBody(body *models.KeysRequest) {
+func (o *GetKeysParams) SetBody(body *models.KeysRequestV2) {
 	o.Body = body
 }
 
