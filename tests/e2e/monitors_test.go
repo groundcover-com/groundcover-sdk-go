@@ -1,10 +1,13 @@
 package e2e
 
 import (
+	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"gopkg.in/yaml.v2"
 
@@ -43,11 +46,16 @@ func TestMonitorsEndpoints(t *testing.T) {
 	defer client.Cleanup()
 
 	t.Run("Create, Get, Update, and Delete Monitor", func(t *testing.T) {
+		// Generate a random monitor name using a local, thread-safe random source
+		rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+		randomName := fmt.Sprintf("E2E Test - K8s Pod Not Healthy Monitor - %d", rng.Intn(10_000_000))
+		randomHeader := fmt.Sprintf("E2E Test - K8s Pod Not Healthy - %d", rng.Intn(10_000_000))
+
 		// First, create a monitor
-		yamlMonitor := `
-title: E2E Test - K8s Pod Not Healthy Monitor
+		yamlMonitor := fmt.Sprintf(`
+title: %s
 display:
-  header: E2E Test - K8s Pod Not Healthy
+  header: %s
   resourceHeaderLabels:
     - namespace
     - workload
@@ -89,7 +97,7 @@ executionErrorState: OK
 noDataState: OK
 evaluationInterval:
   interval: 1m
-  pendingFor: 0s`
+  pendingFor: 0s`, randomName, randomHeader)
 
 		// Unmarshal the YAML into a struct
 		monitor := &models.CreateMonitorRequest{}
