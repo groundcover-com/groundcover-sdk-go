@@ -63,8 +63,11 @@ GetValuesParams contains all the parameters to send to the API endpoint
 */
 type GetValuesParams struct {
 
-	// Body.
-	Body *models.ValuesRequestV2
+	/* Body.
+
+	   Values request
+	*/
+	Body *models.ValuesRequest
 
 	timeout    time.Duration
 	Context    context.Context
@@ -120,13 +123,13 @@ func (o *GetValuesParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the get values params
-func (o *GetValuesParams) WithBody(body *models.ValuesRequestV2) *GetValuesParams {
+func (o *GetValuesParams) WithBody(body *models.ValuesRequest) *GetValuesParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the get values params
-func (o *GetValuesParams) SetBody(body *models.ValuesRequestV2) {
+func (o *GetValuesParams) SetBody(body *models.ValuesRequest) {
 	o.Body = body
 }
 
