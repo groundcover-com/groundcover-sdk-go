@@ -62,7 +62,7 @@ func NewDeleteServiceAccountAccepted() *DeleteServiceAccountAccepted {
 /*
 DeleteServiceAccountAccepted describes a response with status code 202, with default header values.
 
-DeleteServiceAccountAccepted delete service account accepted
+NoContentResponse indicates success but that no response body is expected or included.
 */
 type DeleteServiceAccountAccepted struct {
 }

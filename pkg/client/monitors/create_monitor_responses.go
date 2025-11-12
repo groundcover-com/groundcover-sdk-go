@@ -426,7 +426,7 @@ func NewCreateMonitorInternalServerError() *CreateMonitorInternalServerError {
 /*
 CreateMonitorInternalServerError describes a response with status code 500, with default header values.
 
-CreateMonitorInternalServerError create monitor internal server error
+NoContentResponse indicates success but that no response body is expected or included.
 */
 type CreateMonitorInternalServerError struct {
 }
