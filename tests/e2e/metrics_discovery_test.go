@@ -24,9 +24,9 @@ func TestMetricsDiscoveryE2E(t *testing.T) {
 	t.Run("Get Metric Names", func(t *testing.T) {
 		// Create request body
 		body := &models.MetricsNamesRequest{
-			Start: startDateTime,
-			End:   endDateTime,
-			Limit: 10,
+			Start:  startDateTime,
+			End:    endDateTime,
+			Limit:  10,
 			Filter: "", // Get all metric names
 		}
 
@@ -58,9 +58,9 @@ func TestMetricsDiscoveryE2E(t *testing.T) {
 	t.Run("Get Metric Names with Filter", func(t *testing.T) {
 		// Create request body with filter
 		body := &models.MetricsNamesRequest{
-			Start: startDateTime,
-			End:   endDateTime,
-			Limit: 5,
+			Start:  startDateTime,
+			End:    endDateTime,
+			Limit:  5,
 			Filter: "cpu", // Filter for CPU-related metrics
 		}
 
@@ -188,7 +188,7 @@ func TestMetricsDiscoveryE2E(t *testing.T) {
 		assert.Equal(t, keyName, resp.Payload.Key, "Response should contain the requested key name")
 		assert.NotNil(t, resp.Payload.Values, "Values array should not be nil")
 
-		t.Logf("Successfully retrieved %d values for metric '%s' key '%s'", 
+		t.Logf("Successfully retrieved %d values for metric '%s' key '%s'",
 			len(resp.Payload.Values), metricName, keyName)
 		if len(resp.Payload.Values) > 0 {
 			t.Logf("Sample values: %v", resp.Payload.Values[:min(3, len(resp.Payload.Values))])
