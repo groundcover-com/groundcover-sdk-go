@@ -28,7 +28,7 @@ type GetEventsOverTimeRequest struct {
 	// End timestamp for the query range.
 	// Required: true
 	// Format: date-time
-	End *strfmt.DateTime `json:"End"`
+	End *strfmt.DateTime `json:"end"`
 
 	// Maximum number of events to return.
 	Limit uint32 `json:"limit,omitempty"`
@@ -134,11 +134,11 @@ func (m *GetEventsOverTimeRequest) validateConditions(formats strfmt.Registry) e
 
 func (m *GetEventsOverTimeRequest) validateEnd(formats strfmt.Registry) error {
 
-	if err := validate.Required("End", "body", m.End); err != nil {
+	if err := validate.Required("end", "body", m.End); err != nil {
 		return err
 	}
 
-	if err := validate.FormatOf("End", "body", "date-time", m.End.String(), formats); err != nil {
+	if err := validate.FormatOf("end", "body", "date-time", m.End.String(), formats); err != nil {
 		return err
 	}
 
