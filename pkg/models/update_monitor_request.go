@@ -72,6 +72,9 @@ type UpdateMonitorRequest struct {
 
 	// model
 	Model *Model `json:"model,omitempty" yaml:"model,omitempty"`
+
+	// notification settings
+	NotificationSettings *NotificationSettings `json:"notificationSettings,omitempty" yaml:"notificationSettings,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -109,6 +112,8 @@ func (m *UpdateMonitorRequest) UnmarshalJSON(raw []byte) error {
 		EvaluationInterval *EvaluationInterval `json:"evaluationInterval,omitempty" yaml:"evaluationInterval,omitempty"`
 
 		Model *Model `json:"model,omitempty" yaml:"model,omitempty"`
+
+		NotificationSettings *NotificationSettings `json:"notificationSettings,omitempty" yaml:"notificationSettings,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO0); err != nil {
 		return err
@@ -145,6 +150,8 @@ func (m *UpdateMonitorRequest) UnmarshalJSON(raw []byte) error {
 	m.EvaluationInterval = dataAO0.EvaluationInterval
 
 	m.Model = dataAO0.Model
+
+	m.NotificationSettings = dataAO0.NotificationSettings
 
 	return nil
 }
@@ -185,6 +192,8 @@ func (m UpdateMonitorRequest) MarshalJSON() ([]byte, error) {
 		EvaluationInterval *EvaluationInterval `json:"evaluationInterval,omitempty" yaml:"evaluationInterval,omitempty"`
 
 		Model *Model `json:"model,omitempty" yaml:"model,omitempty"`
+
+		NotificationSettings *NotificationSettings `json:"notificationSettings,omitempty" yaml:"notificationSettings,omitempty"`
 	}
 
 	dataAO0.Annotations = m.Annotations
@@ -218,6 +227,8 @@ func (m UpdateMonitorRequest) MarshalJSON() ([]byte, error) {
 	dataAO0.EvaluationInterval = m.EvaluationInterval
 
 	dataAO0.Model = m.Model
+
+	dataAO0.NotificationSettings = m.NotificationSettings
 
 	jsonDataAO0, errAO0 := swag.WriteJSON(dataAO0)
 	if errAO0 != nil {
@@ -260,6 +271,10 @@ func (m *UpdateMonitorRequest) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateModel(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateNotificationSettings(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -476,6 +491,30 @@ func (m *UpdateMonitorRequest) validateModel(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *UpdateMonitorRequest) validateNotificationSettings(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.NotificationSettings) { // not required
+		return nil
+	}
+
+	if m.NotificationSettings != nil {
+		if err := m.NotificationSettings.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("notificationSettings")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("notificationSettings")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this update monitor request based on the context it is used
 func (m *UpdateMonitorRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -493,6 +532,10 @@ func (m *UpdateMonitorRequest) ContextValidate(ctx context.Context, formats strf
 	}
 
 	if err := m.contextValidateModel(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateNotificationSettings(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -593,6 +636,31 @@ func (m *UpdateMonitorRequest) contextValidateModel(ctx context.Context, formats
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("model")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *UpdateMonitorRequest) contextValidateNotificationSettings(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.NotificationSettings != nil {
+
+		if swag.IsZero(m.NotificationSettings) { // not required
+			return nil
+		}
+
+		if err := m.NotificationSettings.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("notificationSettings")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("notificationSettings")
 			}
 
 			return err
