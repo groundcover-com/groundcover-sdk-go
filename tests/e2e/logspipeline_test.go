@@ -33,10 +33,10 @@ func TestRemoteConfigLogsPipelineCrudE2E(t *testing.T) {
 	}
 
 	// Create parameters
-	createParams := logsPipelineClient.NewCreateConfigParamsWithContext(ctx).WithBody(createBody)
+	createParams := logsPipelineClient.NewCreateLogsPipelineConfigParamsWithContext(ctx).WithBody(createBody)
 
 	// Execute the create request
-	createResp, err := apiClient.LogsPipeline.CreateConfig(createParams, nil)
+	createResp, err := apiClient.LogsPipeline.CreateLogsPipelineConfig(createParams, nil)
 
 	// Assertions
 	require.NoError(t, err, "Create config request failed")
@@ -50,10 +50,10 @@ func TestRemoteConfigLogsPipelineCrudE2E(t *testing.T) {
 	originalConfigCreationTimestamp := createResp.Payload.CreatedTimestamp
 
 	// 2. READ - Get the logs pipeline configuration and verify it matches the created one
-	getParams := logsPipelineClient.NewGetConfigParamsWithContext(ctx)
+	getParams := logsPipelineClient.NewGetLogsPipelineConfigParamsWithContext(ctx)
 
 	// Execute the get request
-	getRespOk, getRespNoContent, err := apiClient.LogsPipeline.GetConfig(getParams, nil)
+	getRespOk, getRespNoContent, err := apiClient.LogsPipeline.GetLogsPipelineConfig(getParams, nil)
 
 	// Assertions
 	require.NoError(t, err, "Get config request failed")
@@ -70,10 +70,10 @@ func TestRemoteConfigLogsPipelineCrudE2E(t *testing.T) {
 	}
 
 	// Create parameters
-	updateParams := logsPipelineClient.NewUpdateConfigParamsWithContext(ctx).WithBody(updateBody)
+	updateParams := logsPipelineClient.NewUpdateLogsPipelineConfigParamsWithContext(ctx).WithBody(updateBody)
 
 	// Execute the update request
-	updateResp, err := apiClient.LogsPipeline.UpdateConfig(updateParams, nil)
+	updateResp, err := apiClient.LogsPipeline.UpdateLogsPipelineConfig(updateParams, nil)
 
 	// Assertions
 	require.NoError(t, err, "Update config request failed")
@@ -85,7 +85,7 @@ func TestRemoteConfigLogsPipelineCrudE2E(t *testing.T) {
 	assert.NotEmpty(t, updateResp.Payload.CreatedTimestamp, "Updated config should have an update timestamp")
 
 	// Verify we can retrieve the updated version
-	getRespOk, getRespNoContent, err = apiClient.LogsPipeline.GetConfig(getParams, nil)
+	getRespOk, getRespNoContent, err = apiClient.LogsPipeline.GetLogsPipelineConfig(getParams, nil)
 	require.NoError(t, err, "Get updated config request failed")
 	require.Nil(t, getRespNoContent, "Shouldnt get a 204 No Content response")
 	require.NotNil(t, getRespOk, "Get config response should not be nil")
@@ -94,8 +94,8 @@ func TestRemoteConfigLogsPipelineCrudE2E(t *testing.T) {
 	assert.Greater(t, updateResp.Payload.CreatedTimestamp, originalConfigCreationTimestamp, "Updated config should have a creation timestamp greater than the original one")
 
 	// 4. DELETE - Delete the logs pipeline configuration
-	deleteParams := logsPipelineClient.NewDeleteConfigParamsWithContext(ctx)
-	_, err = apiClient.LogsPipeline.DeleteConfig(deleteParams, nil)
+	deleteParams := logsPipelineClient.NewDeleteLogsPipelineConfigParamsWithContext(ctx)
+	_, err = apiClient.LogsPipeline.DeleteLogsPipelineConfig(deleteParams, nil)
 
 	// Assertions
 	require.NoError(t, err, "Delete config request failed")
@@ -103,7 +103,7 @@ func TestRemoteConfigLogsPipelineCrudE2E(t *testing.T) {
 	t.Log("Successfully deleted logs pipeline config")
 
 	// Verify the config was deleted by trying to get it - should return 204 No Content
-	getRespOk, getRespNoContent, err = apiClient.LogsPipeline.GetConfig(getParams, nil)
+	getRespOk, getRespNoContent, err = apiClient.LogsPipeline.GetLogsPipelineConfig(getParams, nil)
 	require.NoError(t, err, "Get deleted config request failed")
 	require.Nil(t, getRespNoContent, "Should get a 204 No Content response")
 	require.Equal(t, getRespOk.Payload.Value, "", "Should get the same config value")
