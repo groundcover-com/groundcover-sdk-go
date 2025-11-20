@@ -43,9 +43,6 @@ type TracesSearchRequest struct {
 	// Format: date-time
 	Start *strfmt.DateTime `json:"start"`
 
-	// TryToUseBuckets indicates if the search should be run using buckets
-	TryToUseBuckets bool `json:"tryToUseBuckets,omitempty"`
-
 	// pipeline
 	Pipeline *SQLPipeline `json:"pipeline,omitempty"`
 }
