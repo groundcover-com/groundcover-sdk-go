@@ -31,6 +31,12 @@ func (o *GetMetricsAggregatorConfigReader) ReadResponse(response runtime.ClientR
 			return nil, err
 		}
 		return result, nil
+	case 204:
+		result := NewGetMetricsAggregatorConfigNoContent()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return result, nil
 	case 400:
 		result := NewGetMetricsAggregatorConfigBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -118,6 +124,74 @@ func (o *GetMetricsAggregatorConfigOK) readResponse(response runtime.ClientRespo
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetMetricsAggregatorConfigNoContent creates a GetMetricsAggregatorConfigNoContent with default headers values
+func NewGetMetricsAggregatorConfigNoContent() *GetMetricsAggregatorConfigNoContent {
+	return &GetMetricsAggregatorConfigNoContent{}
+}
+
+/*
+GetMetricsAggregatorConfigNoContent describes a response with status code 204, with default header values.
+
+emptyMetricsAggregatorConfigResponse is used for empty responses
+*/
+type GetMetricsAggregatorConfigNoContent struct {
+	Payload any
+}
+
+// IsSuccess returns true when this get metrics aggregator config no content response has a 2xx status code
+func (o *GetMetricsAggregatorConfigNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get metrics aggregator config no content response has a 3xx status code
+func (o *GetMetricsAggregatorConfigNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get metrics aggregator config no content response has a 4xx status code
+func (o *GetMetricsAggregatorConfigNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get metrics aggregator config no content response has a 5xx status code
+func (o *GetMetricsAggregatorConfigNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get metrics aggregator config no content response a status code equal to that given
+func (o *GetMetricsAggregatorConfigNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
+// Code gets the status code for the get metrics aggregator config no content response
+func (o *GetMetricsAggregatorConfigNoContent) Code() int {
+	return 204
+}
+
+func (o *GetMetricsAggregatorConfigNoContent) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /api/aggregations/v1/metrics/config][%d] getMetricsAggregatorConfigNoContent %s", 204, payload)
+}
+
+func (o *GetMetricsAggregatorConfigNoContent) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /api/aggregations/v1/metrics/config][%d] getMetricsAggregatorConfigNoContent %s", 204, payload)
+}
+
+func (o *GetMetricsAggregatorConfigNoContent) GetPayload() any {
+	return o.Payload
+}
+
+func (o *GetMetricsAggregatorConfigNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

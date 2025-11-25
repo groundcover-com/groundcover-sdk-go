@@ -60,7 +60,7 @@ type ClientService interface {
 
 	DeleteMetricsAggregatorConfig(params *DeleteMetricsAggregatorConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteMetricsAggregatorConfigOK, error)
 
-	GetMetricsAggregatorConfig(params *GetMetricsAggregatorConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMetricsAggregatorConfigOK, error)
+	GetMetricsAggregatorConfig(params *GetMetricsAggregatorConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMetricsAggregatorConfigOK, *GetMetricsAggregatorConfigNoContent, error)
 
 	UpdateMetricsAggregatorConfig(params *UpdateMetricsAggregatorConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateMetricsAggregatorConfigOK, error)
 
@@ -158,7 +158,7 @@ func (a *Client) DeleteMetricsAggregatorConfig(params *DeleteMetricsAggregatorCo
 /*
 GetMetricsAggregatorConfig get metrics aggregator config API
 */
-func (a *Client) GetMetricsAggregatorConfig(params *GetMetricsAggregatorConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMetricsAggregatorConfigOK, error) {
+func (a *Client) GetMetricsAggregatorConfig(params *GetMetricsAggregatorConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMetricsAggregatorConfigOK, *GetMetricsAggregatorConfigNoContent, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetMetricsAggregatorConfigParams()
@@ -181,21 +181,21 @@ func (a *Client) GetMetricsAggregatorConfig(params *GetMetricsAggregatorConfigPa
 	}
 	result, err := a.transport.Submit(op)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	// only one success response has to be checked
-	success, ok := result.(*GetMetricsAggregatorConfigOK)
-	if ok {
-		return success, nil
+	// several success responses have to be checked
+	switch value := result.(type) {
+	case *GetMetricsAggregatorConfigOK:
+		return value, nil, nil
+	case *GetMetricsAggregatorConfigNoContent:
+		return nil, value, nil
 	}
-
-	// unexpected success response.
 
 	// no default response is defined.
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for getMetricsAggregatorConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for aggregations_metrics: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

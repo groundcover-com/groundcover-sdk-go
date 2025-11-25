@@ -61,7 +61,7 @@ func TestRemoteConfigMetricsAggregatorCrudE2E(t *testing.T) {
 	getParams := aggregationsMetricsClient.NewGetMetricsAggregatorConfigParamsWithContext(ctx)
 
 	// Execute the get request
-	getRespOk, err := apiClient.AggregationsMetrics.GetMetricsAggregatorConfig(getParams, nil)
+	getRespOk, _, err := apiClient.AggregationsMetrics.GetMetricsAggregatorConfig(getParams, nil)
 
 	// Assertions
 	require.NoError(t, err, "Get config request failed")
@@ -92,7 +92,7 @@ func TestRemoteConfigMetricsAggregatorCrudE2E(t *testing.T) {
 	assert.NotEmpty(t, updateResp.Payload.CreatedTimestamp, "Updated config should have an update timestamp")
 
 	// Verify we can retrieve the updated version
-	getRespOk, err = apiClient.AggregationsMetrics.GetMetricsAggregatorConfig(getParams, nil)
+	getRespOk, _, err = apiClient.AggregationsMetrics.GetMetricsAggregatorConfig(getParams, nil)
 	require.NoError(t, err, "Get updated config request failed")
 	require.NotNil(t, getRespOk, "Get config response should not be nil")
 	require.NotNil(t, getRespOk.Payload, "Get config response payload should not be nil")
@@ -109,7 +109,7 @@ func TestRemoteConfigMetricsAggregatorCrudE2E(t *testing.T) {
 	t.Log("Successfully deleted metrics aggregator config")
 
 	// Verify the config was deleted by trying to get it - should return 204 No Content
-	getRespOk, err = apiClient.AggregationsMetrics.GetMetricsAggregatorConfig(getParams, nil)
+	getRespOk, _, err = apiClient.AggregationsMetrics.GetMetricsAggregatorConfig(getParams, nil)
 	require.NoError(t, err, "Get deleted config request failed")
 	require.Equal(t, getRespOk.Payload.Value, "", "Should get an empty config value")
 }
