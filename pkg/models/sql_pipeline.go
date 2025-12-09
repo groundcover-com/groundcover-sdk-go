@@ -55,6 +55,9 @@ type SQLPipeline struct {
 
 	// join
 	Join *Join `json:"join,omitempty" yaml:"join,omitempty"`
+
+	// limit by
+	LimitBy *LimitBy `json:"limitBy,omitempty" yaml:"limitBy,omitempty"`
 }
 
 // Validate validates this Sql pipeline
@@ -94,6 +97,10 @@ func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateJoin(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLimitBy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -345,6 +352,29 @@ func (m *SQLPipeline) validateJoin(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SQLPipeline) validateLimitBy(formats strfmt.Registry) error {
+	if swag.IsZero(m.LimitBy) { // not required
+		return nil
+	}
+
+	if m.LimitBy != nil {
+		if err := m.LimitBy.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("limitBy")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("limitBy")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this Sql pipeline based on the context it is used
 func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -382,6 +412,10 @@ func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Regist
 	}
 
 	if err := m.contextValidateJoin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateLimitBy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -627,6 +661,31 @@ func (m *SQLPipeline) contextValidateJoin(ctx context.Context, formats strfmt.Re
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("join")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SQLPipeline) contextValidateLimitBy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.LimitBy != nil {
+
+		if swag.IsZero(m.LimitBy) { // not required
+			return nil
+		}
+
+		if err := m.LimitBy.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("limitBy")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("limitBy")
 			}
 
 			return err
