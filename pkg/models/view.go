@@ -36,6 +36,12 @@ type View struct {
 	// name
 	Name string `json:"name,omitempty"`
 
+	// origin Id
+	OriginID string `json:"originId,omitempty"`
+
+	// origin type
+	OriginType string `json:"originType,omitempty"`
+
 	// owner
 	Owner string `json:"owner,omitempty"`
 

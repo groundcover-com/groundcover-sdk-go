@@ -34,6 +34,12 @@ type DataIntegrationConfig struct {
 	// is paused
 	IsPaused bool `json:"is_paused,omitempty"`
 
+	// name
+	Name string `json:"name,omitempty"`
+
+	// tags
+	Tags map[string]any `json:"tags,omitempty"`
+
 	// type
 	Type string `json:"type,omitempty"`
 

@@ -25,6 +25,12 @@ type CreateDataIntegrationConfigRequest struct {
 
 	// is paused
 	IsPaused bool `json:"is_paused,omitempty"`
+
+	// name
+	Name string `json:"name,omitempty"`
+
+	// tags
+	Tags map[string]any `json:"tags,omitempty"`
 }
 
 // Validate validates this create data integration config request
