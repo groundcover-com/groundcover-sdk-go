@@ -3,6 +3,7 @@ package e2e
 import (
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/integrations"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
 	"github.com/stretchr/testify/assert"
@@ -77,8 +78,11 @@ func TestCloudwatch(t *testing.T) {
 	ctx, apiClient := setupTestClient(t)
 
 	// 1. CREATE (without name/tags - backward compatibility)
+	// Use unique name to avoid conflicts with other test runs
+	uniqueName := "e2e-cloudwatch-" + uuid.New().String()
 	createBody := &models.CreateDataIntegrationConfigRequest{
 		Config: testCloudwatchConfig,
+		Name:   uniqueName,
 	}
 	createParams := integrations.NewCreateDataIntegrationConfigParamsWithContext(ctx).WithType("cloudwatch").WithBody(createBody)
 	createResp, err := apiClient.Integrations.CreateDataIntegrationConfig(createParams, nil)
@@ -106,6 +110,7 @@ func TestCloudwatch(t *testing.T) {
 	// 3. UPDATE
 	updateBody := &models.CreateDataIntegrationConfigRequest{
 		Config: testCloudwatchConfigUpdated,
+		Name:   uniqueName,
 	}
 	updateParams := integrations.NewUpdateDataIntegrationConfigParamsWithContext(ctx).WithType("cloudwatch").WithID(originalConfigID).WithBody(updateBody)
 	updateResp, err := apiClient.Integrations.UpdateDataIntegrationConfig(updateParams, nil)
@@ -139,7 +144,7 @@ func TestCloudwatch(t *testing.T) {
 func TestCloudwatchWithNameAndTags(t *testing.T) {
 	ctx, apiClient := setupTestClient(t)
 
-	testName := "e2e-test-cloudwatch"
+	testName := "e2e-test-cloudwatch-tags-" + uuid.New().String()
 	testTags := map[string]interface{}{
 		"env":     "test",
 		"purpose": "e2e-testing",
@@ -181,7 +186,7 @@ func TestCloudwatchWithNameAndTags(t *testing.T) {
 	// assert.Equal(t, testTags, getRespOk.Payload.Tags, "Retrieved config tags should match the created one")
 
 	// 3. UPDATE with new name and tags
-	updatedName := "e2e-test-cloudwatch-updated"
+	updatedName := "e2e-test-cloudwatch-tags-updated-" + uuid.New().String()
 	updatedTags := map[string]interface{}{
 		"env":     "test-updated",
 		"purpose": "e2e-testing-updated",
