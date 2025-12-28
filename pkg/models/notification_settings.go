@@ -8,10 +8,8 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // NotificationSettings NotificationSettings defines the notification settings for the monitor.
@@ -20,33 +18,11 @@ import (
 type NotificationSettings struct {
 
 	// renotification interval
-	// Format: duration
-	RenotificationInterval strfmt.Duration `json:"renotificationInterval,omitempty"`
+	RenotificationInterval RenotificationDuration `json:"renotificationInterval,omitempty"`
 }
 
 // Validate validates this notification settings
 func (m *NotificationSettings) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateRenotificationInterval(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *NotificationSettings) validateRenotificationInterval(formats strfmt.Registry) error {
-	if swag.IsZero(m.RenotificationInterval) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("renotificationInterval", "body", "duration", m.RenotificationInterval.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 
