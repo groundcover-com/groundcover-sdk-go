@@ -41,7 +41,7 @@ func TestEventsSearchE2E(t *testing.T) {
 		require.NotNil(t, resp.Payload, "Events search response payload should not be nil")
 
 		var result struct {
-			Count int64 `json:"count()"`
+			Count int64 `json:"count"`
 		}
 
 		payloadSlice, ok := resp.Payload.([]interface{})
