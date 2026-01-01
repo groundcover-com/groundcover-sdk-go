@@ -18,7 +18,7 @@ import (
 type NotificationSettings struct {
 
 	// renotification interval
-	RenotificationInterval RenotificationDuration `json:"renotificationInterval,omitempty"`
+	RenotificationInterval RenotificationDuration `json:"renotificationInterval,omitempty" yaml:"renotificationInterval,omitempty"`
 }
 
 // Validate validates this notification settings
