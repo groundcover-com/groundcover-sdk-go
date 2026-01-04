@@ -23,6 +23,9 @@ type Description struct {
 	// options
 	Options any `json:"options,omitempty"`
 
+	// supported actions
+	SupportedActions []string `json:"supported_actions"`
+
 	// version
 	Version int64 `json:"version,omitempty"`
 }
