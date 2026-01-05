@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	monitors "github.com/groundcover-com/groundcover-sdk-go/pkg/client/monitors"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
-	"github.com/groundcover-com/groundcover-sdk-go/pkg/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -25,17 +24,28 @@ func TestSilencesEndpoints(t *testing.T) {
 		startsAt := strfmt.DateTime(time.Now().Add(1 * time.Minute))           // Start in 1 minute
 		endsAt := strfmt.DateTime(time.Now().Add(1*time.Hour + 1*time.Minute)) // End in 1 hour and 1 minute
 
-		// Create matchers for the silence using the API v1 format
-		matchers := []*models.Matcher{
+		// Create matchers for the silence using SilenceMatcher format
+		isEqualTrue := true
+		isEqualFalse := false
+		isRegexTrue := true
+		isRegexFalse := false
+		matchers := []*models.SilenceMatcher{
 			{
-				Name:  "service",
-				Value: "test-service",
-				Type:  types.MatchTypeEqual,
+				Name:    "service",
+				Value:   "test-equal",
+				IsEqual: &isEqualTrue,
+				IsRegex: &isRegexFalse,
 			},
 			{
-				Name:  "environment",
-				Value: "test",
-				Type:  types.MatchTypeEqual,
+				Name:    "environment",
+				Value:   "*test-not-equal-regex*",
+				IsEqual: &isEqualFalse,
+				IsRegex: &isRegexTrue,
+			},
+			{
+				Name:  "workload",
+				Value: "test-empty-equal",
+				// IsEqual and IsRegex are nil (omitted from JSON, will default to true for IsEqual)
 			},
 		}
 
@@ -147,16 +157,20 @@ func TestSilencesEndpoints(t *testing.T) {
 		newEndsAt := strfmt.DateTime(time.Now().Add(2*time.Hour + 2*time.Minute)) // End in 2 hours and 2 minutes
 
 		// Updated matchers
-		updatedMatchers := []*models.Matcher{
+		isEqualTrue := true
+		isRegexFalse := false
+		updatedMatchers := []*models.SilenceMatcher{
 			{
-				Name:  "service",
-				Value: "updated-test-service",
-				Type:  types.MatchTypeEqual,
+				Name:    "service",
+				Value:   "updated-test-service",
+				IsEqual: &isEqualTrue,
+				IsRegex: &isRegexFalse,
 			},
 			{
-				Name:  "environment",
-				Value: "production",
-				Type:  types.MatchTypeEqual,
+				Name:    "environment",
+				Value:   "production",
+				IsEqual: &isEqualTrue,
+				IsRegex: &isRegexFalse,
 			},
 		}
 

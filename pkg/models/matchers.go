@@ -20,7 +20,7 @@ import (
 // slice. Note that some users of Matchers might require it to be sorted.
 //
 // swagger:model Matchers
-type Matchers []*Matcher
+type Matchers []*SilenceMatcher
 
 // Validate validates this matchers
 func (m Matchers) Validate(formats strfmt.Registry) error {
