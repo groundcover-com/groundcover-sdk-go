@@ -32,7 +32,7 @@ type LogsSearchRequest struct {
 	// Extra filters to apply on the logs
 	Filters string `json:"filters,omitempty"`
 
-	// LogsQL Query to filter logs
+	// GCQL Query to filter logs
 	Query string `json:"query,omitempty"`
 
 	// Sources to filter logs

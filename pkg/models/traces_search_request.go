@@ -32,7 +32,7 @@ type TracesSearchRequest struct {
 	// Extra filters to apply on the traces
 	Filters string `json:"filters,omitempty"`
 
-	// LogsQL Query to filter traces
+	// GCQL Query to filter traces
 	Query string `json:"query,omitempty"`
 
 	// Sources to filter traces

@@ -29,7 +29,7 @@ type QueryRequest struct {
 	// Format: date-time
 	End strfmt.DateTime `json:"End,omitempty"`
 
-	// LogsQL filters to apply
+	// GCQL filters to apply
 	Filters string `json:"Filters,omitempty"`
 
 	// pipeline

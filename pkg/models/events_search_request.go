@@ -32,7 +32,7 @@ type EventsSearchRequest struct {
 	// Extra filters to apply on the events
 	Filters string `json:"filters,omitempty"`
 
-	// LogsQL Query to filter events
+	// GCQL Query to filter events
 	Query string `json:"query,omitempty"`
 
 	// Sources to filter events
