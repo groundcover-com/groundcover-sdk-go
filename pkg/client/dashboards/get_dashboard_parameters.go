@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewGetDashboardParams creates a new GetDashboardParams object,
@@ -60,6 +61,12 @@ GetDashboardParams contains all the parameters to send to the API endpoint
 	Typically these are written to a http.Request.
 */
 type GetDashboardParams struct {
+
+	/* ExcludePreset.
+
+	   When true, excludes the preset field from the response
+	*/
+	ExcludePreset *bool
 
 	/* ID.
 
@@ -120,6 +127,17 @@ func (o *GetDashboardParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithExcludePreset adds the excludePreset to the get dashboard params
+func (o *GetDashboardParams) WithExcludePreset(excludePreset *bool) *GetDashboardParams {
+	o.SetExcludePreset(excludePreset)
+	return o
+}
+
+// SetExcludePreset adds the excludePreset to the get dashboard params
+func (o *GetDashboardParams) SetExcludePreset(excludePreset *bool) {
+	o.ExcludePreset = excludePreset
+}
+
 // WithID adds the id to the get dashboard params
 func (o *GetDashboardParams) WithID(id string) *GetDashboardParams {
 	o.SetID(id)
@@ -138,6 +156,23 @@ func (o *GetDashboardParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		return err
 	}
 	var res []error
+
+	if o.ExcludePreset != nil {
+
+		// query param excludePreset
+		var qrExcludePreset bool
+
+		if o.ExcludePreset != nil {
+			qrExcludePreset = *o.ExcludePreset
+		}
+		qExcludePreset := swag.FormatBool(qrExcludePreset)
+		if qExcludePreset != "" {
+
+			if err := r.SetQueryParam("excludePreset", qExcludePreset); err != nil {
+				return err
+			}
+		}
+	}
 
 	// path param id
 	if err := r.SetPathParam("id", o.ID); err != nil {
