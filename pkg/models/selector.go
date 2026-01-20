@@ -46,6 +46,9 @@ type Selector struct {
 
 	// type
 	Type string `json:"type,omitempty" yaml:"type,omitempty"`
+
+	// condition filter
+	ConditionFilter *Group `json:"conditionFilter,omitempty" yaml:"conditionFilter,omitempty"`
 }
 
 // Validate validates this selector
@@ -53,6 +56,10 @@ func (m *Selector) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateProcessors(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateConditionFilter(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -92,11 +99,38 @@ func (m *Selector) validateProcessors(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Selector) validateConditionFilter(formats strfmt.Registry) error {
+	if swag.IsZero(m.ConditionFilter) { // not required
+		return nil
+	}
+
+	if m.ConditionFilter != nil {
+		if err := m.ConditionFilter.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("conditionFilter")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("conditionFilter")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this selector based on the context it is used
 func (m *Selector) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateProcessors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateConditionFilter(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -130,6 +164,31 @@ func (m *Selector) contextValidateProcessors(ctx context.Context, formats strfmt
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *Selector) contextValidateConditionFilter(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ConditionFilter != nil {
+
+		if swag.IsZero(m.ConditionFilter) { // not required
+			return nil
+		}
+
+		if err := m.ConditionFilter.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("conditionFilter")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("conditionFilter")
+			}
+
+			return err
+		}
 	}
 
 	return nil
