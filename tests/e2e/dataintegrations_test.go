@@ -15,6 +15,7 @@ const testCloudwatchConfig = `{
   "name": "test-cloudwatch",
   "scrapeInterval": "5m",
   "stsRegion": "us-east-1",
+  "exporters": ["prometheus"],
   "regions": ["us-east-1"],
   "roleArn": "arn:aws:iam::123456789012:role/test-role",
   "awsMetrics": [
@@ -46,6 +47,7 @@ const testCloudwatchConfigUpdated = `{
   "name": "test-cloudwatch",
   "scrapeInterval": "5m",
   "stsRegion": "us-east-2",
+  "exporters": ["prometheus"],
   "regions": ["us-east-2"],
   "roleArn": "arn:aws:iam::123456789012:role/test-role",
   "awsMetrics": [
