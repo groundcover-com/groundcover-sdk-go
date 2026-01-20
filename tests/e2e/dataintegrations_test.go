@@ -13,7 +13,6 @@ import (
 const testCloudwatchConfig = `{
   "version": 1,
   "name": "test-cloudwatch",
-  "exporters": ["prometheus"],
   "scrapeInterval": "5m",
   "stsRegion": "us-east-1",
   "regions": ["us-east-1"],
@@ -45,7 +44,6 @@ const testCloudwatchConfig = `{
 const testCloudwatchConfigUpdated = `{
   "version": 1,
   "name": "test-cloudwatch",
-  "exporters": ["prometheus"],
   "scrapeInterval": "5m",
   "stsRegion": "us-east-2",
   "regions": ["us-east-2"],
