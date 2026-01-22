@@ -44,6 +44,9 @@ type SQLPipeline struct {
 	// selectors
 	Selectors []*Selector `json:"selectors" yaml:"selectors"`
 
+	// transforms
+	Transforms []*Transform `json:"transforms" yaml:"transforms"`
+
 	// filters
 	Filters *Group `json:"filters,omitempty" yaml:"filters,omitempty"`
 
@@ -55,9 +58,6 @@ type SQLPipeline struct {
 
 	// join
 	Join *Join `json:"join,omitempty" yaml:"join,omitempty"`
-
-	// json unpack
-	JSONUnpack *JSONUnpack `json:"jsonUnpack,omitempty" yaml:"jsonUnpack,omitempty"`
 
 	// limit by
 	LimitBy *LimitBy `json:"limitBy,omitempty" yaml:"limitBy,omitempty"`
@@ -87,6 +87,10 @@ func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateTransforms(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateFilters(formats); err != nil {
 		res = append(res, err)
 	}
@@ -100,10 +104,6 @@ func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateJoin(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateJSONUnpack(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -267,6 +267,36 @@ func (m *SQLPipeline) validateSelectors(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SQLPipeline) validateTransforms(formats strfmt.Registry) error {
+	if swag.IsZero(m.Transforms) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Transforms); i++ {
+		if swag.IsZero(m.Transforms[i]) { // not required
+			continue
+		}
+
+		if m.Transforms[i] != nil {
+			if err := m.Transforms[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("transforms" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("transforms" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 func (m *SQLPipeline) validateFilters(formats strfmt.Registry) error {
 	if swag.IsZero(m.Filters) { // not required
 		return nil
@@ -359,29 +389,6 @@ func (m *SQLPipeline) validateJoin(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SQLPipeline) validateJSONUnpack(formats strfmt.Registry) error {
-	if swag.IsZero(m.JSONUnpack) { // not required
-		return nil
-	}
-
-	if m.JSONUnpack != nil {
-		if err := m.JSONUnpack.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("jsonUnpack")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("jsonUnpack")
-			}
-
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (m *SQLPipeline) validateLimitBy(formats strfmt.Registry) error {
 	if swag.IsZero(m.LimitBy) { // not required
 		return nil
@@ -429,6 +436,10 @@ func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateTransforms(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateFilters(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -442,10 +453,6 @@ func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Regist
 	}
 
 	if err := m.contextValidateJoin(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateJSONUnpack(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -604,6 +611,35 @@ func (m *SQLPipeline) contextValidateSelectors(ctx context.Context, formats strf
 	return nil
 }
 
+func (m *SQLPipeline) contextValidateTransforms(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Transforms); i++ {
+
+		if m.Transforms[i] != nil {
+
+			if swag.IsZero(m.Transforms[i]) { // not required
+				return nil
+			}
+
+			if err := m.Transforms[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("transforms" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("transforms" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 func (m *SQLPipeline) contextValidateFilters(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Filters != nil {
@@ -695,31 +731,6 @@ func (m *SQLPipeline) contextValidateJoin(ctx context.Context, formats strfmt.Re
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("join")
-			}
-
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *SQLPipeline) contextValidateJSONUnpack(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.JSONUnpack != nil {
-
-		if swag.IsZero(m.JSONUnpack) { // not required
-			return nil
-		}
-
-		if err := m.JSONUnpack.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("jsonUnpack")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("jsonUnpack")
 			}
 
 			return err
