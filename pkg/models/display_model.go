@@ -7,9 +7,12 @@ package models
 
 import (
 	"context"
+	"encoding/json"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // DisplayModel DisplayModel controls how the monitor is presented.
@@ -28,10 +31,62 @@ type DisplayModel struct {
 
 	// resource header labels
 	ResourceHeaderLabels []string `json:"resourceHeaderLabels" yaml:"resourceHeaderLabels"`
+
+	// Template language for header and description fields. If omitted or empty, legacy Go template syntax is used.
+	// Enum: ["jinja2"]
+	TemplateLanguage string `json:"templateLanguage,omitempty" yaml:"templateLanguage,omitempty"`
 }
 
 // Validate validates this display model
 func (m *DisplayModel) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateTemplateLanguage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+var displayModelTypeTemplateLanguagePropEnum []any
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["jinja2"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		displayModelTypeTemplateLanguagePropEnum = append(displayModelTypeTemplateLanguagePropEnum, v)
+	}
+}
+
+const (
+
+	// DisplayModelTemplateLanguageJinja2 captures enum value "jinja2"
+	DisplayModelTemplateLanguageJinja2 string = "jinja2"
+)
+
+// prop value enum
+func (m *DisplayModel) validateTemplateLanguageEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, displayModelTypeTemplateLanguagePropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *DisplayModel) validateTemplateLanguage(formats strfmt.Registry) error {
+	if swag.IsZero(m.TemplateLanguage) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateTemplateLanguageEnum("templateLanguage", "body", m.TemplateLanguage); err != nil {
+		return err
+	}
+
 	return nil
 }
 
