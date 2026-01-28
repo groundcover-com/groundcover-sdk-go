@@ -47,6 +47,9 @@ type SQLPipeline struct {
 	// transforms
 	Transforms []*Transform `json:"transforms" yaml:"transforms"`
 
+	// domain
+	Domain DomainType `json:"domain,omitempty" yaml:"domain,omitempty"`
+
 	// filters
 	Filters *Group `json:"filters,omitempty" yaml:"filters,omitempty"`
 
@@ -88,6 +91,10 @@ func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateTransforms(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDomain(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -297,6 +304,27 @@ func (m *SQLPipeline) validateTransforms(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SQLPipeline) validateDomain(formats strfmt.Registry) error {
+	if swag.IsZero(m.Domain) { // not required
+		return nil
+	}
+
+	if err := m.Domain.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("domain")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("domain")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
 func (m *SQLPipeline) validateFilters(formats strfmt.Registry) error {
 	if swag.IsZero(m.Filters) { // not required
 		return nil
@@ -437,6 +465,10 @@ func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Regist
 	}
 
 	if err := m.contextValidateTransforms(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateDomain(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -635,6 +667,28 @@ func (m *SQLPipeline) contextValidateTransforms(ctx context.Context, formats str
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *SQLPipeline) contextValidateDomain(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Domain) { // not required
+		return nil
+	}
+
+	if err := m.Domain.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("domain")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("domain")
+		}
+
+		return err
 	}
 
 	return nil
