@@ -49,6 +49,9 @@ type Selector struct {
 
 	// condition filter
 	ConditionFilter *Group `json:"conditionFilter,omitempty" yaml:"conditionFilter,omitempty"`
+
+	// window spec
+	WindowSpec *WindowSpec `json:"windowSpec,omitempty" yaml:"windowSpec,omitempty"`
 }
 
 // Validate validates this selector
@@ -60,6 +63,10 @@ func (m *Selector) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateConditionFilter(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateWindowSpec(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -122,6 +129,29 @@ func (m *Selector) validateConditionFilter(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Selector) validateWindowSpec(formats strfmt.Registry) error {
+	if swag.IsZero(m.WindowSpec) { // not required
+		return nil
+	}
+
+	if m.WindowSpec != nil {
+		if err := m.WindowSpec.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("windowSpec")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("windowSpec")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this selector based on the context it is used
 func (m *Selector) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -131,6 +161,10 @@ func (m *Selector) ContextValidate(ctx context.Context, formats strfmt.Registry)
 	}
 
 	if err := m.contextValidateConditionFilter(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateWindowSpec(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -185,6 +219,31 @@ func (m *Selector) contextValidateConditionFilter(ctx context.Context, formats s
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("conditionFilter")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Selector) contextValidateWindowSpec(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.WindowSpec != nil {
+
+		if swag.IsZero(m.WindowSpec) { // not required
+			return nil
+		}
+
+		if err := m.WindowSpec.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("windowSpec")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("windowSpec")
 			}
 
 			return err
