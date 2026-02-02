@@ -29,9 +29,9 @@ type ValuesRequest struct {
 	EnableStream bool `json:"enableStream,omitempty"`
 
 	// End time for the search
-	// Required: true
+	// Required: true for logs, traces, events, issues; not required for entities
 	// Format: date-time
-	End *strfmt.DateTime `json:"end"`
+	End strfmt.DateTime `json:"end,omitempty"`
 
 	// Filter to apply to the search values
 	Filter string `json:"filter,omitempty"`
@@ -48,13 +48,13 @@ type ValuesRequest struct {
 	Sources []*Condition `json:"sources"`
 
 	// Start time for the search
-	// Required: true
+	// Required: true for logs, traces, events, issues; not required for entities
 	// Format: date-time
-	Start *strfmt.DateTime `json:"start"`
+	Start strfmt.DateTime `json:"start,omitempty"`
 
 	// Type of the search values
 	// Required: true
-	// Enum: ["logs"," traces"," events"," issues"]
+	// Enum: ["logs","traces","events","issues","entities"]
 	Type *string `json:"type"`
 
 	// filter group
@@ -134,9 +134,8 @@ func (m *ValuesRequest) validateConditions(formats strfmt.Registry) error {
 }
 
 func (m *ValuesRequest) validateEnd(formats strfmt.Registry) error {
-
-	if err := validate.Required("end", "body", m.End); err != nil {
-		return err
+	if swag.IsZero(m.End) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("end", "body", "date-time", m.End.String(), formats); err != nil {
@@ -195,9 +194,8 @@ func (m *ValuesRequest) validateSources(formats strfmt.Registry) error {
 }
 
 func (m *ValuesRequest) validateStart(formats strfmt.Registry) error {
-
-	if err := validate.Required("start", "body", m.Start); err != nil {
-		return err
+	if swag.IsZero(m.Start) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("start", "body", "date-time", m.Start.String(), formats); err != nil {
@@ -211,7 +209,7 @@ var valuesRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["logs"," traces"," events"," issues"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -224,14 +222,17 @@ const (
 	// ValuesRequestTypeLogs captures enum value "logs"
 	ValuesRequestTypeLogs string = "logs"
 
-	// ValuesRequestTypeTraces captures enum value " traces"
-	ValuesRequestTypeTraces string = " traces"
+	// ValuesRequestTypeTraces captures enum value "traces"
+	ValuesRequestTypeTraces string = "traces"
 
-	// ValuesRequestTypeEvents captures enum value " events"
-	ValuesRequestTypeEvents string = " events"
+	// ValuesRequestTypeEvents captures enum value "events"
+	ValuesRequestTypeEvents string = "events"
 
-	// ValuesRequestTypeIssues captures enum value " issues"
-	ValuesRequestTypeIssues string = " issues"
+	// ValuesRequestTypeIssues captures enum value "issues"
+	ValuesRequestTypeIssues string = "issues"
+
+	// ValuesRequestTypeEntities captures enum value "entities"
+	ValuesRequestTypeEntities string = "entities"
 )
 
 // prop value enum
