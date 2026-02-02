@@ -12,6 +12,7 @@ import (
 
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/aggregations_metrics"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/apikeys"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/connected_apps"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/dashboards"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/ingestionkeys"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/integrations"
@@ -20,6 +21,7 @@ import (
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/logs_pipeline"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/monitors"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/notification_routes"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/policies"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/search"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/secret"
@@ -72,6 +74,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Groundcove
 	cli.Transport = transport
 	cli.AggregationsMetrics = aggregations_metrics.New(transport, formats)
 	cli.Apikeys = apikeys.New(transport, formats)
+	cli.ConnectedApps = connected_apps.New(transport, formats)
 	cli.Dashboards = dashboards.New(transport, formats)
 	cli.Ingestionkeys = ingestionkeys.New(transport, formats)
 	cli.Integrations = integrations.New(transport, formats)
@@ -80,6 +83,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Groundcove
 	cli.LogsPipeline = logs_pipeline.New(transport, formats)
 	cli.Metrics = metrics.New(transport, formats)
 	cli.Monitors = monitors.New(transport, formats)
+	cli.NotificationRoutes = notification_routes.New(transport, formats)
 	cli.Policies = policies.New(transport, formats)
 	cli.Search = search.New(transport, formats)
 	cli.Secret = secret.New(transport, formats)
@@ -134,6 +138,8 @@ type GroundcoverAPI struct {
 
 	Apikeys apikeys.ClientService
 
+	ConnectedApps connected_apps.ClientService
+
 	Dashboards dashboards.ClientService
 
 	Ingestionkeys ingestionkeys.ClientService
@@ -149,6 +155,8 @@ type GroundcoverAPI struct {
 	Metrics metrics.ClientService
 
 	Monitors monitors.ClientService
+
+	NotificationRoutes notification_routes.ClientService
 
 	Policies policies.ClientService
 
@@ -170,6 +178,7 @@ func (c *GroundcoverAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.AggregationsMetrics.SetTransport(transport)
 	c.Apikeys.SetTransport(transport)
+	c.ConnectedApps.SetTransport(transport)
 	c.Dashboards.SetTransport(transport)
 	c.Ingestionkeys.SetTransport(transport)
 	c.Integrations.SetTransport(transport)
@@ -178,6 +187,7 @@ func (c *GroundcoverAPI) SetTransport(transport runtime.ClientTransport) {
 	c.LogsPipeline.SetTransport(transport)
 	c.Metrics.SetTransport(transport)
 	c.Monitors.SetTransport(transport)
+	c.NotificationRoutes.SetTransport(transport)
 	c.Policies.SetTransport(transport)
 	c.Search.SetTransport(transport)
 	c.Secret.SetTransport(transport)
