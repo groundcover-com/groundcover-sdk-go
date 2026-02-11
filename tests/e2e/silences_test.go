@@ -73,7 +73,7 @@ func TestSilencesEndpoints(t *testing.T) {
 		// Access the UUID from the silence payload
 		require.NotEmpty(t, createResp.Payload.UUID, "Created silence UUID should not be empty")
 
-		createdSilenceID = createResp.Payload.UUID.String()
+		createdSilenceID = string(createResp.Payload.UUID)
 		createdSilenceComment = silenceComment
 		t.Logf("Created silence with ID: %s", createdSilenceID)
 	})
@@ -94,13 +94,13 @@ func TestSilencesEndpoints(t *testing.T) {
 		require.NoError(t, err, "Failed to get silence")
 		require.NotNil(t, getResp, "Get silence response should not be nil")
 		require.NotNil(t, getResp.Payload, "Get silence response payload should not be nil")
-		require.NotNil(t, getResp.Payload.UUID, "Get silence response payload UUID should not be nil")
+		require.NotEmpty(t, getResp.Payload.UUID, "Get silence response payload UUID should not be empty")
 
 		// Assert fields from the Get response
-		require.Equal(t, createdSilenceID, getResp.Payload.UUID.String(), "Get silence UUID mismatch")
+		require.Equal(t, createdSilenceID, string(getResp.Payload.UUID), "Get silence UUID mismatch")
 		require.Equal(t, createdSilenceComment, getResp.Payload.Comment, "Get silence comment mismatch")
 		require.NotEmpty(t, getResp.Payload.Matchers, "Get silence should have matchers")
-		t.Logf("Successfully retrieved silence with ID: %s", getResp.Payload.UUID.String())
+		t.Logf("Successfully retrieved silence with ID: %s", string(getResp.Payload.UUID))
 	})
 
 	t.Run("Get All Silences", func(t *testing.T) {
@@ -121,7 +121,7 @@ func TestSilencesEndpoints(t *testing.T) {
 		// Check if the created silence is in the list
 		found := false
 		for _, silence := range getAllResp.Payload {
-			if silence.UUID.String() == createdSilenceID {
+			if string(silence.UUID) == createdSilenceID {
 				found = true
 				t.Logf("Found created silence %s in the list", createdSilenceID)
 				require.Equal(t, createdSilenceComment, silence.Comment, "List silence comment mismatch")
@@ -148,7 +148,7 @@ func TestSilencesEndpoints(t *testing.T) {
 
 	t.Run("Update Silence", func(t *testing.T) {
 		if createdSilenceID == "" {
-			t.Skip("Skipping Update Silence test because create failed or didn't run")
+			t.Skip("Skipping Update Silence test because create failed or didn't run test create silence")
 		}
 
 		// Define updates
@@ -206,7 +206,7 @@ func TestSilencesEndpoints(t *testing.T) {
 		require.NotNil(t, getUpdatedResp.Payload, "Get updated silence response payload should not be nil")
 
 		// Verify updated fields
-		require.Equal(t, createdSilenceID, getUpdatedResp.Payload.UUID.String(), "Get silence UUID mismatch after update")
+		require.Equal(t, createdSilenceID, string(getUpdatedResp.Payload.UUID), "Get silence UUID mismatch after update")
 		require.Equal(t, updatedComment, getUpdatedResp.Payload.Comment, "Get silence comment mismatch after update")
 		require.NotEmpty(t, getUpdatedResp.Payload.Matchers, "Updated silence should have matchers")
 

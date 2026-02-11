@@ -33,8 +33,8 @@ type GetEventsOverTimeRequest struct {
 	// Maximum number of events to return.
 	Limit uint32 `json:"limit,omitempty"`
 
-	// search
-	Search string `json:"search,omitempty"`
+	// query
+	Query string `json:"query,omitempty"`
 
 	// Number of events to skip (for pagination).
 	Skip uint32 `json:"skip,omitempty"`
