@@ -23,6 +23,7 @@ type UpdateConnectedAppRequest struct {
 	// The connected app-specific data. Schema depends on type field:
 	// For type "slack-webhook": use SlackWebhookData schema
 	// For type "pagerduty": use PagerDutyData schema
+	// For type "opsgenie": use OpsGenieData schema
 	// Required: true
 	Data map[string]any `json:"data"`
 
@@ -34,7 +35,7 @@ type UpdateConnectedAppRequest struct {
 	// The type of the connected app
 	// Example: slack-webhook
 	// Required: true
-	// Enum: ["slack-webhook","pagerduty"]
+	// Enum: ["slack-webhook","pagerduty","opsgenie"]
 	Type *string `json:"type"`
 }
 
@@ -90,7 +91,7 @@ var updateConnectedAppRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["slack-webhook","pagerduty"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["slack-webhook","pagerduty","opsgenie"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -105,6 +106,9 @@ const (
 
 	// UpdateConnectedAppRequestTypePagerduty captures enum value "pagerduty"
 	UpdateConnectedAppRequestTypePagerduty string = "pagerduty"
+
+	// UpdateConnectedAppRequestTypeOpsgenie captures enum value "opsgenie"
+	UpdateConnectedAppRequestTypeOpsgenie string = "opsgenie"
 )
 
 // prop value enum

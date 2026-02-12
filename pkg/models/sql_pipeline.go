@@ -41,6 +41,9 @@ type SQLPipeline struct {
 	// order by
 	OrderBy []*SearchOrderBy `json:"orderBy" yaml:"orderBy"`
 
+	// sample
+	Sample uint64 `json:"sample,omitempty" yaml:"sample,omitempty"`
+
 	// selectors
 	Selectors []*Selector `json:"selectors" yaml:"selectors"`
 

@@ -24,7 +24,7 @@ type TracesSearchRequest struct {
 	// EnableStream indicates if the response should be streamed
 	EnableStream bool `json:"enableStream,omitempty"`
 
-	// End time of the search range
+	// End time of the request range
 	// Required: true
 	// Format: date-time
 	End *strfmt.DateTime `json:"end"`
@@ -38,7 +38,7 @@ type TracesSearchRequest struct {
 	// Sources to filter traces
 	Sources []*Condition `json:"sources"`
 
-	// Start time of the search range
+	// Start time of the request range
 	// Required: true
 	// Format: date-time
 	Start *strfmt.DateTime `json:"start"`

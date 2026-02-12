@@ -25,7 +25,7 @@ type GetEventsOverTimeRequest struct {
 	// conditions
 	Conditions []*Condition `json:"conditions"`
 
-	// End timestamp for the query range.
+	// End time of the request range
 	// Required: true
 	// Format: date-time
 	End *strfmt.DateTime `json:"end"`
@@ -52,7 +52,7 @@ type GetEventsOverTimeRequest struct {
 	// Source filters for events.
 	Sources []*Condition `json:"sources"`
 
-	// Start timestamp for the query range.
+	// Start time of the request range
 	// Required: true
 	// Format: date-time
 	Start *strfmt.DateTime `json:"start"`
