@@ -17,6 +17,9 @@ import (
 // swagger:model Processor
 type Processor struct {
 
+	// alias type
+	AliasType string `json:"aliasType,omitempty" yaml:"aliasType,omitempty"`
+
 	// args
 	Args []string `json:"args" yaml:"args"`
 

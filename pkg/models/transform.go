@@ -20,8 +20,6 @@ import (
 //
 // Requirements by transform type:
 // json_unpack: Args is optional (not used)
-// datetime_extract: Args is REQUIRED. Args[0] must be the date part (e.g., 'hour', 'minute', 'month').
-// Args[1] is optional and specifies the timezone.
 //
 // swagger:model Transform
 type Transform struct {
@@ -31,8 +29,6 @@ type Transform struct {
 	Alias *string `json:"alias"`
 
 	// Args contains transform-specific arguments.
-	// For datetime_extract: Args[0] is the date part (required), Args[1] is the timezone (optional).
-	// For json_unpack: Args is not used.
 	Args []string `json:"args"`
 
 	// SourceColumn is the column to transform.
