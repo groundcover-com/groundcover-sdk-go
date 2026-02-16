@@ -24,6 +24,7 @@ type CreateConnectedAppRequest struct {
 	// For type "slack-webhook": use SlackWebhookData schema
 	// For type "pagerduty": use PagerDutyData schema
 	// For type "opsgenie": use OpsGenieData schema
+	// For type "incidentio": use IncidentIOData schema
 	// For type "webhook": use WebhookData schema ({"url": "https://...", "method": "POST", "headers": {...}, "auth_type": "bearer", "api_key": "..."})
 	// Required: true
 	Data map[string]any `json:"data"`
@@ -36,7 +37,7 @@ type CreateConnectedAppRequest struct {
 	// The type of the connected app
 	// Example: slack-webhook
 	// Required: true
-	// Enum: ["slack-webhook","pagerduty","opsgenie","webhook"]
+	// Enum: ["slack-webhook","pagerduty","opsgenie","incidentio","webhook"]
 	Type *string `json:"type"`
 }
 
@@ -92,7 +93,7 @@ var createConnectedAppRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["slack-webhook","pagerduty","opsgenie","webhook"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["slack-webhook","pagerduty","opsgenie","incidentio","webhook"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -110,6 +111,9 @@ const (
 
 	// CreateConnectedAppRequestTypeOpsgenie captures enum value "opsgenie"
 	CreateConnectedAppRequestTypeOpsgenie string = "opsgenie"
+
+	// CreateConnectedAppRequestTypeIncidentio captures enum value "incidentio"
+	CreateConnectedAppRequestTypeIncidentio string = "incidentio"
 
 	// CreateConnectedAppRequestTypeWebhook captures enum value "webhook"
 	CreateConnectedAppRequestTypeWebhook string = "webhook"
