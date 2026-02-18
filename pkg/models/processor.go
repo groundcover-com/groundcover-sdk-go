@@ -21,7 +21,7 @@ type Processor struct {
 	AliasType string `json:"aliasType,omitempty" yaml:"aliasType,omitempty"`
 
 	// args
-	Args []string `json:"args" yaml:"args"`
+	Args []any `json:"args" yaml:"args"`
 
 	// op
 	Op string `json:"op,omitempty" yaml:"op,omitempty"`
