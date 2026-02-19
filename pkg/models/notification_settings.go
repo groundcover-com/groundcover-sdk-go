@@ -7,7 +7,10 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -17,17 +20,97 @@ import (
 // swagger:model NotificationSettings
 type NotificationSettings struct {
 
+	// Direct destinations for notifications, bypassing the routing system.
+	DirectDestinations []*DirectDestination `json:"directDestinations" yaml:"directDestinations"`
+
 	// renotification interval
 	RenotificationInterval RenotificationDuration `json:"renotificationInterval,omitempty" yaml:"renotificationInterval,omitempty"`
 }
 
 // Validate validates this notification settings
 func (m *NotificationSettings) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateDirectDestinations(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this notification settings based on context it is used
+func (m *NotificationSettings) validateDirectDestinations(formats strfmt.Registry) error {
+	if swag.IsZero(m.DirectDestinations) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.DirectDestinations); i++ {
+		if swag.IsZero(m.DirectDestinations[i]) { // not required
+			continue
+		}
+
+		if m.DirectDestinations[i] != nil {
+			if err := m.DirectDestinations[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("directDestinations" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("directDestinations" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this notification settings based on the context it is used
 func (m *NotificationSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateDirectDestinations(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *NotificationSettings) contextValidateDirectDestinations(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.DirectDestinations); i++ {
+
+		if m.DirectDestinations[i] != nil {
+
+			if swag.IsZero(m.DirectDestinations[i]) { // not required
+				return nil
+			}
+
+			if err := m.DirectDestinations[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("directDestinations" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("directDestinations" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

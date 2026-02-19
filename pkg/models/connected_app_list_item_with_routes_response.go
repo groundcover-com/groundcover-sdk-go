@@ -7,6 +7,8 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -38,13 +40,12 @@ type ConnectedAppListItemWithRoutesResponse struct {
 	// Example: my-slack-app
 	Name string `json:"name,omitempty"`
 
-	// Names of notification routes that reference this connected app
-	// Example: ["prod-alerts","staging-notifications"]
-	NotificationRoutes []string `json:"notification_routes"`
-
 	// The type of the connected app
 	// Example: slack-webhook
 	Type string `json:"type,omitempty"`
+
+	// Notification routes and monitors that use this connected app
+	UsedBy []*UsedByResponse `json:"used_by"`
 }
 
 // Validate validates this connected app list item with routes response
@@ -52,6 +53,10 @@ func (m *ConnectedAppListItemWithRoutesResponse) Validate(formats strfmt.Registr
 	var res []error
 
 	if err := m.validateCreatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUsedBy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -73,8 +78,76 @@ func (m *ConnectedAppListItemWithRoutesResponse) validateCreatedAt(formats strfm
 	return nil
 }
 
-// ContextValidate validates this connected app list item with routes response based on context it is used
+func (m *ConnectedAppListItemWithRoutesResponse) validateUsedBy(formats strfmt.Registry) error {
+	if swag.IsZero(m.UsedBy) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.UsedBy); i++ {
+		if swag.IsZero(m.UsedBy[i]) { // not required
+			continue
+		}
+
+		if m.UsedBy[i] != nil {
+			if err := m.UsedBy[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("used_by" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("used_by" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this connected app list item with routes response based on the context it is used
 func (m *ConnectedAppListItemWithRoutesResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateUsedBy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ConnectedAppListItemWithRoutesResponse) contextValidateUsedBy(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.UsedBy); i++ {
+
+		if m.UsedBy[i] != nil {
+
+			if swag.IsZero(m.UsedBy[i]) { // not required
+				return nil
+			}
+
+			if err := m.UsedBy[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("used_by" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("used_by" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
