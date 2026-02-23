@@ -7,12 +7,12 @@ package models
 
 import (
 	"context"
-	stderrors "errors"
-	"strconv"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // NotificationSettings NotificationSettings defines the notification settings for the monitor.
@@ -20,8 +20,12 @@ import (
 // swagger:model NotificationSettings
 type NotificationSettings struct {
 
-	// Direct destinations for notifications, bypassing the routing system.
-	DirectDestinations []*DirectDestination `json:"directDestinations" yaml:"directDestinations"`
+	// connected apps
+	ConnectedApps []string `json:"connectedApps" yaml:"connectedApps"`
+
+	// method
+	// Enum: ["notificationRoutes","connectedApps","noNotifications"]
+	Method string `json:"method,omitempty" yaml:"method,omitempty"`
 
 	// renotification interval
 	RenotificationInterval RenotificationDuration `json:"renotificationInterval,omitempty" yaml:"renotificationInterval,omitempty"`
@@ -31,7 +35,7 @@ type NotificationSettings struct {
 func (m *NotificationSettings) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateDirectDestinations(formats); err != nil {
+	if err := m.validateMethod(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -41,76 +45,53 @@ func (m *NotificationSettings) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NotificationSettings) validateDirectDestinations(formats strfmt.Registry) error {
-	if swag.IsZero(m.DirectDestinations) { // not required
+var notificationSettingsTypeMethodPropEnum []any
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["notificationRoutes","connectedApps","noNotifications"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		notificationSettingsTypeMethodPropEnum = append(notificationSettingsTypeMethodPropEnum, v)
+	}
+}
+
+const (
+
+	// NotificationSettingsMethodNotificationRoutes captures enum value "notificationRoutes"
+	NotificationSettingsMethodNotificationRoutes string = "notificationRoutes"
+
+	// NotificationSettingsMethodConnectedApps captures enum value "connectedApps"
+	NotificationSettingsMethodConnectedApps string = "connectedApps"
+
+	// NotificationSettingsMethodNoNotifications captures enum value "noNotifications"
+	NotificationSettingsMethodNoNotifications string = "noNotifications"
+)
+
+// prop value enum
+func (m *NotificationSettings) validateMethodEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, notificationSettingsTypeMethodPropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *NotificationSettings) validateMethod(formats strfmt.Registry) error {
+	if swag.IsZero(m.Method) { // not required
 		return nil
 	}
 
-	for i := 0; i < len(m.DirectDestinations); i++ {
-		if swag.IsZero(m.DirectDestinations[i]) { // not required
-			continue
-		}
-
-		if m.DirectDestinations[i] != nil {
-			if err := m.DirectDestinations[i].Validate(formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
-					return ve.ValidateName("directDestinations" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
-					return ce.ValidateName("directDestinations" + "." + strconv.Itoa(i))
-				}
-
-				return err
-			}
-		}
-
+	// value enum
+	if err := m.validateMethodEnum("method", "body", m.Method); err != nil {
+		return err
 	}
 
 	return nil
 }
 
-// ContextValidate validate this notification settings based on the context it is used
+// ContextValidate validates this notification settings based on context it is used
 func (m *NotificationSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateDirectDestinations(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *NotificationSettings) contextValidateDirectDestinations(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.DirectDestinations); i++ {
-
-		if m.DirectDestinations[i] != nil {
-
-			if swag.IsZero(m.DirectDestinations[i]) { // not required
-				return nil
-			}
-
-			if err := m.DirectDestinations[i].ContextValidate(ctx, formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
-					return ve.ValidateName("directDestinations" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
-					return ce.ValidateName("directDestinations" + "." + strconv.Itoa(i))
-				}
-
-				return err
-			}
-		}
-
-	}
-
 	return nil
 }
 
