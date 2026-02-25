@@ -8,6 +8,8 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -27,6 +29,9 @@ type NotificationSettings struct {
 	// Enum: ["notificationRoutes","connectedApps","noNotifications"]
 	Method string `json:"method,omitempty" yaml:"method,omitempty"`
 
+	// status filters
+	StatusFilters []IssueStatus `json:"statusFilters" yaml:"statusFilters"`
+
 	// renotification interval
 	RenotificationInterval RenotificationDuration `json:"renotificationInterval,omitempty" yaml:"renotificationInterval,omitempty"`
 }
@@ -36,6 +41,10 @@ func (m *NotificationSettings) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateMethod(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStatusFilters(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -90,8 +99,68 @@ func (m *NotificationSettings) validateMethod(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this notification settings based on context it is used
+func (m *NotificationSettings) validateStatusFilters(formats strfmt.Registry) error {
+	if swag.IsZero(m.StatusFilters) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.StatusFilters); i++ {
+
+		if err := m.StatusFilters[i].Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("statusFilters" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("statusFilters" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this notification settings based on the context it is used
 func (m *NotificationSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateStatusFilters(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *NotificationSettings) contextValidateStatusFilters(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.StatusFilters); i++ {
+
+		if swag.IsZero(m.StatusFilters[i]) { // not required
+			return nil
+		}
+
+		if err := m.StatusFilters[i].ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("statusFilters" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("statusFilters" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
 	return nil
 }
 
