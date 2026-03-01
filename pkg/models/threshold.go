@@ -31,7 +31,7 @@ type Threshold struct {
 
 	// Comparison operator.
 	// Required: true
-	// Enum: ["gt"," lt"," within_range"," outside_range"]
+	// Enum: ["gt"," lt"," gte"," lte"," eq"," neq"," within_range"," outside_range"," within_range_included"," outside_range_included"]
 	Operator *string `json:"operator" yaml:"operator"`
 
 	// Values to compare against (one for gt/lt, two for range operators).
@@ -94,7 +94,7 @@ var thresholdTypeOperatorPropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["gt"," lt"," within_range"," outside_range"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["gt"," lt"," gte"," lte"," eq"," neq"," within_range"," outside_range"," within_range_included"," outside_range_included"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -110,11 +110,29 @@ const (
 	// ThresholdOperatorLt captures enum value " lt"
 	ThresholdOperatorLt string = " lt"
 
+	// ThresholdOperatorGte captures enum value " gte"
+	ThresholdOperatorGte string = " gte"
+
+	// ThresholdOperatorLte captures enum value " lte"
+	ThresholdOperatorLte string = " lte"
+
+	// ThresholdOperatorEq captures enum value " eq"
+	ThresholdOperatorEq string = " eq"
+
+	// ThresholdOperatorNeq captures enum value " neq"
+	ThresholdOperatorNeq string = " neq"
+
 	// ThresholdOperatorWithinRange captures enum value " within_range"
 	ThresholdOperatorWithinRange string = " within_range"
 
 	// ThresholdOperatorOutsideRange captures enum value " outside_range"
 	ThresholdOperatorOutsideRange string = " outside_range"
+
+	// ThresholdOperatorWithinRangeIncluded captures enum value " within_range_included"
+	ThresholdOperatorWithinRangeIncluded string = " within_range_included"
+
+	// ThresholdOperatorOutsideRangeIncluded captures enum value " outside_range_included"
+	ThresholdOperatorOutsideRangeIncluded string = " outside_range_included"
 )
 
 // prop value enum
