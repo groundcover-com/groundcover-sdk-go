@@ -25,6 +25,9 @@ type NotificationSettings struct {
 	// connected apps
 	ConnectedApps []string `json:"connectedApps" yaml:"connectedApps"`
 
+	// disable renotification
+	DisableRenotification bool `json:"disableRenotification,omitempty" yaml:"disableRenotification,omitempty"`
+
 	// method
 	// Enum: ["notificationRoutes","connectedApps","noNotifications"]
 	Method string `json:"method,omitempty" yaml:"method,omitempty"`

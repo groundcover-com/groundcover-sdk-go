@@ -17,6 +17,10 @@ import (
 // swagger:model NotificationSettingsResponse
 type NotificationSettingsResponse struct {
 
+	// Whether re-notifications are disabled
+	// Example: true
+	DisableRenotification bool `json:"disableRenotification,omitempty"`
+
 	// The interval between re-notifications
 	// Example: 4h
 	RenotificationInterval string `json:"renotificationInterval,omitempty"`
