@@ -40,6 +40,9 @@ type SyntheticTestCreateRequest struct {
 
 	// label settings
 	LabelSettings *LabelSettings `json:"labelSettings,omitempty"`
+
+	// monitor
+	Monitor *SyntheticMonitorConfig `json:"monitor,omitempty"`
 }
 
 // Validate validates this synthetic test create request
@@ -51,6 +54,10 @@ func (m *SyntheticTestCreateRequest) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateLabelSettings(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMonitor(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -106,6 +113,29 @@ func (m *SyntheticTestCreateRequest) validateLabelSettings(formats strfmt.Regist
 	return nil
 }
 
+func (m *SyntheticTestCreateRequest) validateMonitor(formats strfmt.Registry) error {
+	if swag.IsZero(m.Monitor) { // not required
+		return nil
+	}
+
+	if m.Monitor != nil {
+		if err := m.Monitor.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("monitor")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("monitor")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this synthetic test create request based on the context it is used
 func (m *SyntheticTestCreateRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -115,6 +145,10 @@ func (m *SyntheticTestCreateRequest) ContextValidate(ctx context.Context, format
 	}
 
 	if err := m.contextValidateLabelSettings(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateMonitor(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -165,6 +199,31 @@ func (m *SyntheticTestCreateRequest) contextValidateLabelSettings(ctx context.Co
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("labelSettings")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SyntheticTestCreateRequest) contextValidateMonitor(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Monitor != nil {
+
+		if swag.IsZero(m.Monitor) { // not required
+			return nil
+		}
+
+		if err := m.Monitor.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("monitor")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("monitor")
 			}
 
 			return err
