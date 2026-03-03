@@ -8,10 +8,8 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // ClustersListResult clusters list result
@@ -48,10 +46,6 @@ type ClustersListResult struct {
 
 	// Cpu usage request percent
 	CPUUsageRequestPercent float64 `json:"cpuUsageRequestPercent,omitempty"`
-
-	// creation timestamp
-	// Format: date-time
-	CreationTimestamp strfmt.DateTime `json:"creationTimestamp,omitempty"`
 
 	// env
 	Env string `json:"env,omitempty"`
@@ -101,27 +95,6 @@ type ClustersListResult struct {
 
 // Validate validates this clusters list result
 func (m *ClustersListResult) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateCreationTimestamp(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ClustersListResult) validateCreationTimestamp(formats strfmt.Registry) error {
-	if swag.IsZero(m.CreationTimestamp) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("creationTimestamp", "body", "date-time", m.CreationTimestamp.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 
