@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// LogsPipelineConfig LogsPipelineConfig is the response model for logs pipeline configuration
+// TracesPipelineConfig TracesPipelineConfig is the response model for traces pipeline configuration
 //
-// swagger:model LogsPipelineConfig
-type LogsPipelineConfig struct {
+// swagger:model TracesPipelineConfig
+type TracesPipelineConfig struct {
 
 	// created by
 	CreatedBy string `json:"created_by,omitempty"`
@@ -33,8 +33,8 @@ type LogsPipelineConfig struct {
 	Value string `json:"value,omitempty"`
 }
 
-// Validate validates this logs pipeline config
-func (m *LogsPipelineConfig) Validate(formats strfmt.Registry) error {
+// Validate validates this traces pipeline config
+func (m *TracesPipelineConfig) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCreatedTimestamp(formats); err != nil {
@@ -47,7 +47,7 @@ func (m *LogsPipelineConfig) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *LogsPipelineConfig) validateCreatedTimestamp(formats strfmt.Registry) error {
+func (m *TracesPipelineConfig) validateCreatedTimestamp(formats strfmt.Registry) error {
 	if swag.IsZero(m.CreatedTimestamp) { // not required
 		return nil
 	}
@@ -59,13 +59,13 @@ func (m *LogsPipelineConfig) validateCreatedTimestamp(formats strfmt.Registry) e
 	return nil
 }
 
-// ContextValidate validates this logs pipeline config based on context it is used
-func (m *LogsPipelineConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this traces pipeline config based on context it is used
+func (m *TracesPipelineConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *LogsPipelineConfig) MarshalBinary() ([]byte, error) {
+func (m *TracesPipelineConfig) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -73,8 +73,8 @@ func (m *LogsPipelineConfig) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *LogsPipelineConfig) UnmarshalBinary(b []byte) error {
-	var res LogsPipelineConfig
+func (m *TracesPipelineConfig) UnmarshalBinary(b []byte) error {
+	var res TracesPipelineConfig
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

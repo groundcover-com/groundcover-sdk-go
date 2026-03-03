@@ -29,6 +29,7 @@ import (
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/serviceaccounts"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/synthetics"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/traces"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/traces_pipeline"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/workflows"
 )
 
@@ -93,6 +94,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Groundcove
 	cli.Serviceaccounts = serviceaccounts.New(transport, formats)
 	cli.Synthetics = synthetics.New(transport, formats)
 	cli.Traces = traces.New(transport, formats)
+	cli.TracesPipeline = traces_pipeline.New(transport, formats)
 	cli.Workflows = workflows.New(transport, formats)
 	return cli
 }
@@ -176,6 +178,8 @@ type GroundcoverAPI struct {
 
 	Traces traces.ClientService
 
+	TracesPipeline traces_pipeline.ClientService
+
 	Workflows workflows.ClientService
 
 	Transport runtime.ClientTransport
@@ -203,5 +207,6 @@ func (c *GroundcoverAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Serviceaccounts.SetTransport(transport)
 	c.Synthetics.SetTransport(transport)
 	c.Traces.SetTransport(transport)
+	c.TracesPipeline.SetTransport(transport)
 	c.Workflows.SetTransport(transport)
 }
