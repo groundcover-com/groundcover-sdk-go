@@ -26,6 +26,9 @@ type MathExpression struct {
 	// args
 	Args []*MathExpression `json:"args"`
 
+	// keep existing
+	KeepExisting bool `json:"keepExisting,omitempty"`
+
 	// scalar
 	Scalar string `json:"scalar,omitempty"`
 
