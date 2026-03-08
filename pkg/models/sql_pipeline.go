@@ -18,7 +18,8 @@ import (
 // SQLPipeline SqlPipeline defines a pipeline for search queries.
 //
 // When Join is set, the pipeline acts as a container for the join operation ONLY.
-// In this case, no other fields should be used.
+// When Union is set, the pipeline acts as a container for the union operation ONLY.
+// In these cases, no other fields should be used.
 //
 // swagger:model SqlPipeline
 type SQLPipeline struct {
@@ -67,6 +68,9 @@ type SQLPipeline struct {
 
 	// limit by
 	LimitBy *LimitBy `json:"limitBy,omitempty" yaml:"limitBy,omitempty"`
+
+	// union
+	Union *Union `json:"union,omitempty" yaml:"union,omitempty"`
 }
 
 // Validate validates this Sql pipeline
@@ -118,6 +122,10 @@ func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateLimitBy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUnion(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -443,6 +451,29 @@ func (m *SQLPipeline) validateLimitBy(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SQLPipeline) validateUnion(formats strfmt.Registry) error {
+	if swag.IsZero(m.Union) { // not required
+		return nil
+	}
+
+	if m.Union != nil {
+		if err := m.Union.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("union")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("union")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this Sql pipeline based on the context it is used
 func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -492,6 +523,10 @@ func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Regist
 	}
 
 	if err := m.contextValidateLimitBy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateUnion(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -813,6 +848,31 @@ func (m *SQLPipeline) contextValidateLimitBy(ctx context.Context, formats strfmt
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("limitBy")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SQLPipeline) contextValidateUnion(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Union != nil {
+
+		if swag.IsZero(m.Union) { // not required
+			return nil
+		}
+
+		if err := m.Union.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("union")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("union")
 			}
 
 			return err
