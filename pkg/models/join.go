@@ -23,6 +23,12 @@ type Join struct {
 	// OnConditions defines the join conditions
 	OnConditions []*JoinCondition `json:"onConditions"`
 
+	// Prefix, when set, disambiguates overlapping non-key columns from the right
+	// side of a join by prefixing them with the given string (e.g., setting prefix
+	// to "right" causes a right-side "level" column to appear as "right.level").
+	// Join key columns are not prefixed; they are coalesced into a single column.
+	Prefix string `json:"prefix,omitempty"`
+
 	// left pipeline
 	LeftPipeline *SQLPipeline `json:"leftPipeline,omitempty"`
 

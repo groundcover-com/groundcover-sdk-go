@@ -27,6 +27,7 @@ type UpdateConnectedAppRequest struct {
 	// For type "incidentio": use IncidentIOData schema
 	// For type "rootly": use RootlyData schema
 	// For type "webhook": use WebhookData schema ({"url": "https://...", "method": "POST", "headers": {...}, "auth_type": "bearer", "api_key": "..."})
+	// For type "cursor": use CursorCloudData schema ({"api_key": "...", "auto_create_pr": true, "default_model": "...", "default_repo": "...", "agent_context": "..."})
 	// Required: true
 	Data map[string]any `json:"data"`
 
@@ -38,7 +39,7 @@ type UpdateConnectedAppRequest struct {
 	// The type of the connected app
 	// Example: slack-webhook
 	// Required: true
-	// Enum: ["slack-webhook","pagerduty","opsgenie","incidentio","rootly","webhook"]
+	// Enum: ["slack-webhook","pagerduty","opsgenie","incidentio","rootly","webhook","cursor"]
 	Type *string `json:"type"`
 }
 
@@ -94,7 +95,7 @@ var updateConnectedAppRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["slack-webhook","pagerduty","opsgenie","incidentio","rootly","webhook"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["slack-webhook","pagerduty","opsgenie","incidentio","rootly","webhook","cursor"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -121,6 +122,9 @@ const (
 
 	// UpdateConnectedAppRequestTypeWebhook captures enum value "webhook"
 	UpdateConnectedAppRequestTypeWebhook string = "webhook"
+
+	// UpdateConnectedAppRequestTypeCursor captures enum value "cursor"
+	UpdateConnectedAppRequestTypeCursor string = "cursor"
 )
 
 // prop value enum
