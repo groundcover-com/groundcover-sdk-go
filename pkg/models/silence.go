@@ -36,6 +36,10 @@ type Silence struct {
 	// Format: date-time
 	EndsAt strfmt.DateTime `json:"endsAt,omitempty"`
 
+	// recurring silence ID
+	// Format: uuid
+	RecurringSilenceID strfmt.UUID `json:"recurringSilenceId,omitempty"`
+
 	// starts at
 	// Format: date-time
 	StartsAt strfmt.DateTime `json:"startsAt,omitempty"`
@@ -53,6 +57,10 @@ func (m *Silence) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateEndsAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRecurringSilenceID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -80,6 +88,18 @@ func (m *Silence) validateEndsAt(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("endsAt", "body", "date-time", m.EndsAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Silence) validateRecurringSilenceID(formats strfmt.Registry) error {
+	if swag.IsZero(m.RecurringSilenceID) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("recurringSilenceId", "body", "uuid", m.RecurringSilenceID.String(), formats); err != nil {
 		return err
 	}
 

@@ -102,21 +102,31 @@ func WithAcceptApplicationxYaml(r *runtime.ClientOperation) {
 type ClientService interface {
 	CreateMonitor(params *CreateMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateMonitorOK, error)
 
+	CreateRecurringSilence(params *CreateRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateRecurringSilenceOK, error)
+
 	CreateSilence(params *CreateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateSilenceOK, error)
 
 	DeleteMonitor(params *DeleteMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteMonitorOK, error)
 
+	DeleteRecurringSilence(params *DeleteRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteRecurringSilenceOK, error)
+
 	DeleteSilence(params *DeleteSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteSilenceOK, error)
+
+	GetAllRecurringSilences(params *GetAllRecurringSilencesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetAllRecurringSilencesOK, error)
 
 	GetAllSilences(params *GetAllSilencesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetAllSilencesOK, error)
 
 	GetMonitor(params *GetMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMonitorOK, error)
+
+	GetRecurringSilence(params *GetRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetRecurringSilenceOK, error)
 
 	GetSilence(params *GetSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetSilenceOK, error)
 
 	ListMonitors(params *ListMonitorsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ListMonitorsOK, error)
 
 	UpdateMonitor(params *UpdateMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateMonitorAccepted, error)
+
+	UpdateRecurringSilence(params *UpdateRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateRecurringSilenceOK, error)
 
 	UpdateSilence(params *UpdateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateSilenceOK, error)
 
@@ -164,6 +174,52 @@ func (a *Client) CreateMonitor(params *CreateMonitorParams, authInfo runtime.Cli
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for createMonitor: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+CreateRecurringSilence creates recurring silence
+
+Creates a new recurring silence definition.
+*/
+func (a *Client) CreateRecurringSilence(params *CreateRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateRecurringSilenceOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewCreateRecurringSilenceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "createRecurringSilence",
+		Method:             "POST",
+		PathPattern:        "/api/monitors/recurring-silences",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &CreateRecurringSilenceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*CreateRecurringSilenceOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createRecurringSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -258,6 +314,52 @@ func (a *Client) DeleteMonitor(params *DeleteMonitorParams, authInfo runtime.Cli
 }
 
 /*
+DeleteRecurringSilence deletes recurring silence
+
+Deletes a recurring silence by its UUID.
+*/
+func (a *Client) DeleteRecurringSilence(params *DeleteRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteRecurringSilenceOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewDeleteRecurringSilenceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "deleteRecurringSilence",
+		Method:             "DELETE",
+		PathPattern:        "/api/monitors/recurring-silences/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &DeleteRecurringSilenceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*DeleteRecurringSilenceOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteRecurringSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
 DeleteSilence deletes silence
 
 Deletes a silence by its UUID.
@@ -300,6 +402,52 @@ func (a *Client) DeleteSilence(params *DeleteSilenceParams, authInfo runtime.Cli
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for deleteSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetAllRecurringSilences lists recurring silences
+
+Retrieves all recurring silences.
+*/
+func (a *Client) GetAllRecurringSilences(params *GetAllRecurringSilencesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetAllRecurringSilencesOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetAllRecurringSilencesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getAllRecurringSilences",
+		Method:             "GET",
+		PathPattern:        "/api/monitors/recurring-silences",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetAllRecurringSilencesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetAllRecurringSilencesOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getAllRecurringSilences: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -390,6 +538,52 @@ func (a *Client) GetMonitor(params *GetMonitorParams, authInfo runtime.ClientAut
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getMonitor: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetRecurringSilence gets recurring silence
+
+Retrieves a specific recurring silence by its UUID.
+*/
+func (a *Client) GetRecurringSilence(params *GetRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetRecurringSilenceOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetRecurringSilenceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getRecurringSilence",
+		Method:             "GET",
+		PathPattern:        "/api/monitors/recurring-silences/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetRecurringSilenceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetRecurringSilenceOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getRecurringSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -524,6 +718,52 @@ func (a *Client) UpdateMonitor(params *UpdateMonitorParams, authInfo runtime.Cli
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for updateMonitor: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+UpdateRecurringSilence updates recurring silence
+
+Updates an existing recurring silence by its UUID.
+*/
+func (a *Client) UpdateRecurringSilence(params *UpdateRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateRecurringSilenceOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewUpdateRecurringSilenceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "updateRecurringSilence",
+		Method:             "PUT",
+		PathPattern:        "/api/monitors/recurring-silences/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &UpdateRecurringSilenceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*UpdateRecurringSilenceOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateRecurringSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
