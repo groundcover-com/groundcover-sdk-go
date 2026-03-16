@@ -28,6 +28,7 @@ type UpdateConnectedAppRequest struct {
 	// For type "rootly": use RootlyData schema
 	// For type "webhook": use WebhookData schema ({"url": "https://...", "method": "POST", "headers": {...}, "auth_type": "bearer", "api_key": "..."})
 	// For type "cursor": use CursorCloudData schema ({"api_key": "...", "auto_create_pr": true, "default_model": "...", "default_repo": "...", "agent_context": "..."})
+	// For type "ms-teams": use MSTeamsData schema
 	// Required: true
 	Data map[string]any `json:"data"`
 
@@ -39,7 +40,7 @@ type UpdateConnectedAppRequest struct {
 	// The type of the connected app
 	// Example: slack-webhook
 	// Required: true
-	// Enum: ["slack-webhook","pagerduty","opsgenie","incidentio","rootly","webhook","cursor"]
+	// Enum: ["slack-webhook","pagerduty","opsgenie","incidentio","rootly","webhook","cursor","ms-teams"]
 	Type *string `json:"type"`
 }
 
@@ -95,7 +96,7 @@ var updateConnectedAppRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["slack-webhook","pagerduty","opsgenie","incidentio","rootly","webhook","cursor"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["slack-webhook","pagerduty","opsgenie","incidentio","rootly","webhook","cursor","ms-teams"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -125,6 +126,9 @@ const (
 
 	// UpdateConnectedAppRequestTypeCursor captures enum value "cursor"
 	UpdateConnectedAppRequestTypeCursor string = "cursor"
+
+	// UpdateConnectedAppRequestTypeMsDashTeams captures enum value "ms-teams"
+	UpdateConnectedAppRequestTypeMsDashTeams string = "ms-teams"
 )
 
 // prop value enum
