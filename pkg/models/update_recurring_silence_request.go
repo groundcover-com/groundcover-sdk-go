@@ -31,7 +31,7 @@ type UpdateRecurringSilenceRequest struct {
 	DaysOfWeek []int64 `json:"daysOfWeek"`
 
 	// enabled
-	Enabled bool `json:"enabled,omitempty"`
+	Enabled *bool `json:"enabled,omitempty"`
 
 	// end time
 	EndTime string `json:"endTime,omitempty"`

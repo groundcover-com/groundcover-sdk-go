@@ -31,7 +31,7 @@ type CreateRecurringSilenceRequest struct {
 	DaysOfWeek []int64 `json:"daysOfWeek"`
 
 	// Whether the recurring silence is enabled. Defaults to true.
-	Enabled bool `json:"enabled,omitempty"`
+	Enabled *bool `json:"enabled,omitempty"`
 
 	// End time in HH:MM format
 	// Required: true
