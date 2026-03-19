@@ -31,7 +31,7 @@ type CreateMonitorRequest struct {
 	Category string `json:"category,omitempty" yaml:"category,omitempty"`
 
 	// State to enter if execution fails.
-	// Enum: ["OK"," Error"," Alerting"]
+	// Enum: ["OK","Error","Alerting"]
 	ExecutionErrorState string `json:"executionErrorState,omitempty" yaml:"executionErrorState,omitempty"`
 
 	// Whether the monitor is paused.
@@ -41,11 +41,11 @@ type CreateMonitorRequest struct {
 	Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
 	// Type of measurement (state or event).
-	// Enum: ["state"," event"]
+	// Enum: ["state","event"]
 	MeasurementType string `json:"measurementType,omitempty" yaml:"measurementType,omitempty"`
 
 	// State to enter if no data is returned.
-	// Enum: ["OK"," NoData"," Alerting"]
+	// Enum: ["OK","NoData","Alerting"]
 	NoDataState string `json:"noDataState,omitempty" yaml:"noDataState,omitempty"`
 
 	// Routing information.
@@ -288,7 +288,7 @@ var createMonitorRequestTypeExecutionErrorStatePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["OK"," Error"," Alerting"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["OK","Error","Alerting"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -322,7 +322,7 @@ var createMonitorRequestTypeMeasurementTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["state"," event"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["state","event"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -356,7 +356,7 @@ var createMonitorRequestTypeNoDataStatePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["OK"," NoData"," Alerting"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["OK","NoData","Alerting"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
