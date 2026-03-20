@@ -2,6 +2,7 @@ package e2e
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -65,6 +66,24 @@ func TestSecretsE2E(t *testing.T) {
 		assert.Equal(t, secretName, updateResp.Payload.Name)
 
 		t.Logf("Successfully updated Secret ID: %s", createdSecretID)
+	})
+
+	t.Run("Get Secret Hash", func(t *testing.T) {
+		hashParams := secretClient.NewGetSecretHashParamsWithContext(ctx).WithID(createdSecretID)
+		hashResp, err := apiClient.Secret.GetSecretHash(hashParams, nil)
+		if err != nil {
+			// Skip only if endpoint not deployed (404 for the route itself)
+			if strings.Contains(err.Error(), "404") || strings.Contains(err.Error(), "not found") {
+				t.Skipf("GetSecretHash endpoint not available yet (may not be deployed): %v", err)
+			}
+			require.NoError(t, err, "GetSecretHash failed with unexpected error")
+		}
+		require.NotNil(t, hashResp.Payload)
+		assert.Equal(t, createdSecretID, hashResp.Payload.ID)
+		assert.Equal(t, secretName, hashResp.Payload.Name)
+		assert.NotEmpty(t, hashResp.Payload.ContentHash, "ContentHash should not be empty")
+
+		t.Logf("Successfully got Secret hash, ID: %s, ContentHash: %s", createdSecretID, hashResp.Payload.ContentHash)
 	})
 
 	t.Run("Delete Secret", func(t *testing.T) {
@@ -166,5 +185,14 @@ func TestSecretsE2E(t *testing.T) {
 		_, err := apiClient.Secret.DeleteSecret(deleteParams, nil)
 		assert.Error(t, err, "Delete non-existent secret should fail")
 		t.Logf("Delete non-existent secret correctly returned error")
+	})
+
+	t.Run("Get Hash of Non-Existent Secret", func(t *testing.T) {
+		nonExistentID := "secretRef::store::00000000-0000-0000-0000-000000000000"
+
+		hashParams := secretClient.NewGetSecretHashParamsWithContext(ctx).WithID(nonExistentID)
+		_, err := apiClient.Secret.GetSecretHash(hashParams, nil)
+		assert.Error(t, err, "Get hash of non-existent secret should fail")
+		t.Logf("Get hash of non-existent secret correctly returned error: %v", err)
 	})
 }

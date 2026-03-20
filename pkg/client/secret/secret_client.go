@@ -60,6 +60,8 @@ type ClientService interface {
 
 	DeleteSecret(params *DeleteSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteSecretNoContent, error)
 
+	GetSecretHash(params *GetSecretHashParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetSecretHashOK, error)
+
 	UpdateSecret(params *UpdateSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateSecretOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
@@ -152,6 +154,54 @@ func (a *Client) DeleteSecret(params *DeleteSecretParams, authInfo runtime.Clien
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for deleteSecret: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	GetSecretHash gets secret hash
+
+	Retrieves the FNV-1a hash of a secret's content without exposing the actual secret value.
+
+This is useful for Terraform/Crossplane to detect changes without retrieving the secret.
+*/
+func (a *Client) GetSecretHash(params *GetSecretHashParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetSecretHashOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetSecretHashParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getSecretHash",
+		Method:             "GET",
+		PathPattern:        "/api/secret/{id}/hash",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetSecretHashReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetSecretHashOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getSecretHash: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
