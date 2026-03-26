@@ -10,6 +10,223 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSSLSyntheticsEndpoints(t *testing.T) {
+	testClient := NewTestClient(t)
+	defer testClient.Cleanup()
+
+	const defaultTimeout = 30 * time.Second
+
+	var createdSyntheticID string
+	syntheticName := "e2e-test-ssl-synthetic-" + uuid.New().String()
+
+	t.Run("Create SSL Synthetic Test", func(t *testing.T) {
+		createReq := &models.SyntheticTestCreateRequest{
+			Name:     syntheticName,
+			Version:  1,
+			Enabled:  true,
+			Interval: "5m",
+			CheckConfig: &models.WorkerRequest{
+				Kind: "ssl",
+				Metadata: &models.Metadata{
+					SyntheticName: syntheticName,
+				},
+				Request: &models.Request{
+					Ssl: &models.SslRequest{
+						Kind: "ssl",
+						Host: "google.com",
+						Port: 443,
+					},
+				},
+				ExecutionPolicy: &models.ExecutionPolicy{
+					Assertions: []*models.Assertion{
+						{
+							Source:   "ssl",
+							Operator: "exists",
+							Target:   "true",
+						},
+					},
+				},
+				Tracing: &models.Tracing{},
+			},
+		}
+
+		createParams := synthetics.NewCreateSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithBody(createReq)
+
+		createResp, err := testClient.Client.Synthetics.CreateSyntheticTest(createParams, nil)
+		require.NoError(t, err, "Failed to create SSL synthetic test")
+		require.NotNil(t, createResp, "Create SSL synthetic test response should not be nil")
+		require.NotNil(t, createResp.Payload, "Create SSL synthetic test response payload should not be nil")
+		require.NotEmpty(t, createResp.Payload.ID, "Created SSL synthetic test ID should not be empty")
+
+		createdSyntheticID = createResp.Payload.ID
+		t.Logf("✓ Created SSL synthetic test with ID: %s", createdSyntheticID)
+	})
+
+	t.Cleanup(func() {
+		if createdSyntheticID == "" {
+			return
+		}
+		deleteParams := synthetics.NewDeleteSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+		_, _ = testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
+	})
+
+	t.Run("List SSL Synthetic Tests", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout * 4)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID && item.Name == syntheticName && item.SyntheticType == "ssl" {
+					return true
+				}
+			}
+			return false
+		}, 2*time.Minute, 5*time.Second, "Created SSL synthetic test %s not found in list response with expected name and type", createdSyntheticID)
+	})
+
+	t.Run("Get SSL Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		getParams := synthetics.NewGetSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+
+		getResp, err := testClient.Client.Synthetics.GetSyntheticTest(getParams, nil)
+		require.NoError(t, err, "Failed to get SSL synthetic test")
+		require.NotNil(t, getResp, "Get SSL synthetic test response should not be nil")
+		require.NotNil(t, getResp.Payload, "Get SSL synthetic test response payload should not be nil")
+
+		require.Equal(t, syntheticName, getResp.Payload.Name, "SSL synthetic test name mismatch")
+		require.NotNil(t, getResp.Payload.CheckConfig, "SSL synthetic test CheckConfig should not be nil")
+		require.Equal(t, models.WorkerRequestKind("ssl"), getResp.Payload.CheckConfig.Kind, "SSL synthetic test kind should be 'ssl'")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request, "SSL synthetic test Request should not be nil")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request.Ssl, "SSL synthetic test Ssl request should not be nil")
+		require.Equal(t, "google.com", getResp.Payload.CheckConfig.Request.Ssl.Host, "SSL synthetic test host mismatch")
+		require.Equal(t, int64(443), getResp.Payload.CheckConfig.Request.Ssl.Port, "SSL synthetic test port mismatch")
+
+		t.Logf("✓ Successfully retrieved SSL synthetic test with ID: %s", createdSyntheticID)
+	})
+
+	t.Run("Update SSL Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		updatedName := syntheticName + "-updated"
+		updateReq := &models.SyntheticTestCreateRequest{
+			Name:     updatedName,
+			Version:  1,
+			Enabled:  true,
+			Interval: "10m",
+			CheckConfig: &models.WorkerRequest{
+				Kind: "ssl",
+				Metadata: &models.Metadata{
+					SyntheticName: updatedName,
+				},
+				Request: &models.Request{
+					Ssl: &models.SslRequest{
+						Kind: "ssl",
+						Host: "github.com",
+						Port: 443,
+					},
+				},
+				ExecutionPolicy: &models.ExecutionPolicy{
+					Assertions: []*models.Assertion{
+						{
+							Source:   "ssl",
+							Operator: "exists",
+							Target:   "true",
+						},
+					},
+				},
+				Tracing: &models.Tracing{},
+			},
+		}
+
+		updateParams := synthetics.NewUpdateSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID).
+			WithBody(updateReq)
+
+		updateResp, err := testClient.Client.Synthetics.UpdateSyntheticTest(updateParams, nil)
+		require.NoError(t, err, "Failed to update SSL synthetic test")
+		require.NotNil(t, updateResp, "Update SSL synthetic test response should not be nil")
+
+		t.Logf("✓ Successfully updated SSL synthetic test with ID: %s", createdSyntheticID)
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID && item.Name == updatedName {
+					return true
+				}
+			}
+			return false
+		}, 2*time.Minute, 5*time.Second, "Updated SSL synthetic test %s not found with expected name", createdSyntheticID)
+
+		syntheticName = updatedName
+	})
+
+	t.Run("Delete SSL Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		deleteParams := synthetics.NewDeleteSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+
+		_, err := testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
+		require.NoError(t, err, "Failed to delete SSL synthetic test")
+
+		t.Logf("✓ Successfully deleted SSL synthetic test %s", createdSyntheticID)
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID {
+					return false
+				}
+			}
+			return true
+		}, 2*time.Minute, 5*time.Second, "Deleted SSL synthetic test %s should not be found in list response", createdSyntheticID)
+	})
+}
+
 func TestSyntheticsEndpoints(t *testing.T) {
 	testClient := NewTestClient(t)
 	defer testClient.Cleanup()
