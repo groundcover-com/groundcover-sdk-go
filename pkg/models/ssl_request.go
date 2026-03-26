@@ -31,6 +31,9 @@ type SslRequest struct {
 	// sni
 	Sni string `json:"sni,omitempty"`
 
+	// timeout
+	Timeout string `json:"timeout,omitempty"`
+
 	// verify
 	Verify bool `json:"verify,omitempty"`
 
