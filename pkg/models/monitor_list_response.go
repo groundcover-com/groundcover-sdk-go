@@ -20,6 +20,9 @@ import (
 // swagger:model MonitorListResponse
 type MonitorListResponse struct {
 
+	// Whether all matching results have been returned (no more pages).
+	Done bool `json:"done,omitempty" yaml:"done,omitempty"`
+
 	// List of monitors matching the criteria.
 	Monitors []*MonitorListItem `json:"monitors" yaml:"monitors"`
 }

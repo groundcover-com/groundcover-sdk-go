@@ -23,8 +23,18 @@ type MonitorListRequest struct {
 	// Search conditions to filter monitors.
 	Conditions []*Condition `json:"conditions" yaml:"conditions"`
 
-	// Maximum number of monitors to return.
-	Limit *int64 `json:"limit,omitempty" yaml:"limit,omitempty"`
+	// Maximum number of monitors to return (default 1000).
+	Limit int64 `json:"limit,omitempty" yaml:"limit,omitempty"`
+
+	// GCQL filter string (filters only, no pipes or aggregations).
+	// Supported fields: monitor_name, type.
+	Query string `json:"query,omitempty" yaml:"query,omitempty"`
+
+	// Number of monitors to skip for pagination.
+	Skip int64 `json:"skip,omitempty" yaml:"skip,omitempty"`
+
+	// Field to sort by: "name" (default) or "type".
+	Sort string `json:"sort,omitempty" yaml:"sort,omitempty"`
 }
 
 // Validate validates this monitor list request

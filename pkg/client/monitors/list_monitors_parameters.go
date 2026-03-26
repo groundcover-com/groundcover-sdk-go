@@ -65,7 +65,7 @@ type ListMonitorsParams struct {
 
 	/* Body.
 
-	   Conditions to filter monitors and optional limit.
+	   Request body with optional GCQL query, conditions, pagination, and sorting.
 	*/
 	Body *models.MonitorListRequest
 
