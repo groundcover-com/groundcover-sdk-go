@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	stderrors "errors"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -20,6 +21,12 @@ import (
 //
 // swagger:model SyntheticMonitorConfig
 type SyntheticMonitorConfig struct {
+
+	// ConnectedApps lists connected app IDs for direct notification delivery (requires method "connectedApps").
+	ConnectedApps []string `json:"connectedApps"`
+
+	// DisableRenotification disables repeated notifications for the same issue.
+	DisableRenotification bool `json:"disableRenotification,omitempty"`
 
 	// enabled workflows
 	EnabledWorkflows []string `json:"enabledWorkflows"`
@@ -42,6 +49,10 @@ type SyntheticMonitorConfig struct {
 	// no data state
 	NoDataState string `json:"noDataState,omitempty"`
 
+	// NotificationMethod determines how the synthetic monitor delivers alert notifications.
+	// Valid values: "notificationRoutes" (default), "connectedApps", "noNotifications".
+	NotificationMethod string `json:"notificationMethod,omitempty"`
+
 	// Query is read-only: auto-generated from the synthetic test ID.
 	Query string `json:"query,omitempty"`
 
@@ -51,6 +62,9 @@ type SyntheticMonitorConfig struct {
 	// severity
 	Severity string `json:"severity,omitempty"`
 
+	// StatusFilters restricts which issue statuses trigger notifications (requires method "connectedApps").
+	StatusFilters []IssueStatus `json:"statusFilters"`
+
 	// evaluation interval
 	EvaluationInterval *SyntheticMonitorEvalInterval `json:"evaluationInterval,omitempty"`
 }
@@ -59,6 +73,10 @@ type SyntheticMonitorConfig struct {
 func (m *SyntheticMonitorConfig) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateStatusFilters(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateEvaluationInterval(formats); err != nil {
 		res = append(res, err)
 	}
@@ -66,6 +84,31 @@ func (m *SyntheticMonitorConfig) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *SyntheticMonitorConfig) validateStatusFilters(formats strfmt.Registry) error {
+	if swag.IsZero(m.StatusFilters) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.StatusFilters); i++ {
+
+		if err := m.StatusFilters[i].Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("statusFilters" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("statusFilters" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
 	return nil
 }
 
@@ -96,6 +139,10 @@ func (m *SyntheticMonitorConfig) validateEvaluationInterval(formats strfmt.Regis
 func (m *SyntheticMonitorConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateStatusFilters(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateEvaluationInterval(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -103,6 +150,32 @@ func (m *SyntheticMonitorConfig) ContextValidate(ctx context.Context, formats st
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *SyntheticMonitorConfig) contextValidateStatusFilters(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.StatusFilters); i++ {
+
+		if swag.IsZero(m.StatusFilters[i]) { // not required
+			return nil
+		}
+
+		if err := m.StatusFilters[i].ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("statusFilters" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("statusFilters" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
 	return nil
 }
 
