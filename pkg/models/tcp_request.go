@@ -34,6 +34,9 @@ type TCPRequest struct {
 	// send
 	Send string `json:"send,omitempty"`
 
+	// timeout
+	Timeout string `json:"timeout,omitempty"`
+
 	// kind
 	Kind TCPRequestKind `json:"kind,omitempty"`
 }
