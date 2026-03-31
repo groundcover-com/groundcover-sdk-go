@@ -10,6 +10,239 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestTCPSyntheticsEndpoints(t *testing.T) {
+	testClient := NewTestClient(t)
+	defer testClient.Cleanup()
+
+	const defaultTimeout = 30 * time.Second
+
+	var createdSyntheticID string
+	syntheticName := "e2e-test-tcp-synthetic-" + uuid.New().String()
+
+	t.Run("Create TCP Synthetic Test", func(t *testing.T) {
+		createReq := &models.SyntheticTestCreateRequest{
+			Name:     syntheticName,
+			Version:  1,
+			Enabled:  true,
+			Interval: "5m",
+			CheckConfig: &models.WorkerRequest{
+				Kind: "tcp",
+				Metadata: &models.Metadata{
+					SyntheticName: syntheticName,
+				},
+				Request: &models.Request{
+					TCP: &models.TCPRequest{
+						Kind: "tcp",
+						Host: "google.com",
+						Port: 80,
+					},
+				},
+				ExecutionPolicy: &models.ExecutionPolicy{
+					Assertions: []*models.Assertion{
+						{
+							Source:   "tcp",
+							Operator: "exists",
+							Target:   "true",
+						},
+					},
+				},
+				Tracing: &models.Tracing{},
+			},
+		}
+
+		createParams := synthetics.NewCreateSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithBody(createReq)
+
+		createResp, err := testClient.Client.Synthetics.CreateSyntheticTest(createParams, nil)
+		require.NoError(t, err, "Failed to create TCP synthetic test")
+		require.NotNil(t, createResp, "Create TCP synthetic test response should not be nil")
+		require.NotNil(t, createResp.Payload, "Create TCP synthetic test response payload should not be nil")
+		require.NotEmpty(t, createResp.Payload.ID, "Created TCP synthetic test ID should not be empty")
+
+		createdSyntheticID = createResp.Payload.ID
+		t.Logf("Created TCP synthetic test with ID: %s", createdSyntheticID)
+	})
+
+	t.Cleanup(func() {
+		if createdSyntheticID == "" {
+			return
+		}
+		deleteParams := synthetics.NewDeleteSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+		_, _ = testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
+	})
+
+	t.Run("List TCP Synthetic Tests", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID && item.Name == syntheticName && item.SyntheticType == "tcp" {
+					return true
+				}
+			}
+			return false
+		}, 2*time.Minute, 5*time.Second, "Created TCP synthetic test %s not found in list response with expected name and type", createdSyntheticID)
+	})
+
+	t.Run("Get TCP Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		getParams := synthetics.NewGetSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+
+		getResp, err := testClient.Client.Synthetics.GetSyntheticTest(getParams, nil)
+		require.NoError(t, err, "Failed to get TCP synthetic test")
+		require.NotNil(t, getResp, "Get TCP synthetic test response should not be nil")
+		require.NotNil(t, getResp.Payload, "Get TCP synthetic test response payload should not be nil")
+
+		require.Equal(t, syntheticName, getResp.Payload.Name, "TCP synthetic test name mismatch")
+		require.NotNil(t, getResp.Payload.CheckConfig, "TCP synthetic test CheckConfig should not be nil")
+		require.Equal(t, models.WorkerRequestKind("tcp"), getResp.Payload.CheckConfig.Kind, "TCP synthetic test kind should be 'tcp'")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request, "TCP synthetic test Request should not be nil")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request.TCP, "TCP synthetic test TCP request should not be nil")
+		require.Equal(t, "google.com", getResp.Payload.CheckConfig.Request.TCP.Host, "TCP synthetic test host mismatch")
+		require.Equal(t, int64(80), getResp.Payload.CheckConfig.Request.TCP.Port, "TCP synthetic test port mismatch")
+
+		t.Logf("Successfully retrieved TCP synthetic test with ID: %s", createdSyntheticID)
+	})
+
+	t.Run("Update TCP Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		updatedName := syntheticName + "-updated"
+		updateReq := &models.SyntheticTestCreateRequest{
+			Name:     updatedName,
+			Version:  1,
+			Enabled:  true,
+			Interval: "10m",
+			CheckConfig: &models.WorkerRequest{
+				Kind: "tcp",
+				Metadata: &models.Metadata{
+					SyntheticName: updatedName,
+				},
+				Request: &models.Request{
+					TCP: &models.TCPRequest{
+						Kind: "tcp",
+						Host: "github.com",
+						Port: 80,
+					},
+				},
+				ExecutionPolicy: &models.ExecutionPolicy{
+					Assertions: []*models.Assertion{
+						{
+							Source:   "tcp",
+							Operator: "exists",
+							Target:   "true",
+						},
+					},
+				},
+				Tracing: &models.Tracing{},
+			},
+		}
+
+		updateParams := synthetics.NewUpdateSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID).
+			WithBody(updateReq)
+
+		updateResp, err := testClient.Client.Synthetics.UpdateSyntheticTest(updateParams, nil)
+		require.NoError(t, err, "Failed to update TCP synthetic test")
+		require.NotNil(t, updateResp, "Update TCP synthetic test response should not be nil")
+
+		t.Logf("Successfully updated TCP synthetic test with ID: %s", createdSyntheticID)
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID && item.Name == updatedName {
+					return true
+				}
+			}
+			return false
+		}, 2*time.Minute, 5*time.Second, "Updated TCP synthetic test %s not found with expected name", createdSyntheticID)
+
+		getParams := synthetics.NewGetSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+
+		getResp, err := testClient.Client.Synthetics.GetSyntheticTest(getParams, nil)
+		require.NoError(t, err, "Failed to get updated TCP synthetic test")
+		require.NotNil(t, getResp.Payload, "Get updated TCP synthetic test payload should not be nil")
+
+		require.Equal(t, updatedName, getResp.Payload.Name, "Updated TCP synthetic test name mismatch")
+		require.Equal(t, "10m", getResp.Payload.Interval, "Updated TCP synthetic test interval mismatch")
+		require.Equal(t, models.WorkerRequestKind("tcp"), getResp.Payload.CheckConfig.Kind, "Updated TCP synthetic test kind mismatch")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request.TCP, "Updated TCP synthetic test TCP request should not be nil")
+		require.Equal(t, "github.com", getResp.Payload.CheckConfig.Request.TCP.Host, "Updated TCP synthetic test host mismatch")
+		require.Equal(t, int64(80), getResp.Payload.CheckConfig.Request.TCP.Port, "Updated TCP synthetic test port mismatch")
+
+		syntheticName = updatedName
+	})
+
+	t.Run("Delete TCP Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		deleteParams := synthetics.NewDeleteSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+
+		_, err := testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
+		require.NoError(t, err, "Failed to delete TCP synthetic test")
+
+		t.Logf("Successfully deleted TCP synthetic test %s", createdSyntheticID)
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID {
+					return false
+				}
+			}
+			return true
+		}, 2*time.Minute, 5*time.Second, "Deleted TCP synthetic test %s should not be found in list response", createdSyntheticID)
+	})
+}
+
 func TestSSLSyntheticsEndpoints(t *testing.T) {
 	testClient := NewTestClient(t)
 	defer testClient.Cleanup()
