@@ -62,6 +62,9 @@ GetAllRecurringSilencesParams contains all the parameters to send to the API end
 */
 type GetAllRecurringSilencesParams struct {
 
+	// EnabledOnly.
+	EnabledOnly *bool
+
 	// Limit.
 	//
 	// Format: int64
@@ -125,6 +128,17 @@ func (o *GetAllRecurringSilencesParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithEnabledOnly adds the enabledOnly to the get all recurring silences params
+func (o *GetAllRecurringSilencesParams) WithEnabledOnly(enabledOnly *bool) *GetAllRecurringSilencesParams {
+	o.SetEnabledOnly(enabledOnly)
+	return o
+}
+
+// SetEnabledOnly adds the enabledOnly to the get all recurring silences params
+func (o *GetAllRecurringSilencesParams) SetEnabledOnly(enabledOnly *bool) {
+	o.EnabledOnly = enabledOnly
+}
+
 // WithLimit adds the limit to the get all recurring silences params
 func (o *GetAllRecurringSilencesParams) WithLimit(limit *int64) *GetAllRecurringSilencesParams {
 	o.SetLimit(limit)
@@ -154,6 +168,23 @@ func (o *GetAllRecurringSilencesParams) WriteToRequest(r runtime.ClientRequest, 
 		return err
 	}
 	var res []error
+
+	if o.EnabledOnly != nil {
+
+		// query param enabledOnly
+		var qrEnabledOnly bool
+
+		if o.EnabledOnly != nil {
+			qrEnabledOnly = *o.EnabledOnly
+		}
+		qEnabledOnly := swag.FormatBool(qrEnabledOnly)
+		if qEnabledOnly != "" {
+
+			if err := r.SetQueryParam("enabledOnly", qEnabledOnly); err != nil {
+				return err
+			}
+		}
+	}
 
 	if o.Limit != nil {
 

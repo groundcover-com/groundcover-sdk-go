@@ -9,6 +9,7 @@ import (
 	"context"
 	"encoding/json"
 	stderrors "errors"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -24,18 +25,8 @@ type CreateRecurringSilenceRequest struct {
 	// Optional comment for the recurring silence
 	Comment string `json:"comment,omitempty"`
 
-	// Days of the month (1-31). Required when recurrenceType is "monthly".
-	DaysOfMonth []int64 `json:"daysOfMonth"`
-
-	// Days of the week (0=Sunday..6=Saturday). Required when recurrenceType is "weekly".
-	DaysOfWeek []int64 `json:"daysOfWeek"`
-
 	// Whether the recurring silence is enabled. Defaults to true.
 	Enabled *bool `json:"enabled,omitempty"`
-
-	// End time in HH:MM format
-	// Required: true
-	EndTime *string `json:"endTime"`
 
 	// Recurrence type: daily, weekly, or monthly
 	// daily RecurrenceTypeDaily
@@ -45,9 +36,9 @@ type CreateRecurringSilenceRequest struct {
 	// Enum: ["daily","weekly","monthly"]
 	RecurrenceType *string `json:"recurrenceType"`
 
-	// Start time in HH:MM format
+	// Timeframes map: keys depend on recurrenceType (every_day / weekday names / day-of-month strings)
 	// Required: true
-	StartTime *string `json:"startTime"`
+	Timeframes map[string][]TimeRange `json:"timeframes"`
 
 	// IANA timezone name (e.g. "America/New_York")
 	// Required: true
@@ -62,15 +53,11 @@ type CreateRecurringSilenceRequest struct {
 func (m *CreateRecurringSilenceRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateEndTime(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateRecurrenceType(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateStartTime(formats); err != nil {
+	if err := m.validateTimeframes(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -85,15 +72,6 @@ func (m *CreateRecurringSilenceRequest) Validate(formats strfmt.Registry) error 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *CreateRecurringSilenceRequest) validateEndTime(formats strfmt.Registry) error {
-
-	if err := validate.Required("endTime", "body", m.EndTime); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -143,10 +121,35 @@ func (m *CreateRecurringSilenceRequest) validateRecurrenceType(formats strfmt.Re
 	return nil
 }
 
-func (m *CreateRecurringSilenceRequest) validateStartTime(formats strfmt.Registry) error {
+func (m *CreateRecurringSilenceRequest) validateTimeframes(formats strfmt.Registry) error {
 
-	if err := validate.Required("startTime", "body", m.StartTime); err != nil {
+	if err := validate.Required("timeframes", "body", m.Timeframes); err != nil {
 		return err
+	}
+
+	for k := range m.Timeframes {
+
+		if err := validate.Required("timeframes"+"."+k, "body", m.Timeframes[k]); err != nil {
+			return err
+		}
+
+		for i := 0; i < len(m.Timeframes[k]); i++ {
+
+			if err := m.Timeframes[k][i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("timeframes" + "." + k + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("timeframes" + "." + k + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+
+		}
+
 	}
 
 	return nil
@@ -187,6 +190,10 @@ func (m *CreateRecurringSilenceRequest) validateMatchers(formats strfmt.Registry
 func (m *CreateRecurringSilenceRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateTimeframes(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateMatchers(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -194,6 +201,40 @@ func (m *CreateRecurringSilenceRequest) ContextValidate(ctx context.Context, for
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *CreateRecurringSilenceRequest) contextValidateTimeframes(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.Required("timeframes", "body", m.Timeframes); err != nil {
+		return err
+	}
+
+	for k := range m.Timeframes {
+
+		for i := 0; i < len(m.Timeframes[k]); i++ {
+
+			if swag.IsZero(m.Timeframes[k][i]) { // not required
+				return nil
+			}
+
+			if err := m.Timeframes[k][i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("timeframes" + "." + k + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("timeframes" + "." + k + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+
+		}
+
+	}
+
 	return nil
 }
 

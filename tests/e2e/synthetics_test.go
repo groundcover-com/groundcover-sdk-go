@@ -668,3 +668,249 @@ func TestSyntheticsEndpoints(t *testing.T) {
 		t.Logf("Verified synthetic test %s is no longer in the list after deletion", createdSyntheticID)
 	})
 }
+
+func TestDNSSyntheticsEndpoints(t *testing.T) {
+	testClient := NewTestClient(t)
+	defer testClient.Cleanup()
+
+	const defaultTimeout = 30 * time.Second
+
+	var createdSyntheticID string
+	syntheticName := "e2e-test-dns-synthetic-" + uuid.New().String()
+
+	t.Run("Create DNS Synthetic Test", func(t *testing.T) {
+		createReq := &models.SyntheticTestCreateRequest{
+			Name:     syntheticName,
+			Version:  1,
+			Enabled:  true,
+			Interval: "5m",
+			CheckConfig: &models.WorkerRequest{
+				Kind: "dns",
+				Metadata: &models.Metadata{
+					SyntheticName: syntheticName,
+				},
+				Request: &models.Request{
+					DNS: &models.DNSRequest{
+						Kind:       "dns",
+						Domain:     "google.com",
+						Resolver:   "8.8.8.8",
+						Port:       53,
+						RecordType: "A",
+						Timeout:    "30s",
+					},
+				},
+				ExecutionPolicy: &models.ExecutionPolicy{
+					Assertions: []*models.Assertion{
+						{
+							Source:   "dns",
+							Operator: "exists",
+							Target:   "true",
+						},
+					},
+				},
+				Tracing: &models.Tracing{},
+			},
+		}
+
+		createParams := synthetics.NewCreateSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithBody(createReq)
+
+		createResp, err := testClient.Client.Synthetics.CreateSyntheticTest(createParams, nil)
+		require.NoError(t, err, "Failed to create DNS synthetic test")
+		require.NotNil(t, createResp, "Create DNS synthetic test response should not be nil")
+		require.NotNil(t, createResp.Payload, "Create DNS synthetic test response payload should not be nil")
+		require.NotEmpty(t, createResp.Payload.ID, "Created DNS synthetic test ID should not be empty")
+
+		createdSyntheticID = createResp.Payload.ID
+		t.Logf("Created DNS synthetic test with ID: %s", createdSyntheticID)
+	})
+
+	t.Cleanup(func() {
+		if createdSyntheticID == "" {
+			return
+		}
+		deleteParams := synthetics.NewDeleteSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+		_, _ = testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
+	})
+
+	t.Run("List DNS Synthetic Tests", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID && item.Name == syntheticName && item.SyntheticType == "dns" {
+					return true
+				}
+			}
+			return false
+		}, 2*time.Minute, 5*time.Second, "Created DNS synthetic test %s not found in list response with expected name and type", createdSyntheticID)
+	})
+
+	t.Run("Get DNS Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		getParams := synthetics.NewGetSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+
+		getResp, err := testClient.Client.Synthetics.GetSyntheticTest(getParams, nil)
+		require.NoError(t, err, "Failed to get DNS synthetic test")
+		require.NotNil(t, getResp, "Get DNS synthetic test response should not be nil")
+		require.NotNil(t, getResp.Payload, "Get DNS synthetic test response payload should not be nil")
+
+		require.Equal(t, syntheticName, getResp.Payload.Name, "DNS synthetic test name mismatch")
+		require.NotNil(t, getResp.Payload.CheckConfig, "DNS synthetic test CheckConfig should not be nil")
+		require.Equal(t, models.WorkerRequestKind("dns"), getResp.Payload.CheckConfig.Kind, "DNS synthetic test kind should be 'dns'")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request, "DNS synthetic test Request should not be nil")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request.DNS, "DNS synthetic test DNS request should not be nil")
+		require.Equal(t, "google.com", getResp.Payload.CheckConfig.Request.DNS.Domain, "DNS synthetic test domain mismatch")
+		require.Equal(t, "8.8.8.8", getResp.Payload.CheckConfig.Request.DNS.Resolver, "DNS synthetic test resolver mismatch")
+		require.Equal(t, int64(53), getResp.Payload.CheckConfig.Request.DNS.Port, "DNS synthetic test port mismatch")
+		require.Equal(t, models.DNSRequestRecordType("A"), getResp.Payload.CheckConfig.Request.DNS.RecordType, "DNS synthetic test record type mismatch")
+
+		t.Logf("Successfully retrieved DNS synthetic test with ID: %s", createdSyntheticID)
+	})
+
+	t.Run("Update DNS Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		updatedName := syntheticName + "-updated"
+		updateReq := &models.SyntheticTestCreateRequest{
+			Name:     updatedName,
+			Version:  1,
+			Enabled:  true,
+			Interval: "10m",
+			CheckConfig: &models.WorkerRequest{
+				Kind: "dns",
+				Metadata: &models.Metadata{
+					SyntheticName: updatedName,
+				},
+				Request: &models.Request{
+					DNS: &models.DNSRequest{
+						Kind:       "dns",
+						Domain:     "github.com",
+						Resolver:   "8.8.4.4",
+						Port:       53,
+						RecordType: "A",
+						Timeout:    "30s",
+					},
+				},
+				ExecutionPolicy: &models.ExecutionPolicy{
+					Assertions: []*models.Assertion{
+						{
+							Source:   "dns",
+							Operator: "exists",
+							Target:   "true",
+						},
+					},
+				},
+				Tracing: &models.Tracing{},
+			},
+		}
+
+		updateParams := synthetics.NewUpdateSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID).
+			WithBody(updateReq)
+
+		updateResp, err := testClient.Client.Synthetics.UpdateSyntheticTest(updateParams, nil)
+		require.NoError(t, err, "Failed to update DNS synthetic test")
+		require.NotNil(t, updateResp, "Update DNS synthetic test response should not be nil")
+
+		t.Logf("Successfully updated DNS synthetic test with ID: %s", createdSyntheticID)
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID && item.Name == updatedName {
+					return true
+				}
+			}
+			return false
+		}, 2*time.Minute, 5*time.Second, "Updated DNS synthetic test %s not found with expected name", createdSyntheticID)
+
+		getParams := synthetics.NewGetSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+
+		getResp, err := testClient.Client.Synthetics.GetSyntheticTest(getParams, nil)
+		require.NoError(t, err, "Failed to get updated DNS synthetic test")
+		require.NotNil(t, getResp, "Get updated DNS synthetic test response should not be nil")
+		require.NotNil(t, getResp.Payload, "Get updated DNS synthetic test payload should not be nil")
+		require.NotNil(t, getResp.Payload.CheckConfig, "Updated DNS synthetic test CheckConfig should not be nil")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request, "Updated DNS synthetic test Request should not be nil")
+		require.NotNil(t, getResp.Payload.CheckConfig.Request.DNS, "Updated DNS synthetic test DNS request should not be nil")
+
+		require.Equal(t, updatedName, getResp.Payload.Name, "Updated DNS synthetic test name mismatch")
+		require.Equal(t, "10m", getResp.Payload.Interval, "Updated DNS synthetic test interval mismatch")
+		require.Equal(t, models.WorkerRequestKind("dns"), getResp.Payload.CheckConfig.Kind, "Updated DNS synthetic test kind mismatch")
+		require.Equal(t, "github.com", getResp.Payload.CheckConfig.Request.DNS.Domain, "Updated DNS synthetic test domain mismatch")
+		require.Equal(t, "8.8.4.4", getResp.Payload.CheckConfig.Request.DNS.Resolver, "Updated DNS synthetic test resolver mismatch")
+		require.Equal(t, int64(53), getResp.Payload.CheckConfig.Request.DNS.Port, "Updated DNS synthetic test port mismatch")
+		require.Equal(t, models.DNSRequestRecordType("A"), getResp.Payload.CheckConfig.Request.DNS.RecordType, "Updated DNS synthetic test record type mismatch")
+
+		syntheticName = updatedName
+	})
+
+	t.Run("Delete DNS Synthetic Test", func(t *testing.T) {
+		if createdSyntheticID == "" {
+			t.Skip("Skipping because create failed or didn't run")
+		}
+
+		deleteParams := synthetics.NewDeleteSyntheticTestParams().
+			WithContext(testClient.BaseCtx).
+			WithTimeout(defaultTimeout).
+			WithID(createdSyntheticID)
+
+		_, err := testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
+		require.NoError(t, err, "Failed to delete DNS synthetic test")
+
+		t.Logf("Successfully deleted DNS synthetic test %s", createdSyntheticID)
+
+		require.Eventually(t, func() bool {
+			listParams := synthetics.NewListSyntheticTestsParams().
+				WithContext(testClient.BaseCtx).
+				WithTimeout(defaultTimeout)
+
+			listResp, err := testClient.Client.Synthetics.ListSyntheticTests(listParams, nil)
+			if err != nil || listResp == nil || listResp.Payload == nil {
+				return false
+			}
+			for _, item := range listResp.Payload.Synthetics {
+				if item.ID == createdSyntheticID {
+					return false
+				}
+			}
+			return true
+		}, 2*time.Minute, 5*time.Second, "Deleted DNS synthetic test %s should not be found in list response", createdSyntheticID)
+	})
+}
