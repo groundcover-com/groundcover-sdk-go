@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	"encoding/json"
 	stderrors "errors"
 	"strconv"
 
@@ -21,28 +22,26 @@ import (
 // swagger:model DiscoveryRequest
 type DiscoveryRequest struct {
 
-	// Conditions filters discovery results by metadata conditions.
+	// Conditions specifies additional conditions to filter the discovery results.
 	Conditions []*Condition `json:"conditions"`
 
-	// End specifies the end time for the discovery query.
-	// Format: date-time
-	End strfmt.DateTime `json:"end,omitempty"`
-
-	// Filter applies a wildcard text filter on keys and values.
+	// Filter specifies a search filter to apply to the discovery results.
 	Filter string `json:"filter,omitempty"`
 
-	// LimitByKey specifies the maximum number of values per key.
-	LimitByKey uint32 `json:"limitByKey,omitempty"`
+	// Limit specifies the maximum number of results to return.
+	// Required: true
+	Limit *uint32 `json:"limit"`
 
-	// Name optionally filters discovery results by metric name.
-	Name string `json:"name,omitempty"`
-
-	// Sources filters discovery results by source conditions.
+	// Sources specifies the sources to filter the discovery results.
 	Sources []*Condition `json:"sources"`
 
-	// Start specifies the start time for the discovery query.
-	// Format: date-time
-	Start strfmt.DateTime `json:"start,omitempty"`
+	// Type specifies the type of discovery to perform.
+	// Required: true
+	// Enum: ["logs","traces","events","issues","entities"]
+	Type *string `json:"type"`
+
+	// filter group
+	FilterGroup *Group `json:"filterGroup,omitempty"`
 }
 
 // Validate validates this discovery request
@@ -53,7 +52,7 @@ func (m *DiscoveryRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateEnd(formats); err != nil {
+	if err := m.validateLimit(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -61,7 +60,11 @@ func (m *DiscoveryRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateStart(formats); err != nil {
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateFilterGroup(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -101,12 +104,9 @@ func (m *DiscoveryRequest) validateConditions(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *DiscoveryRequest) validateEnd(formats strfmt.Registry) error {
-	if swag.IsZero(m.End) { // not required
-		return nil
-	}
+func (m *DiscoveryRequest) validateLimit(formats strfmt.Registry) error {
 
-	if err := validate.FormatOf("end", "body", "date-time", m.End.String(), formats); err != nil {
+	if err := validate.Required("limit", "body", m.Limit); err != nil {
 		return err
 	}
 
@@ -143,13 +143,76 @@ func (m *DiscoveryRequest) validateSources(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *DiscoveryRequest) validateStart(formats strfmt.Registry) error {
-	if swag.IsZero(m.Start) { // not required
+var discoveryRequestTypeTypePropEnum []any
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		discoveryRequestTypeTypePropEnum = append(discoveryRequestTypeTypePropEnum, v)
+	}
+}
+
+const (
+
+	// DiscoveryRequestTypeLogs captures enum value "logs"
+	DiscoveryRequestTypeLogs string = "logs"
+
+	// DiscoveryRequestTypeTraces captures enum value "traces"
+	DiscoveryRequestTypeTraces string = "traces"
+
+	// DiscoveryRequestTypeEvents captures enum value "events"
+	DiscoveryRequestTypeEvents string = "events"
+
+	// DiscoveryRequestTypeIssues captures enum value "issues"
+	DiscoveryRequestTypeIssues string = "issues"
+
+	// DiscoveryRequestTypeEntities captures enum value "entities"
+	DiscoveryRequestTypeEntities string = "entities"
+)
+
+// prop value enum
+func (m *DiscoveryRequest) validateTypeEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, discoveryRequestTypeTypePropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *DiscoveryRequest) validateType(formats strfmt.Registry) error {
+
+	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *DiscoveryRequest) validateFilterGroup(formats strfmt.Registry) error {
+	if swag.IsZero(m.FilterGroup) { // not required
 		return nil
 	}
 
-	if err := validate.FormatOf("start", "body", "date-time", m.Start.String(), formats); err != nil {
-		return err
+	if m.FilterGroup != nil {
+		if err := m.FilterGroup.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("filterGroup")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("filterGroup")
+			}
+
+			return err
+		}
 	}
 
 	return nil
@@ -164,6 +227,10 @@ func (m *DiscoveryRequest) ContextValidate(ctx context.Context, formats strfmt.R
 	}
 
 	if err := m.contextValidateSources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateFilterGroup(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -226,6 +293,31 @@ func (m *DiscoveryRequest) contextValidateSources(ctx context.Context, formats s
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *DiscoveryRequest) contextValidateFilterGroup(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.FilterGroup != nil {
+
+		if swag.IsZero(m.FilterGroup) { // not required
+			return nil
+		}
+
+		if err := m.FilterGroup.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("filterGroup")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("filterGroup")
+			}
+
+			return err
+		}
 	}
 
 	return nil

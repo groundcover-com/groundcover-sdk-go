@@ -21,13 +21,13 @@ import (
 type HTTPRequest struct {
 
 	// allow insecure
-	AllowInsecure bool `json:"allowInsecure,omitempty"`
+	AllowInsecure *bool `json:"allowInsecure,omitempty"`
 
 	// cookies
 	Cookies []*HTTPRequestCookiesItems0 `json:"cookies"`
 
 	// follow redirects
-	FollowRedirects bool `json:"followRedirects,omitempty"`
+	FollowRedirects *bool `json:"followRedirects,omitempty"`
 
 	// headers
 	Headers map[string]string `json:"headers,omitempty"`

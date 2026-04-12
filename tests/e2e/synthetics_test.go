@@ -1,9 +1,11 @@
 package e2e
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
+	"github.com/go-openapi/swag"
 	"github.com/google/uuid"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/synthetics"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
@@ -913,4 +915,26 @@ func TestDNSSyntheticsEndpoints(t *testing.T) {
 			return true
 		}, 2*time.Minute, 5*time.Second, "Deleted DNS synthetic test %s should not be found in list response", createdSyntheticID)
 	})
+}
+
+// TestHTTPSyntheticFollowRedirectsFalse verifies that setting followRedirects=false
+// via the SDK is correctly serialized and persisted. This catches the go-swagger bug
+// where bool fields with omitempty silently drop false values
+// (github.com/go-swagger/go-swagger/issues/1601).
+func TestHTTPSyntheticFollowRedirectsFalse(t *testing.T) {
+	httpReq := &models.HTTPRequest{
+		Kind:            "http",
+		URL:             "https://httpbin.org/redirect/1",
+		Method:          "GET",
+		Timeout:         "30s",
+		FollowRedirects: swag.Bool(false),
+		AllowInsecure:   swag.Bool(false),
+	}
+
+	data, err := json.Marshal(httpReq)
+	require.NoError(t, err)
+	require.Contains(t, string(data), `"followRedirects":false`,
+		"SDK must preserve followRedirects=false in JSON serialization, got: %s", string(data))
+	require.Contains(t, string(data), `"allowInsecure":false`,
+		"SDK must preserve allowInsecure=false in JSON serialization, got: %s", string(data))
 }
