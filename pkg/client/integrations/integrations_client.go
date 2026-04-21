@@ -64,9 +64,9 @@ type ClientService interface {
 
 	GetDataIntegrationConfig(params *GetDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigOK, error)
 
-	GetDataIntegrationConfigs(params *GetDataIntegrationConfigsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsOK, *GetDataIntegrationConfigsNoContent, error)
+	GetDataIntegrationConfigs(params *GetDataIntegrationConfigsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsOK, error)
 
-	GetDataIntegrationConfigsByType(params *GetDataIntegrationConfigsByTypeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsByTypeOK, *GetDataIntegrationConfigsByTypeNoContent, error)
+	GetDataIntegrationConfigsByType(params *GetDataIntegrationConfigsByTypeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsByTypeOK, error)
 
 	UpdateDataIntegrationConfig(params *UpdateDataIntegrationConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDataIntegrationConfigOK, error)
 
@@ -252,7 +252,7 @@ func (a *Client) GetDataIntegrationConfig(params *GetDataIntegrationConfigParams
 /*
 GetDataIntegrationConfigs get data integration configs API
 */
-func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsOK, *GetDataIntegrationConfigsNoContent, error) {
+func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetDataIntegrationConfigsParams()
@@ -275,28 +275,28 @@ func (a *Client) GetDataIntegrationConfigs(params *GetDataIntegrationConfigsPara
 	}
 	result, err := a.transport.Submit(op)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	// several success responses have to be checked
-	switch value := result.(type) {
-	case *GetDataIntegrationConfigsOK:
-		return value, nil, nil
-	case *GetDataIntegrationConfigsNoContent:
-		return nil, value, nil
+	// only one success response has to be checked
+	success, ok := result.(*GetDataIntegrationConfigsOK)
+	if ok {
+		return success, nil
 	}
+
+	// unexpected success response.
 
 	// no default response is defined.
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for integrations: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for getDataIntegrationConfigs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
 GetDataIntegrationConfigsByType get data integration configs by type API
 */
-func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfigsByTypeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsByTypeOK, *GetDataIntegrationConfigsByTypeNoContent, error) {
+func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfigsByTypeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDataIntegrationConfigsByTypeOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetDataIntegrationConfigsByTypeParams()
@@ -319,21 +319,21 @@ func (a *Client) GetDataIntegrationConfigsByType(params *GetDataIntegrationConfi
 	}
 	result, err := a.transport.Submit(op)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	// several success responses have to be checked
-	switch value := result.(type) {
-	case *GetDataIntegrationConfigsByTypeOK:
-		return value, nil, nil
-	case *GetDataIntegrationConfigsByTypeNoContent:
-		return nil, value, nil
+	// only one success response has to be checked
+	success, ok := result.(*GetDataIntegrationConfigsByTypeOK)
+	if ok {
+		return success, nil
 	}
+
+	// unexpected success response.
 
 	// no default response is defined.
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for integrations: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for getDataIntegrationConfigsByType: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

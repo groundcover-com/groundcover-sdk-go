@@ -31,12 +31,6 @@ func (o *GetDataIntegrationConfigsReader) ReadResponse(response runtime.ClientRe
 			return nil, err
 		}
 		return result, nil
-	case 204:
-		result := NewGetDataIntegrationConfigsNoContent()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return result, nil
 	case 400:
 		result := NewGetDataIntegrationConfigsBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -119,74 +113,6 @@ func (o *GetDataIntegrationConfigsOK) GetPayload() []*models.DataIntegrationConf
 }
 
 func (o *GetDataIntegrationConfigsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
-		return err
-	}
-
-	return nil
-}
-
-// NewGetDataIntegrationConfigsNoContent creates a GetDataIntegrationConfigsNoContent with default headers values
-func NewGetDataIntegrationConfigsNoContent() *GetDataIntegrationConfigsNoContent {
-	return &GetDataIntegrationConfigsNoContent{}
-}
-
-/*
-GetDataIntegrationConfigsNoContent describes a response with status code 204, with default header values.
-
-GetDataIntegrationConfigsNoContent get data integration configs no content
-*/
-type GetDataIntegrationConfigsNoContent struct {
-	Payload any
-}
-
-// IsSuccess returns true when this get data integration configs no content response has a 2xx status code
-func (o *GetDataIntegrationConfigsNoContent) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this get data integration configs no content response has a 3xx status code
-func (o *GetDataIntegrationConfigsNoContent) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get data integration configs no content response has a 4xx status code
-func (o *GetDataIntegrationConfigsNoContent) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get data integration configs no content response has a 5xx status code
-func (o *GetDataIntegrationConfigsNoContent) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get data integration configs no content response a status code equal to that given
-func (o *GetDataIntegrationConfigsNoContent) IsCode(code int) bool {
-	return code == 204
-}
-
-// Code gets the status code for the get data integration configs no content response
-func (o *GetDataIntegrationConfigsNoContent) Code() int {
-	return 204
-}
-
-func (o *GetDataIntegrationConfigsNoContent) Error() string {
-	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/integrations/v1/data/config][%d] getDataIntegrationConfigsNoContent %s", 204, payload)
-}
-
-func (o *GetDataIntegrationConfigsNoContent) String() string {
-	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/integrations/v1/data/config][%d] getDataIntegrationConfigsNoContent %s", 204, payload)
-}
-
-func (o *GetDataIntegrationConfigsNoContent) GetPayload() any {
-	return o.Payload
-}
-
-func (o *GetDataIntegrationConfigsNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
 	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
