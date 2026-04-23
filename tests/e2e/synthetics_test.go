@@ -704,7 +704,7 @@ func TestDNSSyntheticsEndpoints(t *testing.T) {
 				ExecutionPolicy: &models.ExecutionPolicy{
 					Assertions: []*models.Assertion{
 						{
-							Source:   "dns",
+							Source:   "dnsAnswer",
 							Operator: "exists",
 							Target:   "true",
 						},
@@ -820,7 +820,7 @@ func TestDNSSyntheticsEndpoints(t *testing.T) {
 				ExecutionPolicy: &models.ExecutionPolicy{
 					Assertions: []*models.Assertion{
 						{
-							Source:   "dns",
+							Source:   "dnsAnswer",
 							Operator: "exists",
 							Target:   "true",
 						},
