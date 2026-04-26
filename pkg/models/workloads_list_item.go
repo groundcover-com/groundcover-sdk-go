@@ -35,6 +35,9 @@ type WorkloadsListItem struct {
 	// error rate
 	ErrorRate float64 `json:"errorRate,omitempty"`
 
+	// identifiers
+	Identifiers map[string]string `json:"identifiers,omitempty"`
+
 	// issue count
 	IssueCount uint32 `json:"issueCount,omitempty"`
 
