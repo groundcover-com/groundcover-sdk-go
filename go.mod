@@ -1,6 +1,6 @@
 module github.com/groundcover-com/groundcover-sdk-go
 
-go 1.25.7
+go 1.25.9
 
 require (
 	github.com/PuerkitoBio/rehttp v1.3.0
