@@ -23,6 +23,9 @@ type WorkloadsListRequest struct {
 	// conditions
 	Conditions []*Condition `json:"conditions"`
 
+	// GCQL filter expression for workload filtering. When set, conditions are ignored.
+	GcqlFilter string `json:"gcqlFilter,omitempty"`
+
 	// limit
 	Limit uint32 `json:"limit,omitempty"`
 
