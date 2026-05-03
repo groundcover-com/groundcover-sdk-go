@@ -19,6 +19,13 @@ import (
 // swagger:model SyntheticTestCreateRequest
 type SyntheticTestCreateRequest struct {
 
+	// Whether to create an associated monitor for this synthetic test.
+	// On create, nil or true creates a monitor; false skips monitor creation.
+	// On update, nil preserves current monitor state; true creates/keeps the monitor; false deletes it.
+	// To create a monitor on a previously monitor-less synthetic, you must explicitly set createMonitor=true.
+	// Providing a monitor block when createMonitor=false (or when no monitor exists and createMonitor is nil) returns 400.
+	CreateMonitor *bool `json:"createMonitor,omitempty"`
+
 	// enabled
 	Enabled bool `json:"enabled,omitempty"`
 

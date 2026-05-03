@@ -20,6 +20,7 @@ import (
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/logs"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/logs_pipeline"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/metrics_pipeline"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/monitors"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/notification_routes"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/policies"
@@ -85,6 +86,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Groundcove
 	cli.Logs = logs.New(transport, formats)
 	cli.LogsPipeline = logs_pipeline.New(transport, formats)
 	cli.Metrics = metrics.New(transport, formats)
+	cli.MetricsPipeline = metrics_pipeline.New(transport, formats)
 	cli.Monitors = monitors.New(transport, formats)
 	cli.NotificationRoutes = notification_routes.New(transport, formats)
 	cli.Policies = policies.New(transport, formats)
@@ -160,6 +162,8 @@ type GroundcoverAPI struct {
 
 	Metrics metrics.ClientService
 
+	MetricsPipeline metrics_pipeline.ClientService
+
 	Monitors monitors.ClientService
 
 	NotificationRoutes notification_routes.ClientService
@@ -198,6 +202,7 @@ func (c *GroundcoverAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Logs.SetTransport(transport)
 	c.LogsPipeline.SetTransport(transport)
 	c.Metrics.SetTransport(transport)
+	c.MetricsPipeline.SetTransport(transport)
 	c.Monitors.SetTransport(transport)
 	c.NotificationRoutes.SetTransport(transport)
 	c.Policies.SetTransport(transport)

@@ -254,9 +254,12 @@ func (a *Client) ListSyntheticTests(params *ListSyntheticTestsParams, authInfo r
 }
 
 /*
-UpdateSyntheticTest updates synthetic test
+	UpdateSyntheticTest updates synthetic test
 
-Updates a synthetic test configuration and its associated monitor.
+	Updates a synthetic test configuration and its associated monitor.
+
+To create a monitor on a synthetic that currently has none, set createMonitor=true explicitly.
+Sending a monitor config block without createMonitor=true when no monitor exists returns 400.
 */
 func (a *Client) UpdateSyntheticTest(params *UpdateSyntheticTestParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateSyntheticTestOK, error) {
 	// NOTE: parameters are not validated before sending
