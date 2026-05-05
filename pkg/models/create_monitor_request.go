@@ -37,6 +37,9 @@ type CreateMonitorRequest struct {
 	// Whether the monitor is paused.
 	IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
+	// Indicates if the monitor was provisioned via Terraform or other IaC tool.
+	IsProvisioned bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
+
 	// Labels to attach to the monitor/alert.
 	Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
@@ -91,6 +94,8 @@ func (m *CreateMonitorRequest) UnmarshalJSON(raw []byte) error {
 
 		IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
+		IsProvisioned bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
+
 		Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
 		MeasurementType string `json:"measurementType,omitempty" yaml:"measurementType,omitempty"`
@@ -128,6 +133,8 @@ func (m *CreateMonitorRequest) UnmarshalJSON(raw []byte) error {
 	m.ExecutionErrorState = dataAO0.ExecutionErrorState
 
 	m.IsPaused = dataAO0.IsPaused
+
+	m.IsProvisioned = dataAO0.IsProvisioned
 
 	m.Labels = dataAO0.Labels
 
@@ -171,6 +178,8 @@ func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
 
 		IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
+		IsProvisioned bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
+
 		Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
 		MeasurementType string `json:"measurementType,omitempty" yaml:"measurementType,omitempty"`
@@ -205,6 +214,8 @@ func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
 	dataAO0.ExecutionErrorState = m.ExecutionErrorState
 
 	dataAO0.IsPaused = m.IsPaused
+
+	dataAO0.IsProvisioned = m.IsProvisioned
 
 	dataAO0.Labels = m.Labels
 
