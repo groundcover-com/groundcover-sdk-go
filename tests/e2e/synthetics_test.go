@@ -67,17 +67,6 @@ func TestTCPSyntheticsEndpoints(t *testing.T) {
 		t.Logf("Created TCP synthetic test with ID: %s", createdSyntheticID)
 	})
 
-	t.Cleanup(func() {
-		if createdSyntheticID == "" {
-			return
-		}
-		deleteParams := synthetics.NewDeleteSyntheticTestParams().
-			WithContext(testClient.BaseCtx).
-			WithTimeout(defaultTimeout).
-			WithID(createdSyntheticID)
-		_, _ = testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
-	})
-
 	t.Run("List TCP Synthetic Tests", func(t *testing.T) {
 		if createdSyntheticID == "" {
 			t.Skip("Skipping because create failed or didn't run")
@@ -298,17 +287,6 @@ func TestSSLSyntheticsEndpoints(t *testing.T) {
 
 		createdSyntheticID = createResp.Payload.ID
 		t.Logf("✓ Created SSL synthetic test with ID: %s", createdSyntheticID)
-	})
-
-	t.Cleanup(func() {
-		if createdSyntheticID == "" {
-			return
-		}
-		deleteParams := synthetics.NewDeleteSyntheticTestParams().
-			WithContext(testClient.BaseCtx).
-			WithTimeout(defaultTimeout).
-			WithID(createdSyntheticID)
-		_, _ = testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
 	})
 
 	t.Run("List SSL Synthetic Tests", func(t *testing.T) {
@@ -727,17 +705,6 @@ func TestDNSSyntheticsEndpoints(t *testing.T) {
 
 		createdSyntheticID = createResp.Payload.ID
 		t.Logf("Created DNS synthetic test with ID: %s", createdSyntheticID)
-	})
-
-	t.Cleanup(func() {
-		if createdSyntheticID == "" {
-			return
-		}
-		deleteParams := synthetics.NewDeleteSyntheticTestParams().
-			WithContext(testClient.BaseCtx).
-			WithTimeout(defaultTimeout).
-			WithID(createdSyntheticID)
-		_, _ = testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
 	})
 
 	t.Run("List DNS Synthetic Tests", func(t *testing.T) {

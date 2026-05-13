@@ -54,7 +54,7 @@ type ValuesRequest struct {
 
 	// Type of the search values
 	// Required: true
-	// Enum: ["logs","traces","events","issues","entities"]
+	// Enum: ["logs","traces","events","issues","entities","apm"]
 	Type *string `json:"type"`
 
 	// filter group
@@ -209,7 +209,7 @@ var valuesRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities","apm"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -233,6 +233,9 @@ const (
 
 	// ValuesRequestTypeEntities captures enum value "entities"
 	ValuesRequestTypeEntities string = "entities"
+
+	// ValuesRequestTypeApm captures enum value "apm"
+	ValuesRequestTypeApm string = "apm"
 )
 
 // prop value enum

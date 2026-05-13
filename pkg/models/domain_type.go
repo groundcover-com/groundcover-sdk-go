@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// DomainType DomainType represents the type of data domain (logs, traces, events, entities, issues)
+// DomainType DomainType represents the type of data domain (logs, traces, events, entities, issues, apm)
 //
 // swagger:model DomainType
 type DomainType string

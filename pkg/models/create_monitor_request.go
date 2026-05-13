@@ -37,9 +37,6 @@ type CreateMonitorRequest struct {
 	// Whether the monitor is paused.
 	IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
-	// Indicates if the monitor was provisioned via Terraform or other IaC tool.
-	IsProvisioned bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
-
 	// Labels to attach to the monitor/alert.
 	Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
@@ -78,6 +75,10 @@ type CreateMonitorRequest struct {
 
 	// notification settings
 	NotificationSettings *NotificationSettings `json:"notificationSettings,omitempty" yaml:"notificationSettings,omitempty"`
+
+	// Whether the monitor is provisioned by IaC.
+	// Read Only: true
+	IsProvisioned *bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -93,8 +94,6 @@ func (m *CreateMonitorRequest) UnmarshalJSON(raw []byte) error {
 		ExecutionErrorState string `json:"executionErrorState,omitempty" yaml:"executionErrorState,omitempty"`
 
 		IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
-
-		IsProvisioned bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
 
 		Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
@@ -134,8 +133,6 @@ func (m *CreateMonitorRequest) UnmarshalJSON(raw []byte) error {
 
 	m.IsPaused = dataAO0.IsPaused
 
-	m.IsProvisioned = dataAO0.IsProvisioned
-
 	m.Labels = dataAO0.Labels
 
 	m.MeasurementType = dataAO0.MeasurementType
@@ -160,12 +157,22 @@ func (m *CreateMonitorRequest) UnmarshalJSON(raw []byte) error {
 
 	m.NotificationSettings = dataAO0.NotificationSettings
 
+	// AO1
+	var dataAO1 struct {
+		IsProvisioned *bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.IsProvisioned = dataAO1.IsProvisioned
+
 	return nil
 }
 
 // MarshalJSON marshals this object to a JSON structure
 func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 1)
+	_parts := make([][]byte, 0, 2)
 
 	var dataAO0 struct {
 		Annotations map[string]string `json:"annotations,omitempty" yaml:"annotations,omitempty"`
@@ -177,8 +184,6 @@ func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
 		ExecutionErrorState string `json:"executionErrorState,omitempty" yaml:"executionErrorState,omitempty"`
 
 		IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
-
-		IsProvisioned bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
 
 		Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
@@ -215,8 +220,6 @@ func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
 
 	dataAO0.IsPaused = m.IsPaused
 
-	dataAO0.IsProvisioned = m.IsProvisioned
-
 	dataAO0.Labels = m.Labels
 
 	dataAO0.MeasurementType = m.MeasurementType
@@ -246,6 +249,17 @@ func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
 		return nil, errAO0
 	}
 	_parts = append(_parts, jsonDataAO0)
+	var dataAO1 struct {
+		IsProvisioned *bool `json:"isProvisioned,omitempty" yaml:"isProvisioned,omitempty"`
+	}
+
+	dataAO1.IsProvisioned = m.IsProvisioned
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
 	return swag.ConcatJSON(_parts...), nil
 }
 
@@ -550,6 +564,10 @@ func (m *CreateMonitorRequest) ContextValidate(ctx context.Context, formats strf
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateIsProvisioned(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -676,6 +694,15 @@ func (m *CreateMonitorRequest) contextValidateNotificationSettings(ctx context.C
 
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *CreateMonitorRequest) contextValidateIsProvisioned(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "isProvisioned", "body", m.IsProvisioned); err != nil {
+		return err
 	}
 
 	return nil
