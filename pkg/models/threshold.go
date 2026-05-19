@@ -38,6 +38,9 @@ type Threshold struct {
 	// Required: true
 	Values []float64 `json:"values" yaml:"values"`
 
+	// recovery threshold
+	RecoveryThreshold *RecoveryThreshold `json:"recoveryThreshold,omitempty" yaml:"recoveryThreshold,omitempty"`
+
 	// relative timerange
 	RelativeTimerange *RelativeTimerange `json:"relativeTimerange,omitempty" yaml:"relativeTimerange,omitempty"`
 }
@@ -59,6 +62,10 @@ func (m *Threshold) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateValues(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRecoveryThreshold(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -166,6 +173,29 @@ func (m *Threshold) validateValues(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Threshold) validateRecoveryThreshold(formats strfmt.Registry) error {
+	if swag.IsZero(m.RecoveryThreshold) { // not required
+		return nil
+	}
+
+	if m.RecoveryThreshold != nil {
+		if err := m.RecoveryThreshold.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("recoveryThreshold")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("recoveryThreshold")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *Threshold) validateRelativeTimerange(formats strfmt.Registry) error {
 	if swag.IsZero(m.RelativeTimerange) { // not required
 		return nil
@@ -193,6 +223,10 @@ func (m *Threshold) validateRelativeTimerange(formats strfmt.Registry) error {
 func (m *Threshold) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateRecoveryThreshold(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateRelativeTimerange(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -200,6 +234,31 @@ func (m *Threshold) ContextValidate(ctx context.Context, formats strfmt.Registry
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Threshold) contextValidateRecoveryThreshold(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.RecoveryThreshold != nil {
+
+		if swag.IsZero(m.RecoveryThreshold) { // not required
+			return nil
+		}
+
+		if err := m.RecoveryThreshold.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("recoveryThreshold")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("recoveryThreshold")
+			}
+
+			return err
+		}
+	}
+
 	return nil
 }
 
