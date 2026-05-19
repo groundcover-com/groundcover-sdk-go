@@ -29,7 +29,8 @@ type ConnectedAppListItemWithRoutesResponse struct {
 	// Example: user@example.com
 	CreatedBy string `json:"created_by,omitempty"`
 
-	// The connected app data. Schema depends on type field.
+	// The connected app data. Schema depends on type field:
+	// For type "slack-app": use SlackAppDataResponse schema
 	Data any `json:"data,omitempty"`
 
 	// The ID of the connected app
