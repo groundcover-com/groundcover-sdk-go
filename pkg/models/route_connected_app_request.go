@@ -24,8 +24,14 @@ type RouteConnectedAppRequest struct {
 	// Required: true
 	ID *string `json:"id"`
 
-	// The type of the connected app
-	// Example: slack-webhook
+	// Route-specific parameters for this connected app.
+	// Slack App routes require params.channels with at least one channel ID.
+	// Connected app types that do not support route params must omit this field.
+	// Example: {"channels":["C123456"]}
+	Params map[string]any `json:"params,omitempty"`
+
+	// The type of the connected app.
+	// Example: slack-app
 	// Required: true
 	Type *string `json:"type"`
 }

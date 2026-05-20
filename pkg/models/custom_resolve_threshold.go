@@ -15,15 +15,15 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// RecoveryThreshold RecoveryThreshold defines a hysteresis recovery condition for a Threshold.
+// CustomResolveThreshold CustomResolveThreshold defines a hysteresis recovery condition for a Threshold.
 //
 // The Operator must be the directional opposite of the parent Threshold.Operator
 // and Values must not overlap the firing range (e.g. fire above 100, recover below 80).
 // This maps to Grafana's "Custom recovery threshold" (unloadEvaluator) on the
 // threshold expression node.
 //
-// swagger:model RecoveryThreshold
-type RecoveryThreshold struct {
+// swagger:model CustomResolveThreshold
+type CustomResolveThreshold struct {
 
 	// Comparison operator for recovery. Must be the directional opposite of the
 	// parent threshold's Operator.
@@ -31,14 +31,14 @@ type RecoveryThreshold struct {
 	// Enum: ["gt","lt","within_range","outside_range"]
 	Operator *string `json:"operator"`
 
-	// Recovery values (one for gt/lt, two for range operators). Must not overlap
-	// the firing values — see validateRecoveryThreshold for the exact rules.
+	// Resolve values (one for gt/lt, two for range operators). Must not overlap
+	// the firing values — see validateCustomResolveThreshold for the exact rules.
 	// Required: true
 	Values []float64 `json:"values"`
 }
 
-// Validate validates this recovery threshold
-func (m *RecoveryThreshold) Validate(formats strfmt.Registry) error {
+// Validate validates this custom resolve threshold
+func (m *CustomResolveThreshold) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateOperator(formats); err != nil {
@@ -55,7 +55,7 @@ func (m *RecoveryThreshold) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var recoveryThresholdTypeOperatorPropEnum []any
+var customResolveThresholdTypeOperatorPropEnum []any
 
 func init() {
 	var res []string
@@ -63,34 +63,34 @@ func init() {
 		panic(err)
 	}
 	for _, v := range res {
-		recoveryThresholdTypeOperatorPropEnum = append(recoveryThresholdTypeOperatorPropEnum, v)
+		customResolveThresholdTypeOperatorPropEnum = append(customResolveThresholdTypeOperatorPropEnum, v)
 	}
 }
 
 const (
 
-	// RecoveryThresholdOperatorGt captures enum value "gt"
-	RecoveryThresholdOperatorGt string = "gt"
+	// CustomResolveThresholdOperatorGt captures enum value "gt"
+	CustomResolveThresholdOperatorGt string = "gt"
 
-	// RecoveryThresholdOperatorLt captures enum value "lt"
-	RecoveryThresholdOperatorLt string = "lt"
+	// CustomResolveThresholdOperatorLt captures enum value "lt"
+	CustomResolveThresholdOperatorLt string = "lt"
 
-	// RecoveryThresholdOperatorWithinRange captures enum value "within_range"
-	RecoveryThresholdOperatorWithinRange string = "within_range"
+	// CustomResolveThresholdOperatorWithinRange captures enum value "within_range"
+	CustomResolveThresholdOperatorWithinRange string = "within_range"
 
-	// RecoveryThresholdOperatorOutsideRange captures enum value "outside_range"
-	RecoveryThresholdOperatorOutsideRange string = "outside_range"
+	// CustomResolveThresholdOperatorOutsideRange captures enum value "outside_range"
+	CustomResolveThresholdOperatorOutsideRange string = "outside_range"
 )
 
 // prop value enum
-func (m *RecoveryThreshold) validateOperatorEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, recoveryThresholdTypeOperatorPropEnum, true); err != nil {
+func (m *CustomResolveThreshold) validateOperatorEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, customResolveThresholdTypeOperatorPropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m *RecoveryThreshold) validateOperator(formats strfmt.Registry) error {
+func (m *CustomResolveThreshold) validateOperator(formats strfmt.Registry) error {
 
 	if err := validate.Required("operator", "body", m.Operator); err != nil {
 		return err
@@ -104,7 +104,7 @@ func (m *RecoveryThreshold) validateOperator(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *RecoveryThreshold) validateValues(formats strfmt.Registry) error {
+func (m *CustomResolveThreshold) validateValues(formats strfmt.Registry) error {
 
 	if err := validate.Required("values", "body", m.Values); err != nil {
 		return err
@@ -113,13 +113,13 @@ func (m *RecoveryThreshold) validateValues(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this recovery threshold based on context it is used
-func (m *RecoveryThreshold) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this custom resolve threshold based on context it is used
+func (m *CustomResolveThreshold) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *RecoveryThreshold) MarshalBinary() ([]byte, error) {
+func (m *CustomResolveThreshold) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -127,8 +127,8 @@ func (m *RecoveryThreshold) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *RecoveryThreshold) UnmarshalBinary(b []byte) error {
-	var res RecoveryThreshold
+func (m *CustomResolveThreshold) UnmarshalBinary(b []byte) error {
+	var res CustomResolveThreshold
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

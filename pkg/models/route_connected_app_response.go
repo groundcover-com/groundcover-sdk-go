@@ -22,11 +22,17 @@ type RouteConnectedAppResponse struct {
 	ID string `json:"id,omitempty"`
 
 	// The connected app name (resolved)
-	// Example: My Slack Webhook
+	// Example: My Slack App
 	Name string `json:"name,omitempty"`
 
-	// The type of the connected app
-	// Example: slack-webhook
+	// Route-specific parameters for this connected app.
+	// Slack App routes may include params.channels with selected Slack channel IDs.
+	// Connected app types that do not support route params omit this field.
+	// Example: {"channels":["C123456"]}
+	Params map[string]any `json:"params,omitempty"`
+
+	// The type of the connected app.
+	// Example: slack-app
 	Type string `json:"type,omitempty"`
 }
 
