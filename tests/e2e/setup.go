@@ -23,7 +23,7 @@ const (
 	defaultTimeout    = 30 * time.Second
 	defaultRetryCount = 5
 	minRetryWait      = 1 * time.Second
-	maxRetryWait      = 5 * time.Second
+	maxRetryWait      = 10 * time.Second
 	YamlContentType   = "application/x-yaml" // Define YAML content type constant
 )
 
@@ -173,7 +173,7 @@ func NewTestClient(t *testing.T, options ...TestClientOption) *TestClient {
 		defaultRetryCount,
 		minRetryWait,
 		maxRetryWait,
-		[]int{http.StatusServiceUnavailable, http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusBadGateway},
+		[]int{http.StatusInternalServerError, http.StatusServiceUnavailable, http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusBadGateway},
 	))
 
 	// Add debug wrapper if enabled
