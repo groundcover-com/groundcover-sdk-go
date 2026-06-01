@@ -35,6 +35,9 @@ type NotificationSettings struct {
 	// status filters
 	StatusFilters []IssueStatus `json:"statusFilters" yaml:"statusFilters"`
 
+	// connected app params
+	ConnectedAppParams ConnectedAppParams `json:"connectedAppParams,omitempty" yaml:"connectedAppParams,omitempty"`
+
 	// renotification interval
 	RenotificationInterval RenotificationDuration `json:"renotificationInterval,omitempty" yaml:"renotificationInterval,omitempty"`
 }
@@ -48,6 +51,10 @@ func (m *NotificationSettings) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateStatusFilters(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateConnectedAppParams(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -127,11 +134,38 @@ func (m *NotificationSettings) validateStatusFilters(formats strfmt.Registry) er
 	return nil
 }
 
+func (m *NotificationSettings) validateConnectedAppParams(formats strfmt.Registry) error {
+	if swag.IsZero(m.ConnectedAppParams) { // not required
+		return nil
+	}
+
+	if m.ConnectedAppParams != nil {
+		if err := m.ConnectedAppParams.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("connectedAppParams")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("connectedAppParams")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this notification settings based on the context it is used
 func (m *NotificationSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateStatusFilters(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateConnectedAppParams(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -162,6 +196,28 @@ func (m *NotificationSettings) contextValidateStatusFilters(ctx context.Context,
 			return err
 		}
 
+	}
+
+	return nil
+}
+
+func (m *NotificationSettings) contextValidateConnectedAppParams(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ConnectedAppParams) { // not required
+		return nil
+	}
+
+	if err := m.ConnectedAppParams.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("connectedAppParams")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("connectedAppParams")
+		}
+
+		return err
 	}
 
 	return nil
