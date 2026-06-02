@@ -7,15 +7,25 @@ package models
 
 import (
 	"context"
+	"encoding/json"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
-// ErrorResponse error response
+// ErrorResponse ErrorResponse is the canonical error body returned by HTTP handlers.
+//
+// It is shared across endpoints so callers can rely on a single shape
+// (message + machine-readable code + trace_id, plus optional metadata).
 //
 // swagger:model ErrorResponse
 type ErrorResponse struct {
+
+	// code
+	// Enum: ["EXCEEDED_MAX_ROWS_TO_GROUP_BY"]
+	Code string `json:"code,omitempty"`
 
 	// details
 	Details any `json:"details,omitempty"`
@@ -35,6 +45,54 @@ type ErrorResponse struct {
 
 // Validate validates this error response
 func (m *ErrorResponse) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+var errorResponseTypeCodePropEnum []any
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["EXCEEDED_MAX_ROWS_TO_GROUP_BY"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		errorResponseTypeCodePropEnum = append(errorResponseTypeCodePropEnum, v)
+	}
+}
+
+const (
+
+	// ErrorResponseCodeEXCEEDEDMAXROWSTOGROUPBY captures enum value "EXCEEDED_MAX_ROWS_TO_GROUP_BY"
+	ErrorResponseCodeEXCEEDEDMAXROWSTOGROUPBY string = "EXCEEDED_MAX_ROWS_TO_GROUP_BY"
+)
+
+// prop value enum
+func (m *ErrorResponse) validateCodeEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, errorResponseTypeCodePropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *ErrorResponse) validateCode(formats strfmt.Registry) error {
+	if swag.IsZero(m.Code) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateCodeEnum("code", "body", m.Code); err != nil {
+		return err
+	}
+
 	return nil
 }
 
