@@ -62,6 +62,10 @@ func TestSilencesEndpoints(t *testing.T) {
 			WithBody(createReq)
 
 		createResp, err := client.Client.Monitors.CreateSilence(createParams, nil)
+		// Register for cleanup as early as possible - before any aborting assertion
+		if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.UUID != "" {
+			client.TrackSilence(string(createResp.Payload.UUID))
+		}
 		if err != nil {
 			t.Logf("Create silence error: %v", err)
 			t.Logf("Error type: %T", err)
@@ -222,6 +226,9 @@ func TestSilencesEndpoints(t *testing.T) {
 		// Expect 200 OK on success
 		_, err := client.Client.Monitors.DeleteSilence(deleteParams, nil)
 		require.NoError(t, err, "Failed to delete silence")
+
+		// The silence was deleted by the test itself - no need for Cleanup to delete it
+		client.UntrackSilence(createdSilenceID)
 
 		t.Logf("Successfully deleted silence %s", createdSilenceID)
 

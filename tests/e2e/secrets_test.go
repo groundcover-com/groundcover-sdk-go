@@ -18,7 +18,9 @@ const (
 )
 
 func TestSecretsE2E(t *testing.T) {
-	ctx, apiClient := setupTestClient(t)
+	tc := NewTestClient(t)
+	defer tc.Cleanup()
+	ctx, apiClient := tc.BaseCtx, tc.Client
 
 	var createdSecretID string
 	secretName := fmt.Sprintf("%s%d", testSecretNamePrefix, time.Now().UnixNano())
@@ -34,6 +36,10 @@ func TestSecretsE2E(t *testing.T) {
 		}
 		createParams := secretClient.NewCreateSecretParamsWithContext(ctx).WithBody(createReq)
 		createResp, err := apiClient.Secret.CreateSecret(createParams, nil)
+		// Register for cleanup as early as possible - before any aborting assertion
+		if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.ID != "" {
+			tc.TrackSecret(createResp.Payload.ID)
+		}
 		require.NoError(t, err, "CreateSecret failed")
 		require.NotNil(t, createResp.Payload)
 		require.NotEmpty(t, createResp.Payload.ID)
@@ -90,6 +96,9 @@ func TestSecretsE2E(t *testing.T) {
 		deleteParams := secretClient.NewDeleteSecretParamsWithContext(ctx).WithID(createdSecretID)
 		_, err := apiClient.Secret.DeleteSecret(deleteParams, nil)
 		require.NoError(t, err, "DeleteSecret failed")
+
+		// The secret was deleted by the test itself - no need for Cleanup to delete it
+		tc.UntrackSecret(createdSecretID)
 		t.Logf("Successfully deleted Secret ID: %s", createdSecretID)
 	})
 

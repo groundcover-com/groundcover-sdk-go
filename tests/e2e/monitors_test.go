@@ -118,6 +118,8 @@ evaluationInterval:
 		}
 
 		monitorID := createResp.Payload.MonitorID
+		// Register for cleanup so the monitor is deleted even if the test fails below
+		client.TrackMonitor(monitorID)
 		t.Logf("Created monitor with ID: %s", monitorID)
 
 		// Get the monitor - Use client defaults for Accept header
@@ -247,5 +249,8 @@ evaluationInterval:
 		if err != nil {
 			t.Fatalf("Failed to delete monitor: %v", err)
 		}
+
+		// The monitor was deleted by the test itself - no need for Cleanup to delete it
+		client.UntrackMonitor(monitorID)
 	})
 }

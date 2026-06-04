@@ -10,11 +10,21 @@ import (
 	"net/http/httputil"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/groundcover-com/groundcover-sdk-go"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/dashboards"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/ingestionkeys"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/integrations"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/monitors"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/policies"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/secret"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/synthetics"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/workflows"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/option"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/transport"
 )
@@ -92,8 +102,180 @@ func (d *DebugTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 type TestClient struct {
 	Client  *client.GroundcoverAPI
 	BaseCtx context.Context
-	Cleanup func()
 	T       *testing.T
+
+	mu               sync.Mutex
+	trackedResources []trackedResource
+}
+
+type trackedResourceKind string
+
+const (
+	dashboardResource             trackedResourceKind = "dashboard"
+	monitorResource               trackedResourceKind = "monitor"
+	silenceResource               trackedResourceKind = "silence"
+	workflowResource              trackedResourceKind = "workflow"
+	policyResource                trackedResourceKind = "policy"
+	syntheticTestResource         trackedResourceKind = "synthetic test"
+	ingestionKeyResource          trackedResourceKind = "ingestion key"
+	dataIntegrationConfigResource trackedResourceKind = "data integration config"
+	secretResource                trackedResourceKind = "secret"
+)
+
+type trackedResource struct {
+	kind trackedResourceKind
+	// id identifies the resource for deletion - a UUID for most kinds,
+	// the key name for ingestion keys
+	id string
+	// subtype is an extra qualifier needed by some delete calls,
+	// e.g. the data integration type ("cloudwatch")
+	subtype string
+}
+
+// Track* registers a resource ID for deletion in Cleanup. Call it right after
+// creating the resource so it is removed even if the test fails before
+// reaching its own delete step. Tracking the same resource twice is a no-op.
+//
+// Untrack* removes a resource from cleanup tracking, e.g. after the test
+// deleted the resource itself.
+
+func (tc *TestClient) TrackDashboard(id string) {
+	tc.track(trackedResource{kind: dashboardResource, id: id})
+}
+func (tc *TestClient) UntrackDashboard(id string) {
+	tc.untrack(trackedResource{kind: dashboardResource, id: id})
+}
+func (tc *TestClient) TrackMonitor(id string) {
+	tc.track(trackedResource{kind: monitorResource, id: id})
+}
+func (tc *TestClient) UntrackMonitor(id string) {
+	tc.untrack(trackedResource{kind: monitorResource, id: id})
+}
+func (tc *TestClient) TrackSilence(id string) {
+	tc.track(trackedResource{kind: silenceResource, id: id})
+}
+func (tc *TestClient) UntrackSilence(id string) {
+	tc.untrack(trackedResource{kind: silenceResource, id: id})
+}
+func (tc *TestClient) TrackWorkflow(id string) {
+	tc.track(trackedResource{kind: workflowResource, id: id})
+}
+func (tc *TestClient) UntrackWorkflow(id string) {
+	tc.untrack(trackedResource{kind: workflowResource, id: id})
+}
+func (tc *TestClient) TrackPolicy(id string) { tc.track(trackedResource{kind: policyResource, id: id}) }
+func (tc *TestClient) UntrackPolicy(id string) {
+	tc.untrack(trackedResource{kind: policyResource, id: id})
+}
+func (tc *TestClient) TrackSyntheticTest(id string) {
+	tc.track(trackedResource{kind: syntheticTestResource, id: id})
+}
+func (tc *TestClient) UntrackSyntheticTest(id string) {
+	tc.untrack(trackedResource{kind: syntheticTestResource, id: id})
+}
+func (tc *TestClient) TrackIngestionKey(name string) {
+	tc.track(trackedResource{kind: ingestionKeyResource, id: name})
+}
+func (tc *TestClient) UntrackIngestionKey(name string) {
+	tc.untrack(trackedResource{kind: ingestionKeyResource, id: name})
+}
+func (tc *TestClient) TrackSecret(id string) { tc.track(trackedResource{kind: secretResource, id: id}) }
+func (tc *TestClient) UntrackSecret(id string) {
+	tc.untrack(trackedResource{kind: secretResource, id: id})
+}
+func (tc *TestClient) TrackDataIntegrationConfig(integrationType, id string) {
+	tc.track(trackedResource{kind: dataIntegrationConfigResource, id: id, subtype: integrationType})
+}
+func (tc *TestClient) UntrackDataIntegrationConfig(integrationType, id string) {
+	tc.untrack(trackedResource{kind: dataIntegrationConfigResource, id: id, subtype: integrationType})
+}
+
+func (tc *TestClient) track(resource trackedResource) {
+	tc.mu.Lock()
+	defer tc.mu.Unlock()
+	for _, tracked := range tc.trackedResources {
+		if tracked == resource {
+			return
+		}
+	}
+	tc.trackedResources = append(tc.trackedResources, resource)
+}
+
+func (tc *TestClient) untrack(resource trackedResource) {
+	tc.mu.Lock()
+	defer tc.mu.Unlock()
+	for i, tracked := range tc.trackedResources {
+		if tracked == resource {
+			tc.trackedResources = append(tc.trackedResources[:i], tc.trackedResources[i+1:]...)
+			return
+		}
+	}
+}
+
+// Cleanup deletes all tracked resources that the test did not delete itself.
+// It is meant to be deferred right after NewTestClient so leftovers are
+// removed even when the test fails midway.
+func (tc *TestClient) Cleanup() {
+	tc.mu.Lock()
+	resources := tc.trackedResources
+	tc.trackedResources = nil
+	tc.mu.Unlock()
+
+	for _, resource := range resources {
+		if err := tc.deleteResource(resource); err != nil {
+			tc.T.Logf("Cleanup: failed to delete %s %s: %v", resource.kind, resource.id, err)
+		} else {
+			tc.T.Logf("Cleanup: deleted leftover %s %s", resource.kind, resource.id)
+		}
+	}
+}
+
+func (tc *TestClient) deleteResource(resource trackedResource) error {
+	var err error
+	switch resource.kind {
+	case dashboardResource:
+		params := dashboards.NewDeleteDashboardParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
+		_, err = tc.Client.Dashboards.DeleteDashboard(params, nil)
+	case monitorResource:
+		params := monitors.NewDeleteMonitorParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
+		_, err = tc.Client.Monitors.DeleteMonitor(params, nil, monitors.WithAcceptApplicationJSON)
+	case silenceResource:
+		params := monitors.NewDeleteSilenceParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
+		_, err = tc.Client.Monitors.DeleteSilence(params, nil)
+	case workflowResource:
+		params := workflows.NewDeleteWorkflowParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
+		_, err = tc.Client.Workflows.DeleteWorkflow(params, nil)
+	case policyResource:
+		params := policies.NewDeletePolicyParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
+		_, err = tc.Client.Policies.DeletePolicy(params, nil)
+	case syntheticTestResource:
+		params := synthetics.NewDeleteSyntheticTestParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
+		_, err = tc.Client.Synthetics.DeleteSyntheticTest(params, nil)
+	case ingestionKeyResource:
+		name := resource.id
+		params := ingestionkeys.NewDeleteIngestionKeyParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).
+			WithBody(&models.DeleteIngestionKeyRequest{Name: &name})
+		_, err = tc.Client.Ingestionkeys.DeleteIngestionKey(params, nil)
+	case dataIntegrationConfigResource:
+		params := integrations.NewDeleteDataIntegrationConfigParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).
+			WithID(resource.id).WithType(resource.subtype)
+		_, err = tc.Client.Integrations.DeleteDataIntegrationConfig(params, nil)
+	case secretResource:
+		params := secret.NewDeleteSecretParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
+		_, err = tc.Client.Secret.DeleteSecret(params, nil)
+	default:
+		err = fmt.Errorf("unknown tracked resource kind %q", resource.kind)
+	}
+	return err
 }
 
 type testClientOptions struct {
@@ -207,9 +389,6 @@ func NewTestClient(t *testing.T, options ...TestClientOption) *TestClient {
 		Client:  sdkClient,
 		BaseCtx: baseCtx,
 		T:       t,
-		Cleanup: func() {
-			// Add cleanup logic here
-		},
 	}
 }
 

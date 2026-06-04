@@ -22,7 +22,9 @@ var (
 
 func TestIngestionKeysE2E(t *testing.T) {
 	backendIDOverride := "groundcover-staging"
-	ctx, apiClient := setupTestClient(t, TestClientWithBackendID(backendIDOverride))
+	tc := NewTestClient(t, TestClientWithBackendID(backendIDOverride))
+	defer tc.Cleanup()
+	ctx, apiClient := tc.BaseCtx, tc.Client
 
 	ingestionKeyName := fmt.Sprintf("%s-%d", testIngestionKeyNamePrefix, time.Now().UnixNano())
 	var createdKey string
@@ -34,6 +36,11 @@ func TestIngestionKeysE2E(t *testing.T) {
 
 	ingestionCreateParams := ingestionKeysClient.NewCreateIngestionKeyParamsWithContext(ctx).WithBody(&ingestionKeyReq)
 	ingestionCreateResp, err := apiClient.Ingestionkeys.CreateIngestionKey(ingestionCreateParams, nil)
+	// Register for cleanup as early as possible - before any aborting assertion
+	// (ingestion keys are deleted by name)
+	if err == nil {
+		tc.TrackIngestionKey(ingestionKeyName)
+	}
 	require.NoError(t, err, "Failed to create Ingestion Key: %v", err)
 	require.NotNil(t, ingestionCreateResp, "Ingestion Key creation response is nil")
 	require.NotNil(t, ingestionCreateResp.Payload, "Ingestion Key response payload is nil")
@@ -73,6 +80,9 @@ func TestIngestionKeysE2E(t *testing.T) {
 	})
 	_, err = apiClient.Ingestionkeys.DeleteIngestionKey(deleteParams, nil)
 	require.NoError(t, err, "Failed to delete Ingestion Key: %v", err)
+
+	// The key was deleted by the test itself - no need for Cleanup to delete it
+	tc.UntrackIngestionKey(ingestionKeyName)
 
 	t.Logf("Successfully deleted Ingestion Key: %s", ingestionKeyName)
 

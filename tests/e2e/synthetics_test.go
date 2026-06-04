@@ -60,6 +60,10 @@ func TestTCPSyntheticsEndpoints(t *testing.T) {
 			WithBody(createReq)
 
 		createResp, err := testClient.Client.Synthetics.CreateSyntheticTest(createParams, nil)
+		// Register for cleanup as early as possible - before any aborting assertion
+		if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.ID != "" {
+			testClient.TrackSyntheticTest(createResp.Payload.ID)
+		}
 		require.NoError(t, err, "Failed to create TCP synthetic test")
 		require.NotNil(t, createResp, "Create TCP synthetic test response should not be nil")
 		require.NotNil(t, createResp.Payload, "Create TCP synthetic test response payload should not be nil")
@@ -107,6 +111,9 @@ func TestTCPSyntheticsEndpoints(t *testing.T) {
 
 		_, err := testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
 		require.NoError(t, err, "Failed to delete TCP synthetic test")
+
+		// The synthetic test was deleted by the test itself - no need for Cleanup to delete it
+		testClient.UntrackSyntheticTest(createdSyntheticID)
 
 		t.Logf("Successfully deleted TCP synthetic test %s", createdSyntheticID)
 	})
@@ -159,6 +166,10 @@ func TestSSLSyntheticsEndpoints(t *testing.T) {
 			WithBody(createReq)
 
 		createResp, err := testClient.Client.Synthetics.CreateSyntheticTest(createParams, nil)
+		// Register for cleanup as early as possible - before any aborting assertion
+		if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.ID != "" {
+			testClient.TrackSyntheticTest(createResp.Payload.ID)
+		}
 		require.NoError(t, err, "Failed to create SSL synthetic test")
 		require.NotNil(t, createResp, "Create SSL synthetic test response should not be nil")
 		require.NotNil(t, createResp.Payload, "Create SSL synthetic test response payload should not be nil")
@@ -206,6 +217,9 @@ func TestSSLSyntheticsEndpoints(t *testing.T) {
 
 		_, err := testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
 		require.NoError(t, err, "Failed to delete SSL synthetic test")
+
+		// The synthetic test was deleted by the test itself - no need for Cleanup to delete it
+		testClient.UntrackSyntheticTest(createdSyntheticID)
 
 		t.Logf("Successfully deleted SSL synthetic test %s", createdSyntheticID)
 	})
@@ -259,6 +273,10 @@ func TestSyntheticsEndpoints(t *testing.T) {
 			WithBody(createReq)
 
 		createResp, err := testClient.Client.Synthetics.CreateSyntheticTest(createParams, nil)
+		// Register for cleanup as early as possible - before any aborting assertion
+		if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.ID != "" {
+			testClient.TrackSyntheticTest(createResp.Payload.ID)
+		}
 		require.NoError(t, err, "Failed to create synthetic test")
 		require.NotNil(t, createResp, "Create synthetic test response should not be nil")
 		require.NotNil(t, createResp.Payload, "Create synthetic test response payload should not be nil")
@@ -421,6 +439,9 @@ func TestSyntheticsEndpoints(t *testing.T) {
 		_, err := testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
 		require.NoError(t, err, "Failed to delete synthetic test")
 
+		// The synthetic test was deleted by the test itself - no need for Cleanup to delete it
+		testClient.UntrackSyntheticTest(createdSyntheticID)
+
 		t.Logf("✓ Successfully deleted synthetic test %s", createdSyntheticID)
 
 		require.EventuallyWithT(t, func(collect *assert.CollectT) {
@@ -496,6 +517,10 @@ func TestDNSSyntheticsEndpoints(t *testing.T) {
 			WithBody(createReq)
 
 		createResp, err := testClient.Client.Synthetics.CreateSyntheticTest(createParams, nil)
+		// Register for cleanup as early as possible - before any aborting assertion
+		if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.ID != "" {
+			testClient.TrackSyntheticTest(createResp.Payload.ID)
+		}
 		require.NoError(t, err, "Failed to create DNS synthetic test")
 		require.NotNil(t, createResp, "Create DNS synthetic test response should not be nil")
 		require.NotNil(t, createResp.Payload, "Create DNS synthetic test response payload should not be nil")
@@ -545,6 +570,9 @@ func TestDNSSyntheticsEndpoints(t *testing.T) {
 
 		_, err := testClient.Client.Synthetics.DeleteSyntheticTest(deleteParams, nil)
 		require.NoError(t, err, "Failed to delete DNS synthetic test")
+
+		// The synthetic test was deleted by the test itself - no need for Cleanup to delete it
+		testClient.UntrackSyntheticTest(createdSyntheticID)
 
 		t.Logf("Successfully deleted DNS synthetic test %s", createdSyntheticID)
 	})

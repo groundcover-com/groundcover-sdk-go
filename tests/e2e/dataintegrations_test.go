@@ -75,7 +75,9 @@ const testCloudwatchConfigUpdated = `{
 }`
 
 func TestCloudwatch(t *testing.T) {
-	ctx, apiClient := setupTestClient(t)
+	tc := NewTestClient(t)
+	defer tc.Cleanup()
+	ctx, apiClient := tc.BaseCtx, tc.Client
 
 	// 1. CREATE (without name/tags - backward compatibility)
 	// Use unique name to avoid conflicts with other test runs
@@ -86,6 +88,10 @@ func TestCloudwatch(t *testing.T) {
 	}
 	createParams := integrations.NewCreateDataIntegrationConfigParamsWithContext(ctx).WithType("cloudwatch").WithBody(createBody)
 	createResp, err := apiClient.Integrations.CreateDataIntegrationConfig(createParams, nil)
+	// Register for cleanup as early as possible - before any aborting assertion
+	if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.ID != "" {
+		tc.TrackDataIntegrationConfig("cloudwatch", createResp.Payload.ID)
+	}
 	require.NoError(t, err, "Create config request failed")
 	require.NotNil(t, createResp, "Create config response should not be nil")
 	require.NotNil(t, createResp.Payload, "Create config response payload should not be nil")
@@ -135,6 +141,9 @@ func TestCloudwatch(t *testing.T) {
 	require.NoError(t, err, "Delete config request failed")
 	t.Log("Successfully deleted data integration config")
 
+	// The config was deleted by the test itself - no need for Cleanup to delete it
+	tc.UntrackDataIntegrationConfig("cloudwatch", originalConfigID)
+
 	// Verify the config was deleted by trying to get it without includeArchived - should return 404
 	getRespOk, err = apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)
 	require.Error(t, err, "Get deleted config request should fail")
@@ -142,7 +151,9 @@ func TestCloudwatch(t *testing.T) {
 }
 
 func TestCloudwatchWithNameAndTags(t *testing.T) {
-	ctx, apiClient := setupTestClient(t)
+	tc := NewTestClient(t)
+	defer tc.Cleanup()
+	ctx, apiClient := tc.BaseCtx, tc.Client
 
 	testName := "e2e-test-cloudwatch-tags-" + uuid.New().String()
 	testTags := map[string]interface{}{
@@ -158,6 +169,10 @@ func TestCloudwatchWithNameAndTags(t *testing.T) {
 	}
 	createParams := integrations.NewCreateDataIntegrationConfigParamsWithContext(ctx).WithType("cloudwatch").WithBody(createBody)
 	createResp, err := apiClient.Integrations.CreateDataIntegrationConfig(createParams, nil)
+	// Register for cleanup as early as possible - before any aborting assertion
+	if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.ID != "" {
+		tc.TrackDataIntegrationConfig("cloudwatch", createResp.Payload.ID)
+	}
 	require.NoError(t, err, "Create config request failed")
 	require.NotNil(t, createResp, "Create config response should not be nil")
 	require.NotNil(t, createResp.Payload, "Create config response payload should not be nil")
@@ -224,6 +239,9 @@ func TestCloudwatchWithNameAndTags(t *testing.T) {
 	_, err = apiClient.Integrations.DeleteDataIntegrationConfig(deleteParams, nil)
 	require.NoError(t, err, "Delete config request failed")
 	t.Log("Successfully deleted data integration config")
+
+	// The config was deleted by the test itself - no need for Cleanup to delete it
+	tc.UntrackDataIntegrationConfig("cloudwatch", originalConfigID)
 
 	// Verify the config was deleted by trying to get it without includeArchived - should return 404
 	getRespOk, err = apiClient.Integrations.GetDataIntegrationConfig(getParams, nil)

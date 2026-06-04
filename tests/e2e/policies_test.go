@@ -36,6 +36,10 @@ func TestPoliciesEndpoints(t *testing.T) {
 			WithBody(createReq)
 
 		createResp, err := client.Client.Policies.CreatePolicy(createParams, nil)
+		// Register for cleanup as early as possible - before any aborting assertion
+		if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.UUID != "" {
+			client.TrackPolicy(createResp.Payload.UUID)
+		}
 		require.NoError(t, err, "Failed to create policy")
 		require.NotNil(t, createResp, "Create policy response should not be nil")
 		require.NotNil(t, createResp.Payload, "Create policy response payload should not be nil")
@@ -229,6 +233,9 @@ func TestPoliciesEndpoints(t *testing.T) {
 		// Expect 200 No Content on success
 		_, err := client.Client.Policies.DeletePolicy(deleteParams, nil)
 		require.NoError(t, err, "Failed to delete policy")
+
+		// The policy was deleted by the test itself - no need for Cleanup to delete it
+		client.UntrackPolicy(createdPolicyID)
 
 		t.Logf("Successfully deleted policy %s", createdPolicyID)
 

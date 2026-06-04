@@ -87,13 +87,18 @@ func TestDashboardsEndpoints(t *testing.T) {
 			WithBody(createReq)
 
 		createResp, err := testClient.Client.Dashboards.CreateDashboard(createParams, nil)
+		// Register the dashboard for cleanup as early as possible - before any
+		// aborting assertion - so Cleanup deletes it even if verification below fails
+		if err == nil && createResp != nil && createResp.Payload != nil && createResp.Payload.UUID != "" {
+			testClient.TrackDashboard(createResp.Payload.UUID)
+		}
 		require.NoError(t, err, "Failed to create dashboard")
 		require.NotNil(t, createResp, "Create dashboard response should not be nil")
 
 		t.Logf("✓ SDK Create Dashboard call succeeded")
 
-		// Since CreateDashboard response doesn't contain dashboard data,
-		// use GetDashboards to find the created dashboard
+		// Verify the created dashboard appears in the list
+		// and grab its server-side representation
 		listParams := dashboards.NewGetDashboardsParams().
 			WithContext(testClient.BaseCtx).
 			WithTimeout(defaultTimeout)
@@ -121,6 +126,9 @@ func TestDashboardsEndpoints(t *testing.T) {
 		// Save for other tests - convert to our Dashboard struct for convenience
 		createdDashboardID = dashboardView.UUID
 		createdDashboardName = dashboardName
+		// Fallback tracking (no-op if already tracked from the create response):
+		// ensures Cleanup deletes the dashboard even if a later subtest fails
+		testClient.TrackDashboard(createdDashboardID)
 		createdDashboard = &models.View{
 			UUID:           dashboardView.UUID,
 			Name:           dashboardView.Name,
@@ -450,6 +458,9 @@ func TestDashboardsEndpoints(t *testing.T) {
 		deleteResp, err := testClient.Client.Dashboards.DeleteDashboard(deleteParams, nil)
 		require.NoError(t, err, "Failed to delete dashboard")
 		require.NotNil(t, deleteResp, "Delete dashboard response should not be nil")
+
+		// The dashboard was deleted by the test itself - no need for Cleanup to delete it
+		testClient.UntrackDashboard(createdDashboardID)
 
 		t.Logf("✓ SDK Delete Dashboard call succeeded")
 		t.Logf("Successfully deleted dashboard with ID: %s", createdDashboardID)

@@ -44,6 +44,10 @@ func TestWorkflowsEndpoints(t *testing.T) {
 			t.Logf("Expected error during e2e test development")
 			return // Skip the rest of this test for now
 		}
+		// Register for cleanup as early as possible - before any aborting assertion
+		if createResp != nil && createResp.Payload != nil && createResp.Payload.WorkflowID != "" {
+			client.TrackWorkflow(createResp.Payload.WorkflowID)
+		}
 		require.NotNil(t, createResp, "Create workflow response should not be nil")
 		require.NotNil(t, createResp.Payload, "Create workflow response payload should not be nil")
 
@@ -119,6 +123,9 @@ func TestWorkflowsEndpoints(t *testing.T) {
 		// Expect success response on successful deletion
 		_, err := client.Client.Workflows.DeleteWorkflow(deleteParams, nil)
 		require.NoError(t, err, "Failed to delete workflow")
+
+		// The workflow was deleted by the test itself - no need for Cleanup to delete it
+		client.UntrackWorkflow(createdWorkflowID)
 
 		t.Logf("Successfully deleted workflow %s", createdWorkflowID)
 
