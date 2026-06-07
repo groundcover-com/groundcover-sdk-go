@@ -69,6 +69,9 @@ type SQLPipeline struct {
 	// limit by
 	LimitBy *LimitBy `json:"limitBy,omitempty" yaml:"limitBy,omitempty"`
 
+	// time offset
+	TimeOffset Duration `json:"timeOffset,omitempty" yaml:"timeOffset,omitempty"`
+
 	// union
 	Union *Union `json:"union,omitempty" yaml:"union,omitempty"`
 }
@@ -122,6 +125,10 @@ func (m *SQLPipeline) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateLimitBy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTimeOffset(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -451,6 +458,27 @@ func (m *SQLPipeline) validateLimitBy(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SQLPipeline) validateTimeOffset(formats strfmt.Registry) error {
+	if swag.IsZero(m.TimeOffset) { // not required
+		return nil
+	}
+
+	if err := m.TimeOffset.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("timeOffset")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("timeOffset")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
 func (m *SQLPipeline) validateUnion(formats strfmt.Registry) error {
 	if swag.IsZero(m.Union) { // not required
 		return nil
@@ -523,6 +551,10 @@ func (m *SQLPipeline) ContextValidate(ctx context.Context, formats strfmt.Regist
 	}
 
 	if err := m.contextValidateLimitBy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTimeOffset(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -852,6 +884,28 @@ func (m *SQLPipeline) contextValidateLimitBy(ctx context.Context, formats strfmt
 
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *SQLPipeline) contextValidateTimeOffset(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.TimeOffset) { // not required
+		return nil
+	}
+
+	if err := m.TimeOffset.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("timeOffset")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("timeOffset")
+		}
+
+		return err
 	}
 
 	return nil
