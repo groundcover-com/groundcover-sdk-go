@@ -33,6 +33,10 @@ type ConnectedAppListItemWithRoutesResponse struct {
 	// For type "slack-app": use SlackAppDataResponse schema
 	Data any `json:"data,omitempty"`
 
+	// SHA-256 hash of the stored connected app data, including secret fields
+	// Example: 20b3664454f5b36a20da19805802a369a9f30793fb646a1de9e39b21a004df4e
+	DataHash string `json:"data_hash,omitempty"`
+
 	// The ID of the connected app
 	// Example: 1a2b-3c4d
 	ID string `json:"id,omitempty"`
