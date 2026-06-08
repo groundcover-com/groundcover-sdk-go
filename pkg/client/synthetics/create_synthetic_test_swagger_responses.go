@@ -37,6 +37,12 @@ func (o *CreateSyntheticTestReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return nil, result
+	case 409:
+		result := NewCreateSyntheticTestConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewCreateSyntheticTestInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -177,6 +183,76 @@ func (o *CreateSyntheticTestBadRequest) GetPayload() *models.ErrorResponse {
 }
 
 func (o *CreateSyntheticTestBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ErrorResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateSyntheticTestConflict creates a CreateSyntheticTestConflict with default headers values
+func NewCreateSyntheticTestConflict() *CreateSyntheticTestConflict {
+	return &CreateSyntheticTestConflict{}
+}
+
+/*
+CreateSyntheticTestConflict describes a response with status code 409, with default header values.
+
+CreateSyntheticTestConflict create synthetic test conflict
+*/
+type CreateSyntheticTestConflict struct {
+	Payload *models.ErrorResponse
+}
+
+// IsSuccess returns true when this create synthetic test conflict response has a 2xx status code
+func (o *CreateSyntheticTestConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create synthetic test conflict response has a 3xx status code
+func (o *CreateSyntheticTestConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create synthetic test conflict response has a 4xx status code
+func (o *CreateSyntheticTestConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create synthetic test conflict response has a 5xx status code
+func (o *CreateSyntheticTestConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create synthetic test conflict response a status code equal to that given
+func (o *CreateSyntheticTestConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the create synthetic test conflict response
+func (o *CreateSyntheticTestConflict) Code() int {
+	return 409
+}
+
+func (o *CreateSyntheticTestConflict) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /api/synthetics/v1/rules][%d] createSyntheticTestConflict %s", 409, payload)
+}
+
+func (o *CreateSyntheticTestConflict) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /api/synthetics/v1/rules][%d] createSyntheticTestConflict %s", 409, payload)
+}
+
+func (o *CreateSyntheticTestConflict) GetPayload() *models.ErrorResponse {
+	return o.Payload
+}
+
+func (o *CreateSyntheticTestConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ErrorResponse)
 
