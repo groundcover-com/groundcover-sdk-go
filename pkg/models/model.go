@@ -29,6 +29,7 @@ type Model struct {
 	Reducers []*ReducerModel `json:"reducers" yaml:"reducers"`
 
 	// List of thresholds to evaluate against the final reduced value.
+	// Required: true
 	Thresholds []*Threshold `json:"thresholds" yaml:"thresholds"`
 }
 
@@ -116,8 +117,9 @@ func (m *Model) validateReducers(formats strfmt.Registry) error {
 }
 
 func (m *Model) validateThresholds(formats strfmt.Registry) error {
-	if swag.IsZero(m.Thresholds) { // not required
-		return nil
+
+	if err := validate.Required("thresholds", "body", m.Thresholds); err != nil {
+		return err
 	}
 
 	for i := 0; i < len(m.Thresholds); i++ {

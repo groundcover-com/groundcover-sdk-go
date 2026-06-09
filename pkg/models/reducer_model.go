@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	"encoding/json"
 	stderrors "errors"
 
 	"github.com/go-openapi/errors"
@@ -27,10 +28,12 @@ type ReducerModel struct {
 	InputName string `json:"inputName,omitempty" yaml:"inputName,omitempty"`
 
 	// Name of the reducer output.
-	Name string `json:"name,omitempty" yaml:"name,omitempty"`
-
-	// Type of the reducer (e.g., last, min, max, mean, sum, count, math).
 	// Required: true
+	Name *string `json:"name" yaml:"name"`
+
+	// Type of the reducer.
+	// Required: true
+	// Enum: ["last","min","max","mean","sum","count","math"]
 	Type *string `json:"type" yaml:"type"`
 
 	// relative timerange
@@ -40,6 +43,10 @@ type ReducerModel struct {
 // Validate validates this reducer model
 func (m *ReducerModel) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
@@ -55,9 +62,67 @@ func (m *ReducerModel) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *ReducerModel) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var reducerModelTypeTypePropEnum []any
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["last","min","max","mean","sum","count","math"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		reducerModelTypeTypePropEnum = append(reducerModelTypeTypePropEnum, v)
+	}
+}
+
+const (
+
+	// ReducerModelTypeLast captures enum value "last"
+	ReducerModelTypeLast string = "last"
+
+	// ReducerModelTypeMin captures enum value "min"
+	ReducerModelTypeMin string = "min"
+
+	// ReducerModelTypeMax captures enum value "max"
+	ReducerModelTypeMax string = "max"
+
+	// ReducerModelTypeMean captures enum value "mean"
+	ReducerModelTypeMean string = "mean"
+
+	// ReducerModelTypeSum captures enum value "sum"
+	ReducerModelTypeSum string = "sum"
+
+	// ReducerModelTypeCount captures enum value "count"
+	ReducerModelTypeCount string = "count"
+
+	// ReducerModelTypeMath captures enum value "math"
+	ReducerModelTypeMath string = "math"
+)
+
+// prop value enum
+func (m *ReducerModel) validateTypeEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, reducerModelTypeTypePropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *ReducerModel) validateType(formats strfmt.Registry) error {
 
 	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
 		return err
 	}
 

@@ -51,7 +51,7 @@ type UpdateMonitorRequest struct {
 	// Routing information.
 	Routing []string `json:"routing" yaml:"routing"`
 
-	// Severity level (e.g., critical, warning, info).
+	// Severity level (free-form; used as a notification/display label, not validated).
 	Severity string `json:"severity,omitempty" yaml:"severity,omitempty"`
 
 	// Team associated with the monitor.
