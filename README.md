@@ -19,11 +19,13 @@ go get github.com/groundcover-com/groundcover-sdk-go
 
 ### Environment Variables
 
-The SDK requires the following environment variables to be set for authentication and endpoint configuration:
+The SDK reads the following environment variables for authentication and endpoint configuration:
 
-*   `GC_API_KEY`: Your groundcover API key.
-*   `GC_BACKEND_ID`: Your groundcover Backend ID.
+*   `GC_API_KEY`: Your groundcover API key (required, unless `option.AllowUnauthenticated` is used).
+*   `GC_BACKEND_ID`: Your groundcover Backend ID (required, unless `option.AllowUnauthenticated` is used).
 *   `GC_BASE_URL`: The base URL of the groundcover API (optional, defaults to `https://api.groundcover.com`).
+
+By default the API key and backend ID are required. You can opt out with `option.AllowUnauthenticated`, in which case the SDK does not set their headers; the server will reject the request if it requires authentication that was not supplied. This makes it possible to use the SDK with a custom transport that provides its own credentials (see [Custom Transport and Per-Request Headers](#custom-transport-and-per-request-headers)).
 
 Optionally, you can set:
 
@@ -95,6 +97,40 @@ func main() {
 	// Client is ready to use
 }
 ```
+
+#### Custom Transport and Per-Request Headers
+
+The SDK exposes generic extension points so you can control how requests are sent and which headers they carry.
+
+**Custom transport and base URL.** Use `option.WithHTTPTransport` to supply your own `http.RoundTripper` (for example, to route requests through a proxy), and `option.WithBaseURL` to change where requests are sent. If the custom transport supplies its own credentials, pass `option.AllowUnauthenticated` to create the client without an API key or backend ID:
+
+```go
+client, err := groundcover.NewClient(
+	option.WithBaseURL("https://proxy.internal.example.com"),
+	option.WithHTTPTransport(myRoundTripper),
+	option.AllowUnauthenticated(),
+)
+```
+
+The custom transport sits at the bottom of the chain (below retries), so it observes the final outgoing request.
+
+**Per-request headers.** Pass `transport.WithHeadersOverride` as an option to any client method to attach arbitrary headers (as an `http.Header`, so multi-valued headers are supported) to that single call. Headers are applied after the SDK's default headers using override semantics, so a header set here replaces any default of the same name:
+
+```go
+import (
+	"net/http"
+
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/transport"
+)
+
+headers := http.Header{}
+headers.Set("X-Example-Header", "example-value")
+
+params := metrics.NewMetricsQueryParams().WithBody(body)
+resp, err := client.Metrics.MetricsQuery(params, nil, transport.WithHeadersOverride(headers))
+```
+
+These are generic, application-agnostic hooks: the SDK does not interpret the header names or values you provide.
 
 #### Legacy Client Creation
 

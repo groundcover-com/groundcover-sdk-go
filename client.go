@@ -11,8 +11,8 @@ import (
 // It automatically reads configuration from environment variables unless overridden by options.
 //
 // Environment variables:
-//   - GC_API_KEY: Your groundcover API key (required)
-//   - GC_BACKEND_ID: Your groundcover Backend ID (required)
+//   - GC_API_KEY: Your groundcover API key (required, unless option.AllowUnauthenticated is used)
+//   - GC_BACKEND_ID: Your groundcover Backend ID (required, unless option.AllowUnauthenticated is used)
 //   - GC_BASE_URL: The base URL of the groundcover API (optional, defaults to https://api.groundcover.com)
 //
 // Example usage:

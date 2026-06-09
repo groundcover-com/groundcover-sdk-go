@@ -32,6 +32,14 @@ func main() {
 	fmt.Println("\n3. Legacy transport-based client...")
 	legacyClient()
 
+	// Example 4: Custom transport and base URL, without a required API key
+	fmt.Println("\n4. Client with a custom transport (no API key required)...")
+	customTransportClient()
+
+	// Example 5: Per-request custom headers
+	fmt.Println("\n5. Per-request custom headers...")
+	perRequestHeadersClient()
+
 	fmt.Println("\n✓ All client configuration examples completed")
 }
 
@@ -101,6 +109,57 @@ func legacyClient() {
 	if err != nil {
 		log.Printf("Error testing legacy client: %v", err)
 	}
+}
+
+func customTransportClient() {
+	// Route requests through a custom http.RoundTripper (for example, a proxy)
+	// and a custom base URL. When the transport supplies its own credentials,
+	// the API key and backend ID can be omitted with AllowUnauthenticated.
+	_, err := groundcover.NewClient(
+		option.WithBaseURL("https://proxy.internal.example.com"),
+		option.WithHTTPTransport(http.DefaultTransport),
+		option.AllowUnauthenticated(),
+	)
+	if err != nil {
+		log.Printf("Failed to create client with custom transport: %v", err)
+		return
+	}
+
+	fmt.Println("✓ Client with custom transport created successfully")
+}
+
+func perRequestHeadersClient() {
+	client, err := groundcover.NewClient()
+	if err != nil {
+		log.Printf("Failed to create client: %v", err)
+		return
+	}
+
+	// Attach arbitrary per-request headers to a single call. Headers are an
+	// http.Header (so multi-valued headers are supported) and override any SDK
+	// default of the same name.
+	headers := http.Header{}
+	headers.Set("X-Example-Header", "example-value")
+
+	queryRequest := &models.QueryRequest{
+		Start:     strfmt.DateTime(time.Now().Add(-5 * time.Minute)),
+		End:       strfmt.DateTime(time.Now()),
+		QueryType: "instant",
+		Promql:    "avg(groundcover_container_cpu_limit_m_cpu)",
+		Step:      "1m",
+	}
+
+	params := metrics.NewMetricsQueryParams().
+		WithContext(context.Background()).
+		WithTimeout(30 * time.Second).
+		WithBody(queryRequest)
+
+	if _, err := client.Metrics.MetricsQuery(params, nil, transport.WithHeadersOverride(headers)); err != nil {
+		log.Printf("Error running query with per-request headers: %v", err)
+		return
+	}
+
+	fmt.Println("✓ Query with per-request headers successful")
 }
 
 func testClient(client *client.GroundcoverAPI) error {

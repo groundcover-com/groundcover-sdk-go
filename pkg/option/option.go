@@ -10,15 +10,16 @@ type Option func(*Config)
 
 // Config holds all configuration options for the client.
 type Config struct {
-	APIKey           string
-	BackendID        string
-	BaseURL          string
-	HTTPTransport    http.RoundTripper
-	RetryCount       int
-	MinWait          time.Duration
-	MaxWait          time.Duration
-	RetryStatuses    []int
-	TransportWrapper func(http.RoundTripper) http.RoundTripper
+	APIKey               string
+	BackendID            string
+	BaseURL              string
+	HTTPTransport        http.RoundTripper
+	RetryCount           int
+	MinWait              time.Duration
+	MaxWait              time.Duration
+	RetryStatuses        []int
+	TransportWrapper     func(http.RoundTripper) http.RoundTripper
+	AllowUnauthenticated bool
 }
 
 // WithAPIKey sets the API key for authentication.
@@ -66,5 +67,17 @@ func WithRetryConfig(retryCount int, minWait, maxWait time.Duration, retryStatus
 func WithTransportWrapper(wrapper func(http.RoundTripper) http.RoundTripper) Option {
 	return func(c *Config) {
 		c.TransportWrapper = wrapper
+	}
+}
+
+// AllowUnauthenticated permits creating a client without an API key or backend ID.
+// By default both are required. When this option is set, the client is created
+// without them and the corresponding headers are omitted; the server will reject
+// the request if it requires authentication that was not supplied. This is useful
+// when the client is configured with a custom transport that supplies its own
+// credentials.
+func AllowUnauthenticated() Option {
+	return func(c *Config) {
+		c.AllowUnauthenticated = true
 	}
 }

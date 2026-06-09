@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/rehttp"
+	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	client "github.com/groundcover-com/groundcover-sdk-go/pkg/client"
@@ -22,6 +23,7 @@ type contextKey int
 
 const (
 	traceparentOverrideKey contextKey = iota
+	requestHeadersKey
 )
 
 const (
@@ -134,12 +136,6 @@ func WithTransportWrapper(wrapper func(http.RoundTripper) http.RoundTripper) Cli
 // NewSDKClient creates a fully configured groundcover SDK client with all
 // standard configurations applied automatically. Use options to customize behavior.
 func NewSDKClient(apiKey, backendID, baseURL string, options ...ClientOption) (*client.GroundcoverAPI, error) {
-	if apiKey == "" {
-		return nil, fmt.Errorf("apiKey is required")
-	}
-	if backendID == "" {
-		return nil, fmt.Errorf("backendID is required")
-	}
 	if baseURL == "" {
 		return nil, fmt.Errorf("baseURL is required")
 	}
@@ -206,6 +202,43 @@ func NewSDKClient(apiKey, backendID, baseURL string, options ...ClientOption) (*
 // WithRequestTraceparent returns a new context with the Traceparent override.
 func WithRequestTraceparent(ctx context.Context, traceparent string) context.Context {
 	return context.WithValue(ctx, traceparentOverrideKey, traceparent)
+}
+
+// withRequestHeaders returns a new context carrying custom headers to apply to
+// the outgoing request. It is the internal mechanism behind WithHeadersOverride;
+// the transport reads these headers in RoundTrip and applies them after the
+// default headers using override (not append) semantics.
+func withRequestHeaders(ctx context.Context, headers http.Header) context.Context {
+	merged := http.Header{}
+	if existing, ok := ctx.Value(requestHeadersKey).(http.Header); ok {
+		for k, v := range existing {
+			merged[k] = append([]string(nil), v...)
+		}
+	}
+	for k, v := range headers {
+		merged[http.CanonicalHeaderKey(k)] = append([]string(nil), v...)
+	}
+	return context.WithValue(ctx, requestHeadersKey, merged)
+}
+
+// WithHeadersOverride returns a per-request option that attaches custom headers
+// to a single operation call. It is accepted by the generated client methods
+// alongside their other options, for example:
+//
+//	resp, err := client.Metrics.MetricsQuery(params, nil, transport.WithHeadersOverride(headers))
+//
+// Headers use override (not append) semantics: each header provided here replaces
+// any existing values for that name, multi-valued headers are supported, and the
+// per-request headers take precedence over the SDK's default headers. The return
+// type matches the generated clients' option type (func(*runtime.ClientOperation)).
+func WithHeadersOverride(headers http.Header) func(*runtime.ClientOperation) {
+	return func(op *runtime.ClientOperation) {
+		ctx := op.Context
+		if ctx == nil {
+			ctx = context.Background()
+		}
+		op.Context = withRequestHeaders(ctx, headers)
+	}
 }
 
 // transport wraps an existing http.RoundTripper to add custom headers.
@@ -277,9 +310,16 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	// Clone the request to avoid modifying the original passed to the base transport
 	newReq := req.Clone(ctx)
 
-	// --- Add Custom Headers ---
-	newReq.Header.Set(headerAuthorization, fmt.Sprintf("Bearer %s", t.apiKey))
-	newReq.Header.Set(headerBackendID, t.backendID)
+	// --- Add Default Headers ---
+	// Authorization and backend ID are only set when configured, so the SDK can
+	// be used without an API key (for example, when routing through a transport
+	// that supplies its own credentials).
+	if t.apiKey != "" {
+		newReq.Header.Set(headerAuthorization, fmt.Sprintf("Bearer %s", t.apiKey))
+	}
+	if t.backendID != "" {
+		newReq.Header.Set(headerBackendID, t.backendID)
+	}
 	newReq.Header.Set(headerUserAgent, userAgent)
 
 	if effectiveTraceparent != "" {
@@ -290,6 +330,17 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	// Fix request Content-Type for workflow create endpoint
 	if newReq.Method == http.MethodPost && newReq.URL.Path == "/api/workflows/create" {
 		newReq.Header.Set("Content-Type", "text/plain")
+	}
+
+	// --- Apply Custom Per-Request Headers ---
+	// Applied last so callers can override any default or endpoint-specific
+	// header set above. Override (not append) semantics: each provided header
+	// replaces any existing values for that name. Keys are already canonical
+	// (see withRequestHeaders), matching the default headers set above.
+	if headers, ok := ctx.Value(requestHeadersKey).(http.Header); ok {
+		for k, vals := range headers {
+			newReq.Header[k] = append([]string(nil), vals...)
+		}
 	}
 
 	// Execute the request
@@ -338,9 +389,13 @@ func normalizeBaseURL(baseURL string) string {
 // It automatically reads configuration from environment variables unless overridden by options.
 //
 // Environment variables:
-//   - GC_API_KEY: Your groundcover API key (required)
-//   - GC_BACKEND_ID: Your groundcover Backend ID (required)
+//   - GC_API_KEY: Your groundcover API key (required, unless option.AllowUnauthenticated is used)
+//   - GC_BACKEND_ID: Your groundcover Backend ID (required, unless option.AllowUnauthenticated is used)
 //   - GC_BASE_URL: The base URL of the groundcover API (optional, defaults to https://api.groundcover.com)
+//
+// The API key and backend ID are required by default. Pass option.AllowUnauthenticated
+// to create a client without them; their headers are then not set and the client
+// can be used with a custom transport that supplies its own credentials.
 //
 // Example usage:
 //
@@ -364,12 +419,17 @@ func NewClient(options ...option.Option) (*client.GroundcoverAPI, error) {
 		config.BaseURL = "https://api.groundcover.com"
 	}
 
-	// Validate required fields
-	if config.APIKey == "" {
-		return nil, fmt.Errorf("API key is required: set GC_API_KEY environment variable or use option.WithAPIKey()")
-	}
-	if config.BackendID == "" {
-		return nil, fmt.Errorf("backend ID is required: set GC_BACKEND_ID environment variable or use option.WithBackendID()")
+	// Validate required fields unless the caller opts out. When opted out, the
+	// API key and backend ID headers are simply not set, allowing the SDK to be
+	// used with a custom transport that supplies its own credentials; the server
+	// will reject the request if it requires authentication that was not provided.
+	if !config.AllowUnauthenticated {
+		if config.APIKey == "" {
+			return nil, fmt.Errorf("API key is required: set GC_API_KEY environment variable or use option.WithAPIKey()")
+		}
+		if config.BackendID == "" {
+			return nil, fmt.Errorf("backend ID is required: set GC_BACKEND_ID environment variable or use option.WithBackendID()")
+		}
 	}
 
 	// Convert to legacy ClientOption format
