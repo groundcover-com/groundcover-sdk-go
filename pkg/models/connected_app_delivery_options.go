@@ -7,7 +7,10 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -18,18 +21,95 @@ import (
 // swagger:model ConnectedAppDeliveryOptions
 type ConnectedAppDeliveryOptions struct {
 
-	// Channels lists Slack channel IDs to post to (slack-app connected apps).
+	// Channels lists Slack channels to post to (slack-app connected apps).
 	// Multiple channels result in one notification per channel via dispatch-center fanout.
-	Channels []string `json:"channels"`
+	Channels []*ConnectedAppChannel `json:"channels"`
 }
 
 // Validate validates this connected app delivery options
 func (m *ConnectedAppDeliveryOptions) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateChannels(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this connected app delivery options based on context it is used
+func (m *ConnectedAppDeliveryOptions) validateChannels(formats strfmt.Registry) error {
+	if swag.IsZero(m.Channels) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Channels); i++ {
+		if swag.IsZero(m.Channels[i]) { // not required
+			continue
+		}
+
+		if m.Channels[i] != nil {
+			if err := m.Channels[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("channels" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("channels" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this connected app delivery options based on the context it is used
 func (m *ConnectedAppDeliveryOptions) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateChannels(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ConnectedAppDeliveryOptions) contextValidateChannels(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Channels); i++ {
+
+		if m.Channels[i] != nil {
+
+			if swag.IsZero(m.Channels[i]) { // not required
+				return nil
+			}
+
+			if err := m.Channels[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("channels" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("channels" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

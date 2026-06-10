@@ -26,9 +26,10 @@ type RouteConnectedAppResponse struct {
 	Name string `json:"name,omitempty"`
 
 	// Route-specific parameters for this connected app.
-	// Slack App routes may include params.channels with selected Slack channel IDs.
+	// Slack App routes may include params.channels with the selected Slack channels
+	// as {"id":"C123456","name":"#alerts"} objects; name is an optional display name.
 	// Connected app types that do not support route params omit this field.
-	// Example: {"channels":["C123456"]}
+	// Example: {"channels":[{"id":"C123456","name":"#alerts"}]}
 	Params map[string]any `json:"params,omitempty"`
 
 	// The type of the connected app.
