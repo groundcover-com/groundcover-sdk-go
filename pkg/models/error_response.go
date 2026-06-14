@@ -24,7 +24,7 @@ import (
 type ErrorResponse struct {
 
 	// code
-	// Enum: ["EXCEEDED_MAX_ROWS_TO_GROUP_BY"]
+	// Enum: ["EXCEEDED_MAX_ROWS_TO_GROUP_BY","MONITOR_EVAL_FAILED","MONITOR_VALIDATION_FAILED","MONITOR_DUPLICATE_TITLE"]
 	Code string `json:"code,omitempty"`
 
 	// details
@@ -61,7 +61,7 @@ var errorResponseTypeCodePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["EXCEEDED_MAX_ROWS_TO_GROUP_BY"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["EXCEEDED_MAX_ROWS_TO_GROUP_BY","MONITOR_EVAL_FAILED","MONITOR_VALIDATION_FAILED","MONITOR_DUPLICATE_TITLE"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -73,6 +73,15 @@ const (
 
 	// ErrorResponseCodeEXCEEDEDMAXROWSTOGROUPBY captures enum value "EXCEEDED_MAX_ROWS_TO_GROUP_BY"
 	ErrorResponseCodeEXCEEDEDMAXROWSTOGROUPBY string = "EXCEEDED_MAX_ROWS_TO_GROUP_BY"
+
+	// ErrorResponseCodeMONITOREVALFAILED captures enum value "MONITOR_EVAL_FAILED"
+	ErrorResponseCodeMONITOREVALFAILED string = "MONITOR_EVAL_FAILED"
+
+	// ErrorResponseCodeMONITORVALIDATIONFAILED captures enum value "MONITOR_VALIDATION_FAILED"
+	ErrorResponseCodeMONITORVALIDATIONFAILED string = "MONITOR_VALIDATION_FAILED"
+
+	// ErrorResponseCodeMONITORDUPLICATETITLE captures enum value "MONITOR_DUPLICATE_TITLE"
+	ErrorResponseCodeMONITORDUPLICATETITLE string = "MONITOR_DUPLICATE_TITLE"
 )
 
 // prop value enum
