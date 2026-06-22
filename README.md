@@ -343,6 +343,7 @@ The SDK is organized by service, available under the client object. For example:
 *   `client.Events`: For searching events.
 *   `client.Traces`: For searching traces.
 *   `client.Dashboards`: For managing dashboards.
+*   `client.Skills`: For managing agent user and organizational skills.
 
 Refer to the generated SDK code in the `pkg/client` directory for a full list of services and their operations.
 
@@ -378,4 +379,3 @@ export GC_BACKEND_ID="your-backend-id"
 ## License
 
 This SDK is distributed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file for more information.
-
