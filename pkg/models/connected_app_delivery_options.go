@@ -21,9 +21,27 @@ import (
 // swagger:model ConnectedAppDeliveryOptions
 type ConnectedAppDeliveryOptions struct {
 
+	// AssigneeID optionally assigns created/updated Linear issues to a user.
+	AssigneeID string `json:"assignee_id,omitempty"`
+
+	// AutoResolve controls whether resolved monitor issues transition Linear issues.
+	AutoResolve bool `json:"auto_resolve,omitempty"`
+
 	// Channels lists Slack channels to post to (slack-app connected apps).
 	// Multiple channels result in one notification per channel via dispatch-center fanout.
 	Channels []*ConnectedAppChannel `json:"channels"`
+
+	// LabelIDs optionally assigns Linear labels to created/updated issues.
+	LabelIDs []string `json:"label_ids"`
+
+	// ProjectID optionally assigns created/updated Linear issues to a project.
+	ProjectID string `json:"project_id,omitempty"`
+
+	// ResolvedStatusID optionally selects the Linear status used for auto-resolve.
+	ResolvedStatusID string `json:"resolved_status_id,omitempty"`
+
+	// TeamID selects the Linear team that receives created issues.
+	TeamID string `json:"team_id,omitempty"`
 }
 
 // Validate validates this connected app delivery options
