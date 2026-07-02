@@ -31,6 +31,9 @@ type ConnectedAppDeliveryOptions struct {
 	// Multiple channels result in one notification per channel via dispatch-center fanout.
 	Channels []*ConnectedAppChannel `json:"channels"`
 
+	// DelegateID optionally delegates created/updated Linear issues to an agent.
+	DelegateID string `json:"delegate_id,omitempty"`
+
 	// LabelIDs optionally assigns Linear labels to created/updated issues.
 	LabelIDs []string `json:"label_ids"`
 
