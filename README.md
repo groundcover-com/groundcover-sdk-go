@@ -1,6 +1,11 @@
 # groundcover Go SDK
 
 This is the official Go SDK for interacting with the groundcover API. It provides convenient access to groundcover's services, including metrics queries and policy management.
+
+> **Note:** This SDK is for interacting with the groundcover API. For error tracking
+> and observability instrumentation in Go applications, see
+> [groundcover-com/groundcover-go](https://github.com/groundcover-com/groundcover-go).
+
 See our docs for details: [groundcover API Docs](https://docs.groundcover.com/use-groundcover/remote-access-and-apis/api-examples)
 
 ## Prerequisites
@@ -378,4 +383,3 @@ export GC_BACKEND_ID="your-backend-id"
 ## License
 
 This SDK is distributed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file for more information.
-
