@@ -65,6 +65,9 @@ type SyntheticMonitorConfig struct {
 	// StatusFilters restricts which issue statuses trigger notifications (requires method "connectedApps").
 	StatusFilters []IssueStatus `json:"statusFilters"`
 
+	// connected app params
+	ConnectedAppParams ConnectedAppParams `json:"connectedAppParams,omitempty"`
+
 	// evaluation interval
 	EvaluationInterval *SyntheticMonitorEvalInterval `json:"evaluationInterval,omitempty"`
 }
@@ -74,6 +77,10 @@ func (m *SyntheticMonitorConfig) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateStatusFilters(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateConnectedAppParams(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -112,6 +119,29 @@ func (m *SyntheticMonitorConfig) validateStatusFilters(formats strfmt.Registry) 
 	return nil
 }
 
+func (m *SyntheticMonitorConfig) validateConnectedAppParams(formats strfmt.Registry) error {
+	if swag.IsZero(m.ConnectedAppParams) { // not required
+		return nil
+	}
+
+	if m.ConnectedAppParams != nil {
+		if err := m.ConnectedAppParams.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("connectedAppParams")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("connectedAppParams")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *SyntheticMonitorConfig) validateEvaluationInterval(formats strfmt.Registry) error {
 	if swag.IsZero(m.EvaluationInterval) { // not required
 		return nil
@@ -140,6 +170,10 @@ func (m *SyntheticMonitorConfig) ContextValidate(ctx context.Context, formats st
 	var res []error
 
 	if err := m.contextValidateStatusFilters(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateConnectedAppParams(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -174,6 +208,28 @@ func (m *SyntheticMonitorConfig) contextValidateStatusFilters(ctx context.Contex
 			return err
 		}
 
+	}
+
+	return nil
+}
+
+func (m *SyntheticMonitorConfig) contextValidateConnectedAppParams(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ConnectedAppParams) { // not required
+		return nil
+	}
+
+	if err := m.ConnectedAppParams.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("connectedAppParams")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("connectedAppParams")
+		}
+
+		return err
 	}
 
 	return nil
