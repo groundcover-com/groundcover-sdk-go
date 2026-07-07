@@ -13,6 +13,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // BaseQuery BaseQuery is the base struct for different query types.
@@ -31,6 +32,11 @@ type BaseQuery struct {
 
 	// datasource type
 	DatasourceType string `json:"datasourceType,omitempty" yaml:"datasourceType,omitempty"`
+
+	// evaluation delay
+	// Maximum: 3600
+	// Minimum: 0
+	EvaluationDelay *int64 `json:"evaluationDelay,omitempty" yaml:"evaluationDelay,omitempty"`
 
 	// expression
 	Expression string `json:"expression,omitempty" yaml:"expression,omitempty"`
@@ -65,6 +71,10 @@ func (m *BaseQuery) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateConditions(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEvaluationDelay(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -115,6 +125,22 @@ func (m *BaseQuery) validateConditions(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *BaseQuery) validateEvaluationDelay(formats strfmt.Registry) error {
+	if swag.IsZero(m.EvaluationDelay) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("evaluationDelay", "body", *m.EvaluationDelay, 0, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("evaluationDelay", "body", *m.EvaluationDelay, 3600, false); err != nil {
+		return err
 	}
 
 	return nil
