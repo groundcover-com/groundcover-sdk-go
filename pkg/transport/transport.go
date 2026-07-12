@@ -41,6 +41,15 @@ const (
 	maxRetryWait      = 30 * time.Second
 )
 
+// idempotentRetryMethods are the HTTP methods that are safe to replay after the
+// server has already returned a response.
+var idempotentRetryMethods = []string{
+	http.MethodGet,
+	http.MethodHead,
+	http.MethodOptions,
+	http.MethodTrace,
+}
+
 var getMonitorPathRegex = regexp.MustCompile(`^/api/monitors/[^/]+/?$`) // Matches /api/monitors/{id} but not /api/monitors/silences
 
 // yamlByteConsumer consumes application/x-yaml as raw bytes
@@ -281,12 +290,17 @@ func NewTransport(
 		maxWait = maxRetryWait
 	}
 
-	// Configure retry transport
+	// Configure retry transport. Status-based retries are restricted to
+	// idempotent methods (see idempotentRetryMethods).
 	rt := rehttp.NewTransport(
 		baseHttpTransport,
 		rehttp.RetryAll(
 			rehttp.RetryMaxRetries(retryCount),
-			rehttp.RetryStatuses(retryStatuses...),
+			rehttp.RetryHTTPMethods(idempotentRetryMethods...),
+			rehttp.RetryAny(
+				rehttp.RetryStatuses(retryStatuses...),
+				rehttp.RetryIsErr(func(err error) bool { return err != nil }),
+			),
 		),
 		rehttp.ExpJitterDelay(minWait, maxWait),
 	)
