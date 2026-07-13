@@ -10,6 +10,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/agent"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/aggregations_metrics"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/apikeys"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/connected_apps"
@@ -77,6 +78,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Groundcove
 
 	cli := new(GroundcoverAPI)
 	cli.Transport = transport
+	cli.Agent = agent.New(transport, formats)
 	cli.AggregationsMetrics = aggregations_metrics.New(transport, formats)
 	cli.Apikeys = apikeys.New(transport, formats)
 	cli.ConnectedApps = connected_apps.New(transport, formats)
@@ -144,6 +146,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // GroundcoverAPI is a client for groundcover API
 type GroundcoverAPI struct {
+	Agent agent.ClientService
+
 	AggregationsMetrics aggregations_metrics.ClientService
 
 	Apikeys apikeys.ClientService
@@ -196,6 +200,7 @@ type GroundcoverAPI struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *GroundcoverAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
+	c.Agent.SetTransport(transport)
 	c.AggregationsMetrics.SetTransport(transport)
 	c.Apikeys.SetTransport(transport)
 	c.ConnectedApps.SetTransport(transport)

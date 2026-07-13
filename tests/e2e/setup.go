@@ -16,6 +16,7 @@ import (
 
 	"github.com/groundcover-com/groundcover-sdk-go"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client"
+	agentclient "github.com/groundcover-com/groundcover-sdk-go/pkg/client/agent"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/dashboards"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/ingestionkeys"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/integrations"
@@ -120,6 +121,7 @@ const (
 	ingestionKeyResource          trackedResourceKind = "ingestion key"
 	dataIntegrationConfigResource trackedResourceKind = "data integration config"
 	secretResource                trackedResourceKind = "secret"
+	agentSkillResource            trackedResourceKind = "agent skill"
 )
 
 type trackedResource struct {
@@ -182,6 +184,12 @@ func (tc *TestClient) UntrackIngestionKey(name string) {
 func (tc *TestClient) TrackSecret(id string) { tc.track(trackedResource{kind: secretResource, id: id}) }
 func (tc *TestClient) UntrackSecret(id string) {
 	tc.untrack(trackedResource{kind: secretResource, id: id})
+}
+func (tc *TestClient) TrackAgentSkill(id string) {
+	tc.track(trackedResource{kind: agentSkillResource, id: id})
+}
+func (tc *TestClient) UntrackAgentSkill(id string) {
+	tc.untrack(trackedResource{kind: agentSkillResource, id: id})
 }
 func (tc *TestClient) TrackDataIntegrationConfig(integrationType, id string) {
 	tc.track(trackedResource{kind: dataIntegrationConfigResource, id: id, subtype: integrationType})
@@ -272,6 +280,10 @@ func (tc *TestClient) deleteResource(resource trackedResource) error {
 		params := secret.NewDeleteSecretParams().
 			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
 		_, err = tc.Client.Secret.DeleteSecret(params, nil)
+	case agentSkillResource:
+		params := agentclient.NewAgentDeleteSkillParams().
+			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithSkillID(resource.id)
+		_, err = tc.Client.Agent.AgentDeleteSkill(params, nil)
 	default:
 		err = fmt.Errorf("unknown tracked resource kind %q", resource.kind)
 	}
