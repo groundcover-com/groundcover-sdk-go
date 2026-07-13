@@ -44,6 +44,11 @@ type ValuesRequest struct {
 	// Required: true
 	Limit *uint32 `json:"limit"`
 
+	// Query is an optional GCQL filter expression (filters only, no pipes).
+	// Takes precedence over FilterGroup and Conditions.
+	// Returns 400 if the expression fails to parse or contains pipes/stats.
+	Query string `json:"query,omitempty"`
+
 	// Sources specifies the sources to filter the search values
 	Sources []*Condition `json:"sources"`
 

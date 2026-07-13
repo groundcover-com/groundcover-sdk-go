@@ -130,6 +130,16 @@ type ClientService interface {
 
 	UpdateSilence(params *UpdateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateSilenceOK, error)
 
+	V2CreateSilence(params *V2CreateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2CreateSilenceOK, error)
+
+	V2DeleteSilence(params *V2DeleteSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2DeleteSilenceOK, error)
+
+	V2GetAllSilences(params *V2GetAllSilencesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2GetAllSilencesOK, error)
+
+	V2GetSilence(params *V2GetSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2GetSilenceOK, error)
+
+	V2UpdateSilence(params *V2UpdateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2UpdateSilenceOK, error)
+
 	SetTransport(transport runtime.ClientTransport)
 }
 
@@ -810,6 +820,236 @@ func (a *Client) UpdateSilence(params *UpdateSilenceParams, authInfo runtime.Cli
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for updateSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+V2CreateSilence creates silence v2 unified
+
+Creates a new silence (one-time or recurring) based on the type field.
+*/
+func (a *Client) V2CreateSilence(params *V2CreateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2CreateSilenceOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewV2CreateSilenceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "v2CreateSilence",
+		Method:             "POST",
+		PathPattern:        "/api/monitors/v2/silences",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &V2CreateSilenceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*V2CreateSilenceOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for v2CreateSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+V2DeleteSilence deletes silence v2 unified
+
+Deletes a silence (one-time or recurring) by UUID.
+*/
+func (a *Client) V2DeleteSilence(params *V2DeleteSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2DeleteSilenceOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewV2DeleteSilenceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "v2DeleteSilence",
+		Method:             "DELETE",
+		PathPattern:        "/api/monitors/v2/silences/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &V2DeleteSilenceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*V2DeleteSilenceOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for v2DeleteSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+V2GetAllSilences lists all silences v2 unified
+
+Returns both one-time and recurring silences in a single list.
+*/
+func (a *Client) V2GetAllSilences(params *V2GetAllSilencesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2GetAllSilencesOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewV2GetAllSilencesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "v2GetAllSilences",
+		Method:             "GET",
+		PathPattern:        "/api/monitors/v2/silences",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &V2GetAllSilencesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*V2GetAllSilencesOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for v2GetAllSilences: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+V2GetSilence gets silence by ID v2 unified
+
+Retrieves a silence (one-time or recurring) by UUID.
+*/
+func (a *Client) V2GetSilence(params *V2GetSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2GetSilenceOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewV2GetSilenceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "v2GetSilence",
+		Method:             "GET",
+		PathPattern:        "/api/monitors/v2/silences/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &V2GetSilenceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*V2GetSilenceOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for v2GetSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+V2UpdateSilence updates silence v2 unified
+
+Updates a silence (one-time or recurring) by UUID. Auto-detects the type.
+*/
+func (a *Client) V2UpdateSilence(params *V2UpdateSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*V2UpdateSilenceOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewV2UpdateSilenceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "v2UpdateSilence",
+		Method:             "PUT",
+		PathPattern:        "/api/monitors/v2/silences/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &V2UpdateSilenceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*V2UpdateSilenceOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for v2UpdateSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
