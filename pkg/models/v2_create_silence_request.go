@@ -26,7 +26,7 @@ type V2CreateSilenceRequest struct {
 	Comment string `json:"comment,omitempty"`
 
 	// Optional when type=recurring. Whether the recurring silence is active.
-	Enabled bool `json:"enabled,omitempty"`
+	Enabled *bool `json:"enabled,omitempty"`
 
 	// Required when type=one_time. End time of the silence window.
 	// Format: date-time
