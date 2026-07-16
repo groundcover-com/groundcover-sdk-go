@@ -94,6 +94,8 @@ func TestDashboardsEndpoints(t *testing.T) {
 		}
 		require.NoError(t, err, "Failed to create dashboard")
 		require.NotNil(t, createResp, "Create dashboard response should not be nil")
+		require.NotNil(t, createResp.Payload, "Create dashboard 201 payload should not be nil")
+		require.NotEmpty(t, createResp.Payload.UUID, "Created dashboard UUID should not be empty")
 
 		t.Logf("✓ SDK Create Dashboard call succeeded")
 
@@ -118,6 +120,7 @@ func TestDashboardsEndpoints(t *testing.T) {
 
 		require.NotNil(t, dashboardView, "Created dashboard not found in list")
 		require.NotEmpty(t, dashboardView.UUID, "Created dashboard UUID should not be empty")
+		require.Equal(t, createResp.Payload.UUID, dashboardView.UUID, "Listed dashboard UUID should match the create response")
 		require.Equal(t, dashboardName, dashboardView.Name, "Dashboard name mismatch")
 		require.Equal(t, description, dashboardView.Description, "Dashboard description mismatch")
 		require.Equal(t, "explore", dashboardView.Type, "Dashboard view type should be 'explore'")

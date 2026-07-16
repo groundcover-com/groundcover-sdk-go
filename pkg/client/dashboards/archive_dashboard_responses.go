@@ -45,6 +45,12 @@ func (o *ArchiveDashboardReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return nil, result
+	case 409:
+		result := NewArchiveDashboardConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewArchiveDashboardInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -266,6 +272,76 @@ func (o *ArchiveDashboardNotFound) readResponse(response runtime.ClientResponse,
 	return nil
 }
 
+// NewArchiveDashboardConflict creates a ArchiveDashboardConflict with default headers values
+func NewArchiveDashboardConflict() *ArchiveDashboardConflict {
+	return &ArchiveDashboardConflict{}
+}
+
+/*
+ArchiveDashboardConflict describes a response with status code 409, with default header values.
+
+ErrorResponse defines a common error response structure.
+*/
+type ArchiveDashboardConflict struct {
+	Payload *ArchiveDashboardConflictBody
+}
+
+// IsSuccess returns true when this archive dashboard conflict response has a 2xx status code
+func (o *ArchiveDashboardConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this archive dashboard conflict response has a 3xx status code
+func (o *ArchiveDashboardConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this archive dashboard conflict response has a 4xx status code
+func (o *ArchiveDashboardConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this archive dashboard conflict response has a 5xx status code
+func (o *ArchiveDashboardConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this archive dashboard conflict response a status code equal to that given
+func (o *ArchiveDashboardConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the archive dashboard conflict response
+func (o *ArchiveDashboardConflict) Code() int {
+	return 409
+}
+
+func (o *ArchiveDashboardConflict) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /api/dashboards/{id}/archive][%d] archiveDashboardConflict %s", 409, payload)
+}
+
+func (o *ArchiveDashboardConflict) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /api/dashboards/{id}/archive][%d] archiveDashboardConflict %s", 409, payload)
+}
+
+func (o *ArchiveDashboardConflict) GetPayload() *ArchiveDashboardConflictBody {
+	return o.Payload
+}
+
+func (o *ArchiveDashboardConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(ArchiveDashboardConflictBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
 // NewArchiveDashboardInternalServerError creates a ArchiveDashboardInternalServerError with default headers values
 func NewArchiveDashboardInternalServerError() *ArchiveDashboardInternalServerError {
 	return &ArchiveDashboardInternalServerError{}
@@ -367,6 +443,44 @@ func (o *ArchiveDashboardBadRequestBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *ArchiveDashboardBadRequestBody) UnmarshalBinary(b []byte) error {
 	var res ArchiveDashboardBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*
+ArchiveDashboardConflictBody archive dashboard conflict body
+swagger:model ArchiveDashboardConflictBody
+*/
+type ArchiveDashboardConflictBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this archive dashboard conflict body
+func (o *ArchiveDashboardConflictBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this archive dashboard conflict body based on context it is used
+func (o *ArchiveDashboardConflictBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *ArchiveDashboardConflictBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *ArchiveDashboardConflictBody) UnmarshalBinary(b []byte) error {
+	var res ArchiveDashboardConflictBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -61,6 +61,12 @@ GetDashboardsParams contains all the parameters to send to the API endpoint
 */
 type GetDashboardsParams struct {
 
+	/* Source.
+
+	   Dashboard source filter.
+	*/
+	Source *string
+
 	/* Status.
 
 	   Dashboard status filter
@@ -120,6 +126,17 @@ func (o *GetDashboardsParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithSource adds the source to the get dashboards params
+func (o *GetDashboardsParams) WithSource(source *string) *GetDashboardsParams {
+	o.SetSource(source)
+	return o
+}
+
+// SetSource adds the source to the get dashboards params
+func (o *GetDashboardsParams) SetSource(source *string) {
+	o.Source = source
+}
+
 // WithStatus adds the status to the get dashboards params
 func (o *GetDashboardsParams) WithStatus(status *string) *GetDashboardsParams {
 	o.SetStatus(status)
@@ -138,6 +155,23 @@ func (o *GetDashboardsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		return err
 	}
 	var res []error
+
+	if o.Source != nil {
+
+		// query param source
+		var qrSource string
+
+		if o.Source != nil {
+			qrSource = *o.Source
+		}
+		qSource := qrSource
+		if qSource != "" {
+
+			if err := r.SetQueryParam("source", qSource); err != nil {
+				return err
+			}
+		}
+	}
 
 	if o.Status != nil {
 

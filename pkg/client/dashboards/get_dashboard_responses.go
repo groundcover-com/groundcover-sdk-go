@@ -45,6 +45,12 @@ func (o *GetDashboardReader) ReadResponse(response runtime.ClientResponse, consu
 			return nil, err
 		}
 		return nil, result
+	case 410:
+		result := NewGetDashboardGone()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewGetDashboardInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -266,6 +272,76 @@ func (o *GetDashboardNotFound) readResponse(response runtime.ClientResponse, con
 	return nil
 }
 
+// NewGetDashboardGone creates a GetDashboardGone with default headers values
+func NewGetDashboardGone() *GetDashboardGone {
+	return &GetDashboardGone{}
+}
+
+/*
+GetDashboardGone describes a response with status code 410, with default header values.
+
+ErrorResponse defines a common error response structure.
+*/
+type GetDashboardGone struct {
+	Payload *GetDashboardGoneBody
+}
+
+// IsSuccess returns true when this get dashboard gone response has a 2xx status code
+func (o *GetDashboardGone) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get dashboard gone response has a 3xx status code
+func (o *GetDashboardGone) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get dashboard gone response has a 4xx status code
+func (o *GetDashboardGone) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get dashboard gone response has a 5xx status code
+func (o *GetDashboardGone) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get dashboard gone response a status code equal to that given
+func (o *GetDashboardGone) IsCode(code int) bool {
+	return code == 410
+}
+
+// Code gets the status code for the get dashboard gone response
+func (o *GetDashboardGone) Code() int {
+	return 410
+}
+
+func (o *GetDashboardGone) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /api/dashboards/{id}][%d] getDashboardGone %s", 410, payload)
+}
+
+func (o *GetDashboardGone) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /api/dashboards/{id}][%d] getDashboardGone %s", 410, payload)
+}
+
+func (o *GetDashboardGone) GetPayload() *GetDashboardGoneBody {
+	return o.Payload
+}
+
+func (o *GetDashboardGone) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(GetDashboardGoneBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
 // NewGetDashboardInternalServerError creates a GetDashboardInternalServerError with default headers values
 func NewGetDashboardInternalServerError() *GetDashboardInternalServerError {
 	return &GetDashboardInternalServerError{}
@@ -367,6 +443,44 @@ func (o *GetDashboardBadRequestBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *GetDashboardBadRequestBody) UnmarshalBinary(b []byte) error {
 	var res GetDashboardBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*
+GetDashboardGoneBody get dashboard gone body
+swagger:model GetDashboardGoneBody
+*/
+type GetDashboardGoneBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this get dashboard gone body
+func (o *GetDashboardGoneBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get dashboard gone body based on context it is used
+func (o *GetDashboardGoneBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetDashboardGoneBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetDashboardGoneBody) UnmarshalBinary(b []byte) error {
+	var res GetDashboardGoneBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

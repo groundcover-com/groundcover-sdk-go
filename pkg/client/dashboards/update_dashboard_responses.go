@@ -45,6 +45,12 @@ func (o *UpdateDashboardReader) ReadResponse(response runtime.ClientResponse, co
 			return nil, err
 		}
 		return nil, result
+	case 409:
+		result := NewUpdateDashboardConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewUpdateDashboardInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -266,6 +272,76 @@ func (o *UpdateDashboardNotFound) readResponse(response runtime.ClientResponse, 
 	return nil
 }
 
+// NewUpdateDashboardConflict creates a UpdateDashboardConflict with default headers values
+func NewUpdateDashboardConflict() *UpdateDashboardConflict {
+	return &UpdateDashboardConflict{}
+}
+
+/*
+UpdateDashboardConflict describes a response with status code 409, with default header values.
+
+ErrorResponse defines a common error response structure.
+*/
+type UpdateDashboardConflict struct {
+	Payload *UpdateDashboardConflictBody
+}
+
+// IsSuccess returns true when this update dashboard conflict response has a 2xx status code
+func (o *UpdateDashboardConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update dashboard conflict response has a 3xx status code
+func (o *UpdateDashboardConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update dashboard conflict response has a 4xx status code
+func (o *UpdateDashboardConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update dashboard conflict response has a 5xx status code
+func (o *UpdateDashboardConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update dashboard conflict response a status code equal to that given
+func (o *UpdateDashboardConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the update dashboard conflict response
+func (o *UpdateDashboardConflict) Code() int {
+	return 409
+}
+
+func (o *UpdateDashboardConflict) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /api/dashboards/{id}][%d] updateDashboardConflict %s", 409, payload)
+}
+
+func (o *UpdateDashboardConflict) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /api/dashboards/{id}][%d] updateDashboardConflict %s", 409, payload)
+}
+
+func (o *UpdateDashboardConflict) GetPayload() *UpdateDashboardConflictBody {
+	return o.Payload
+}
+
+func (o *UpdateDashboardConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(UpdateDashboardConflictBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
 // NewUpdateDashboardInternalServerError creates a UpdateDashboardInternalServerError with default headers values
 func NewUpdateDashboardInternalServerError() *UpdateDashboardInternalServerError {
 	return &UpdateDashboardInternalServerError{}
@@ -367,6 +443,44 @@ func (o *UpdateDashboardBadRequestBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *UpdateDashboardBadRequestBody) UnmarshalBinary(b []byte) error {
 	var res UpdateDashboardBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*
+UpdateDashboardConflictBody update dashboard conflict body
+swagger:model UpdateDashboardConflictBody
+*/
+type UpdateDashboardConflictBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this update dashboard conflict body
+func (o *UpdateDashboardConflictBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update dashboard conflict body based on context it is used
+func (o *UpdateDashboardConflictBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdateDashboardConflictBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdateDashboardConflictBody) UnmarshalBinary(b []byte) error {
+	var res UpdateDashboardConflictBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

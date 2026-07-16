@@ -39,12 +39,6 @@ func (o *GetDashboardsReader) ReadResponse(response runtime.ClientResponse, cons
 			return nil, err
 		}
 		return nil, result
-	case 404:
-		result := NewGetDashboardsNotFound()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	case 500:
 		result := NewGetDashboardsInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -194,76 +188,6 @@ func (o *GetDashboardsBadRequest) readResponse(response runtime.ClientResponse, 
 	return nil
 }
 
-// NewGetDashboardsNotFound creates a GetDashboardsNotFound with default headers values
-func NewGetDashboardsNotFound() *GetDashboardsNotFound {
-	return &GetDashboardsNotFound{}
-}
-
-/*
-GetDashboardsNotFound describes a response with status code 404, with default header values.
-
-ErrorResponse defines a common error response structure.
-*/
-type GetDashboardsNotFound struct {
-	Payload *GetDashboardsNotFoundBody
-}
-
-// IsSuccess returns true when this get dashboards not found response has a 2xx status code
-func (o *GetDashboardsNotFound) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get dashboards not found response has a 3xx status code
-func (o *GetDashboardsNotFound) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get dashboards not found response has a 4xx status code
-func (o *GetDashboardsNotFound) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this get dashboards not found response has a 5xx status code
-func (o *GetDashboardsNotFound) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get dashboards not found response a status code equal to that given
-func (o *GetDashboardsNotFound) IsCode(code int) bool {
-	return code == 404
-}
-
-// Code gets the status code for the get dashboards not found response
-func (o *GetDashboardsNotFound) Code() int {
-	return 404
-}
-
-func (o *GetDashboardsNotFound) Error() string {
-	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/dashboards][%d] getDashboardsNotFound %s", 404, payload)
-}
-
-func (o *GetDashboardsNotFound) String() string {
-	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/dashboards][%d] getDashboardsNotFound %s", 404, payload)
-}
-
-func (o *GetDashboardsNotFound) GetPayload() *GetDashboardsNotFoundBody {
-	return o.Payload
-}
-
-func (o *GetDashboardsNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(GetDashboardsNotFoundBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
-		return err
-	}
-
-	return nil
-}
-
 // NewGetDashboardsInternalServerError creates a GetDashboardsInternalServerError with default headers values
 func NewGetDashboardsInternalServerError() *GetDashboardsInternalServerError {
 	return &GetDashboardsInternalServerError{}
@@ -403,44 +327,6 @@ func (o *GetDashboardsInternalServerErrorBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *GetDashboardsInternalServerErrorBody) UnmarshalBinary(b []byte) error {
 	var res GetDashboardsInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*
-GetDashboardsNotFoundBody get dashboards not found body
-swagger:model GetDashboardsNotFoundBody
-*/
-type GetDashboardsNotFoundBody struct {
-
-	// message
-	Message string `json:"message,omitempty"`
-}
-
-// Validate validates this get dashboards not found body
-func (o *GetDashboardsNotFoundBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this get dashboards not found body based on context it is used
-func (o *GetDashboardsNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetDashboardsNotFoundBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetDashboardsNotFoundBody) UnmarshalBinary(b []byte) error {
-	var res GetDashboardsNotFoundBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
