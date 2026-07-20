@@ -151,7 +151,7 @@ func TestSSLSyntheticsEndpoints(t *testing.T) {
 					Assertions: []*models.Assertion{
 						{
 							Source:   "ssl",
-							Operator: "exists",
+							Operator: "eq",
 							Target:   "true",
 						},
 					},

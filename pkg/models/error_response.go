@@ -24,7 +24,7 @@ import (
 type ErrorResponse struct {
 
 	// code
-	// Enum: ["EXCEEDED_MAX_ROWS_TO_GROUP_BY","MONITOR_EVAL_FAILED","MONITOR_VALIDATION_FAILED","MONITOR_DUPLICATE_TITLE","CONNECTED_APP_IN_USE"]
+	// Enum: ["EXCEEDED_MAX_ROWS_TO_GROUP_BY","MONITOR_EVAL_FAILED","MONITOR_VALIDATION_FAILED","MONITOR_DUPLICATE_TITLE","CONNECTED_APP_IN_USE","CONNECTED_APP_ORPHANED_SECRET"]
 	Code string `json:"code,omitempty"`
 
 	// details
@@ -61,7 +61,7 @@ var errorResponseTypeCodePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["EXCEEDED_MAX_ROWS_TO_GROUP_BY","MONITOR_EVAL_FAILED","MONITOR_VALIDATION_FAILED","MONITOR_DUPLICATE_TITLE","CONNECTED_APP_IN_USE"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["EXCEEDED_MAX_ROWS_TO_GROUP_BY","MONITOR_EVAL_FAILED","MONITOR_VALIDATION_FAILED","MONITOR_DUPLICATE_TITLE","CONNECTED_APP_IN_USE","CONNECTED_APP_ORPHANED_SECRET"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -85,6 +85,9 @@ const (
 
 	// ErrorResponseCodeCONNECTEDAPPINUSE captures enum value "CONNECTED_APP_IN_USE"
 	ErrorResponseCodeCONNECTEDAPPINUSE string = "CONNECTED_APP_IN_USE"
+
+	// ErrorResponseCodeCONNECTEDAPPORPHANEDSECRET captures enum value "CONNECTED_APP_ORPHANED_SECRET"
+	ErrorResponseCodeCONNECTEDAPPORPHANEDSECRET string = "CONNECTED_APP_ORPHANED_SECRET"
 )
 
 // prop value enum
