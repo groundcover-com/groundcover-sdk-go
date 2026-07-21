@@ -54,6 +54,9 @@ type View struct {
 	// status
 	Status string `json:"status,omitempty"`
 
+	// tags
+	Tags []string `json:"tags"`
+
 	// team
 	Team string `json:"team,omitempty"`
 

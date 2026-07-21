@@ -29,6 +29,9 @@ type CreateDashboardRequest struct {
 	// preset
 	Preset string `json:"preset,omitempty"`
 
+	// Tags to attach to the dashboard (array of free-text strings; whitespace-trimmed, original casing preserved)
+	Tags []string `json:"tags"`
+
 	// team
 	Team string `json:"team,omitempty"`
 }
