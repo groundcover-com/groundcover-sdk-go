@@ -21,7 +21,7 @@ type AgentSkillRequest struct {
 
 	// description
 	// Max Length: 5000
-	Description string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
 
 	// instructions
 	// Required: true
@@ -76,7 +76,7 @@ func (m *AgentSkillRequest) validateDescription(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MaxLength("description", "body", m.Description, 5000); err != nil {
+	if err := validate.MaxLength("description", "body", *m.Description, 5000); err != nil {
 		return err
 	}
 

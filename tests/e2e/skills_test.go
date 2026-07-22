@@ -147,7 +147,7 @@ func newSkillCreateRequest(name, whenToUse, description string, isOrganizational
 	return &models.AgentSkillRequest{
 		Name:             &name,
 		WhenToUse:        &whenToUse,
-		Description:      description,
+		Description:      &description,
 		Instructions:     &instructions,
 		IsOrganizational: &isOrganizational,
 	}
@@ -159,7 +159,7 @@ func newSkillUpdateRequest(name, whenToUse, description string, isOrganizational
 	return &models.AgentSkillRequest{
 		Name:             &name,
 		WhenToUse:        &whenToUse,
-		Description:      description,
+		Description:      &description,
 		Instructions:     &instructions,
 		IsOrganizational: &isOrganizational,
 	}

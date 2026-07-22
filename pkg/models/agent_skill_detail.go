@@ -23,18 +23,21 @@ type AgentSkillDetail struct {
 	// Required: true
 	CreatedAt *string `json:"created_at"`
 
-	// created by
-	CreatedBy string `json:"created_by,omitempty"`
+	// Audit identity that created the Skill.
+	// Nullable: true
+	CreatedBy *string `json:"created_by,omitempty"`
 
-	// description
-	Description string `json:"description,omitempty"`
+	// Optional human-readable Skill description.
+	// Nullable: true
+	Description *string `json:"description,omitempty"`
 
 	// ID
 	// Required: true
 	ID *string `json:"id"`
 
-	// identifier
-	Identifier string `json:"identifier,omitempty"`
+	// Optional stable Skill identifier.
+	// Nullable: true
+	Identifier *string `json:"identifier,omitempty"`
 
 	// instructions
 	// Required: true
@@ -52,6 +55,14 @@ type AgentSkillDetail struct {
 	// Required: true
 	Name *string `json:"name"`
 
+	// Owner email used for user-facing attribution when available.
+	// Nullable: true
+	OwnerEmail *string `json:"owner_email,omitempty"`
+
+	// owner user ID
+	// Required: true
+	OwnerUserID *string `json:"owner_user_id"`
+
 	// revision
 	// Required: true
 	Revision *int64 `json:"revision"`
@@ -60,8 +71,9 @@ type AgentSkillDetail struct {
 	// Required: true
 	UpdatedAt *string `json:"updated_at"`
 
-	// updated by
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Audit identity that most recently updated the Skill.
+	// Nullable: true
+	UpdatedBy *string `json:"updated_by,omitempty"`
 
 	// when to use
 	// Required: true
@@ -93,6 +105,10 @@ func (m *AgentSkillDetail) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateOwnerUserID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -162,6 +178,15 @@ func (m *AgentSkillDetail) validateIsProvisioned(formats strfmt.Registry) error 
 func (m *AgentSkillDetail) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *AgentSkillDetail) validateOwnerUserID(formats strfmt.Registry) error {
+
+	if err := validate.Required("owner_user_id", "body", m.OwnerUserID); err != nil {
 		return err
 	}
 

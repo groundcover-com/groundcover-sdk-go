@@ -23,15 +23,17 @@ type AgentSkillSummary struct {
 	// Required: true
 	CreatedAt *string `json:"created_at"`
 
-	// description
-	Description string `json:"description,omitempty"`
+	// Optional human-readable Skill description.
+	// Nullable: true
+	Description *string `json:"description,omitempty"`
 
 	// ID
 	// Required: true
 	ID *string `json:"id"`
 
-	// identifier
-	Identifier string `json:"identifier,omitempty"`
+	// Optional stable Skill identifier.
+	// Nullable: true
+	Identifier *string `json:"identifier,omitempty"`
 
 	// is organizational
 	// Required: true
