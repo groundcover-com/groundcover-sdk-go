@@ -38,7 +38,8 @@ type CreateMonitorRequest struct {
 	HideSlackPreviewGraph bool `json:"hideSlackPreviewGraph,omitempty" yaml:"hideSlackPreviewGraph,omitempty"`
 
 	// Whether the monitor is paused.
-	IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
+	// Nullable: true
+	IsPaused *bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
 	// Labels to attach to the monitor/alert.
 	Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
@@ -98,7 +99,7 @@ func (m *CreateMonitorRequest) UnmarshalJSON(raw []byte) error {
 
 		HideSlackPreviewGraph bool `json:"hideSlackPreviewGraph,omitempty" yaml:"hideSlackPreviewGraph,omitempty"`
 
-		IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
+		IsPaused *bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
 		Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
@@ -192,7 +193,7 @@ func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
 
 		HideSlackPreviewGraph bool `json:"hideSlackPreviewGraph,omitempty" yaml:"hideSlackPreviewGraph,omitempty"`
 
-		IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
+		IsPaused *bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
 		Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
