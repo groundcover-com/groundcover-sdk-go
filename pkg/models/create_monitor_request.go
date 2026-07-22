@@ -34,6 +34,9 @@ type CreateMonitorRequest struct {
 	// Enum: ["OK","Error","Alerting"]
 	ExecutionErrorState string `json:"executionErrorState,omitempty" yaml:"executionErrorState,omitempty"`
 
+	// Whether Slack notifications should omit the issue graph preview.
+	HideSlackPreviewGraph bool `json:"hideSlackPreviewGraph,omitempty" yaml:"hideSlackPreviewGraph,omitempty"`
+
 	// Whether the monitor is paused.
 	IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
@@ -93,6 +96,8 @@ func (m *CreateMonitorRequest) UnmarshalJSON(raw []byte) error {
 
 		ExecutionErrorState string `json:"executionErrorState,omitempty" yaml:"executionErrorState,omitempty"`
 
+		HideSlackPreviewGraph bool `json:"hideSlackPreviewGraph,omitempty" yaml:"hideSlackPreviewGraph,omitempty"`
+
 		IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
 		Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
@@ -130,6 +135,8 @@ func (m *CreateMonitorRequest) UnmarshalJSON(raw []byte) error {
 	m.Category = dataAO0.Category
 
 	m.ExecutionErrorState = dataAO0.ExecutionErrorState
+
+	m.HideSlackPreviewGraph = dataAO0.HideSlackPreviewGraph
 
 	m.IsPaused = dataAO0.IsPaused
 
@@ -183,6 +190,8 @@ func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
 
 		ExecutionErrorState string `json:"executionErrorState,omitempty" yaml:"executionErrorState,omitempty"`
 
+		HideSlackPreviewGraph bool `json:"hideSlackPreviewGraph,omitempty" yaml:"hideSlackPreviewGraph,omitempty"`
+
 		IsPaused bool `json:"isPaused,omitempty" yaml:"isPaused,omitempty"`
 
 		Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
@@ -217,6 +226,8 @@ func (m CreateMonitorRequest) MarshalJSON() ([]byte, error) {
 	dataAO0.Category = m.Category
 
 	dataAO0.ExecutionErrorState = m.ExecutionErrorState
+
+	dataAO0.HideSlackPreviewGraph = m.HideSlackPreviewGraph
 
 	dataAO0.IsPaused = m.IsPaused
 
