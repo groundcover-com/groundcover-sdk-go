@@ -61,6 +61,12 @@ GetDashboardsParams contains all the parameters to send to the API endpoint
 */
 type GetDashboardsParams struct {
 
+	/* Query.
+
+	   gcQL filter query (filters only, no pipes). Supported keys: name, owner, description, team, tags. Unkeyed terms are free text, matched as a case-insensitive substring across name, description, owner and tags.
+	*/
+	Query *string
+
 	/* Source.
 
 	   Dashboard source filter.
@@ -126,6 +132,17 @@ func (o *GetDashboardsParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithQuery adds the query to the get dashboards params
+func (o *GetDashboardsParams) WithQuery(query *string) *GetDashboardsParams {
+	o.SetQuery(query)
+	return o
+}
+
+// SetQuery adds the query to the get dashboards params
+func (o *GetDashboardsParams) SetQuery(query *string) {
+	o.Query = query
+}
+
 // WithSource adds the source to the get dashboards params
 func (o *GetDashboardsParams) WithSource(source *string) *GetDashboardsParams {
 	o.SetSource(source)
@@ -155,6 +172,23 @@ func (o *GetDashboardsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		return err
 	}
 	var res []error
+
+	if o.Query != nil {
+
+		// query param query
+		var qrQuery string
+
+		if o.Query != nil {
+			qrQuery = *o.Query
+		}
+		qQuery := qrQuery
+		if qQuery != "" {
+
+			if err := r.SetQueryParam("query", qQuery); err != nil {
+				return err
+			}
+		}
+	}
 
 	if o.Source != nil {
 
