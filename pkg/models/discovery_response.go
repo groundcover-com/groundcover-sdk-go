@@ -20,8 +20,8 @@ import (
 // swagger:model DiscoveryResponse
 type DiscoveryResponse struct {
 
-	// name
-	Name string `json:"name,omitempty"`
+	// is limit reached
+	IsLimitReached bool `json:"isLimitReached,omitempty"`
 
 	// results
 	Results []*DiscoveryResult `json:"results"`
