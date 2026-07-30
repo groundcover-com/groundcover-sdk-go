@@ -33,8 +33,10 @@ type BaseQuery struct {
 	// datasource type
 	DatasourceType string `json:"datasourceType,omitempty" yaml:"datasourceType,omitempty"`
 
-	// evaluation delay
-	// Maximum: 3600
+	// Shifts the evaluated window back by this many seconds, for sources that backfill
+	// recent data. Up to 7 days. aws_cur queries must set exactly 172800 (48h): CUR
+	// lands 24-48h after the usage it bills, so a fresher window reads no rows.
+	// Maximum: 604800
 	// Minimum: 0
 	EvaluationDelay *int64 `json:"evaluationDelay,omitempty" yaml:"evaluationDelay,omitempty"`
 
@@ -139,7 +141,7 @@ func (m *BaseQuery) validateEvaluationDelay(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.MaximumInt("evaluationDelay", "body", *m.EvaluationDelay, 3600, false); err != nil {
+	if err := validate.MaximumInt("evaluationDelay", "body", *m.EvaluationDelay, 604800, false); err != nil {
 		return err
 	}
 
