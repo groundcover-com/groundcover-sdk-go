@@ -5,6 +5,8 @@
 package models
 
 import (
+	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/go-openapi/strfmt"
@@ -18,9 +20,17 @@ func (d Duration) String() string {
 	return time.Duration(d).String()
 }
 
+// validDuration matches only complete duration strings with integer magnitudes and
+// known units (no leading sign, no decimals, no trailing garbage).
+var validDuration = regexp.MustCompile(`^(\d+(ns|us|µs|ms|s|m|h|d|w))+$`)
+
 // UnmarshalText implements the text unmarshaller interface
 func (d *Duration) UnmarshalText(text []byte) error {
-	duration, err := strfmt.ParseDuration(string(text))
+	s := string(text)
+	if !validDuration.MatchString(s) {
+		return fmt.Errorf("invalid duration %q", s)
+	}
+	duration, err := strfmt.ParseDuration(s)
 	if err != nil {
 		return err
 	}

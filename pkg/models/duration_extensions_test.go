@@ -24,3 +24,10 @@ func TestUnmarshalYAML_DayUnit(t *testing.T) {
 	var cfg rollupConfig
 	require.NoError(t, yaml.Unmarshal([]byte("rollup:\n  time: 1d2h\n"), &cfg))
 }
+
+func TestUnmarshalText_RejectsPartialParse(t *testing.T) {
+	for _, input := range []string{"-1d", "1.5d", "1d+"} {
+		var d Duration
+		require.Error(t, d.UnmarshalText([]byte(input)), "expected error for input: %s", input)
+	}
+}
