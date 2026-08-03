@@ -6,6 +6,8 @@ package models
 
 import (
 	"time"
+
+	"github.com/go-openapi/strfmt"
 )
 
 // Custom methods for Duration type
@@ -18,7 +20,7 @@ func (d Duration) String() string {
 
 // UnmarshalText implements the text unmarshaller interface
 func (d *Duration) UnmarshalText(text []byte) error {
-	duration, err := time.ParseDuration(string(text))
+	duration, err := strfmt.ParseDuration(string(text))
 	if err != nil {
 		return err
 	}
