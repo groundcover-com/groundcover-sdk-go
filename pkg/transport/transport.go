@@ -340,12 +340,6 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		newReq.Header.Set(headerTraceparent, effectiveTraceparent)
 	}
 
-	// --- Fix Content-Type for specific endpoints ---
-	// Fix request Content-Type for workflow create endpoint
-	if newReq.Method == http.MethodPost && newReq.URL.Path == "/api/workflows/create" {
-		newReq.Header.Set("Content-Type", "text/plain")
-	}
-
 	// --- Apply Custom Per-Request Headers ---
 	// Applied last so callers can override any default or endpoint-specific
 	// header set above. Override (not append) semantics: each provided header

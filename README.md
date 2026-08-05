@@ -8,6 +8,18 @@ This is the official Go SDK for interacting with the groundcover API. It provide
 
 See our docs for details: [groundcover API Docs](https://docs.groundcover.com/use-groundcover/remote-access-and-apis/api-examples)
 
+## Workflow SDK removal
+
+> **Breaking change (AI-461):** The public Go SDK no longer exposes workflow
+> create, list, or delete operations for `POST /api/workflows/create`,
+> `POST /api/workflows/list`, and `DELETE /api/workflows/{id}`. This removes the
+> workflow client's `CreateWorkflow`, `ListWorkflows`, and `DeleteWorkflow`
+> methods. For temporary compatibility, the unchanged endpoints can be called
+> directly through REST. Workflows are deprecated; migrate notification
+> automation to [Destinations](https://docs.groundcover.com/integrations/connected-apps)
+> and [Notification Routes](https://docs.groundcover.com/use-groundcover/monitors/notification-routes) using the
+> [workflow migration guide](https://docs.groundcover.com/use-groundcover/workflows#migration-steps).
+
 ## Prerequisites
 
 *   Go 1.24 or higher.

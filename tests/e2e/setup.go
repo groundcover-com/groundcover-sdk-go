@@ -24,7 +24,6 @@ import (
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/policies"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/secret"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/synthetics"
-	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/workflows"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/models"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/option"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/transport"
@@ -115,7 +114,6 @@ const (
 	dashboardResource             trackedResourceKind = "dashboard"
 	monitorResource               trackedResourceKind = "monitor"
 	silenceResource               trackedResourceKind = "silence"
-	workflowResource              trackedResourceKind = "workflow"
 	policyResource                trackedResourceKind = "policy"
 	syntheticTestResource         trackedResourceKind = "synthetic test"
 	ingestionKeyResource          trackedResourceKind = "ingestion key"
@@ -158,12 +156,6 @@ func (tc *TestClient) TrackSilence(id string) {
 }
 func (tc *TestClient) UntrackSilence(id string) {
 	tc.untrack(trackedResource{kind: silenceResource, id: id})
-}
-func (tc *TestClient) TrackWorkflow(id string) {
-	tc.track(trackedResource{kind: workflowResource, id: id})
-}
-func (tc *TestClient) UntrackWorkflow(id string) {
-	tc.untrack(trackedResource{kind: workflowResource, id: id})
 }
 func (tc *TestClient) TrackPolicy(id string) { tc.track(trackedResource{kind: policyResource, id: id}) }
 func (tc *TestClient) UntrackPolicy(id string) {
@@ -253,10 +245,6 @@ func (tc *TestClient) deleteResource(resource trackedResource) error {
 		params := monitors.NewDeleteSilenceParams().
 			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
 		_, err = tc.Client.Monitors.DeleteSilence(params, nil)
-	case workflowResource:
-		params := workflows.NewDeleteWorkflowParams().
-			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)
-		_, err = tc.Client.Workflows.DeleteWorkflow(params, nil)
 	case policyResource:
 		params := policies.NewDeletePolicyParams().
 			WithContext(tc.BaseCtx).WithTimeout(defaultTimeout).WithID(resource.id)

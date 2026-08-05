@@ -129,26 +129,6 @@ func TestRoundTripAppliesMultiValuePerRequestHeaders(t *testing.T) {
 	}
 }
 
-func TestRoundTripPerRequestHeadersOverrideWorkflowContentType(t *testing.T) {
-	cap := &captureTransport{}
-	tr := NewTransport("key", "backend", cap, 1, 0, 0, nil)
-
-	req, err := http.NewRequest(http.MethodPost, "https://example.com/api/workflows/create", nil)
-	if err != nil {
-		t.Fatalf("failed to build request: %v", err)
-	}
-	ctx := withRequestHeaders(req.Context(), http.Header{"Content-Type": {"application/json"}})
-	req = req.WithContext(ctx)
-
-	if _, err := tr.RoundTrip(req); err != nil {
-		t.Fatalf("RoundTrip returned error: %v", err)
-	}
-
-	if got := cap.req.Header.Get("Content-Type"); got != "application/json" {
-		t.Errorf("Content-Type = %q, want %q (per-request header should override the workflow default)", got, "application/json")
-	}
-}
-
 func TestRoundTripSetsAuthorizationWithAPIKey(t *testing.T) {
 	cap := &captureTransport{}
 	tr := NewTransport("secret-key", "backend", cap, 1, 0, 0, nil)
