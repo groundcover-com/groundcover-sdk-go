@@ -61,7 +61,7 @@ GetDashboardsOK describes a response with status code 200, with default header v
 GetDashboardsResponseWrapper defines the response structure for getting dashboards list.
 */
 type GetDashboardsOK struct {
-	Payload []*models.View
+	Payload []*models.MemberView
 }
 
 // IsSuccess returns true when this get dashboards o k response has a 2xx status code
@@ -104,7 +104,7 @@ func (o *GetDashboardsOK) String() string {
 	return fmt.Sprintf("[GET /api/dashboards][%d] getDashboardsOK %s", 200, payload)
 }
 
-func (o *GetDashboardsOK) GetPayload() []*models.View {
+func (o *GetDashboardsOK) GetPayload() []*models.MemberView {
 	return o.Payload
 }
 

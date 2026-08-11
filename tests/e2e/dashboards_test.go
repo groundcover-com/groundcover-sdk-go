@@ -109,8 +109,8 @@ func TestDashboardsEndpoints(t *testing.T) {
 		require.NoError(t, err, "Failed to list dashboards after create")
 		require.NotNil(t, listResp.Payload, "List response payload should not be nil")
 
-		// Find our created dashboard in the models.View payload
-		var dashboardView *models.View
+		// Find our created dashboard in the models.MemberView payload
+		var dashboardView *models.MemberView
 		for _, view := range listResp.Payload {
 			if view.Name == dashboardName {
 				dashboardView = view
@@ -306,7 +306,7 @@ func TestDashboardsEndpoints(t *testing.T) {
 		require.NoError(t, err, "Failed to list dashboards after update")
 
 		// Find our updated dashboard in the list
-		var updatedDashboardView *models.View
+		var updatedDashboardView *models.MemberView
 		for _, view := range listResp.Payload {
 			if view.UUID == createdDashboardID {
 				updatedDashboardView = view
@@ -364,7 +364,7 @@ func TestDashboardsEndpoints(t *testing.T) {
 		require.NoError(t, err, "Failed to list dashboards after archive")
 
 		// Find our archived dashboard in the list
-		var archivedDashboardView *models.View
+		var archivedDashboardView *models.MemberView
 		for _, view := range listResp.Payload {
 			if view.UUID == createdDashboardID {
 				archivedDashboardView = view
@@ -419,7 +419,7 @@ func TestDashboardsEndpoints(t *testing.T) {
 		require.NoError(t, err, "Failed to list dashboards after restore")
 
 		// Find our restored dashboard in the list
-		var restoredDashboardView *models.View
+		var restoredDashboardView *models.MemberView
 		for _, view := range listResp.Payload {
 			if view.UUID == createdDashboardID {
 				restoredDashboardView = view

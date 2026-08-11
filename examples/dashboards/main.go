@@ -125,7 +125,7 @@ func runDashboardLifecycle(ctx context.Context, gcClient *client.GroundcoverAPI)
 	return nil
 }
 
-func createDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, name, description string) (*models.View, error) {
+func createDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, name, description string) (*models.MemberView, error) {
 	preset := getExamplePreset()
 
 	createReq := &models.CreateDashboardRequest{
@@ -162,7 +162,7 @@ func createDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, name,
 	return nil, fmt.Errorf("created dashboard not found in list")
 }
 
-func getDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id string) (*models.View, error) {
+func getDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id string) (*models.MemberView, error) {
 	// Get dashboard using SDK client
 	getParams := dashboards.NewGetDashboardParams().
 		WithContext(ctx).
@@ -190,7 +190,7 @@ func getDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id strin
 	return nil, fmt.Errorf("dashboard with ID %s not found", id)
 }
 
-func listDashboards(ctx context.Context, gcClient *client.GroundcoverAPI) ([]*models.View, error) {
+func listDashboards(ctx context.Context, gcClient *client.GroundcoverAPI) ([]*models.MemberView, error) {
 	// List dashboards using SDK client
 	listParams := dashboards.NewGetDashboardsParams().
 		WithContext(ctx).
@@ -202,13 +202,13 @@ func listDashboards(ctx context.Context, gcClient *client.GroundcoverAPI) ([]*mo
 	}
 
 	if listResp.Payload == nil {
-		return []*models.View{}, nil
+		return []*models.MemberView{}, nil
 	}
 
 	return listResp.Payload, nil
 }
 
-func updateDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id, name, description string, currentRevision int32) (*models.View, error) {
+func updateDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id, name, description string, currentRevision int32) (*models.MemberView, error) {
 	preset := getUpdatedExamplePreset()
 
 	updateReq := &models.UpdateDashboardRequest{
@@ -248,7 +248,7 @@ func updateDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id, n
 	return nil, fmt.Errorf("updated dashboard with ID %s not found", id)
 }
 
-func archiveDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id string, currentRevision int32) (*models.View, error) {
+func archiveDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id string, currentRevision int32) (*models.MemberView, error) {
 	// Archive dashboard using SDK client
 	archiveParams := dashboards.NewArchiveDashboardParams().
 		WithContext(ctx).
@@ -277,7 +277,7 @@ func archiveDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id s
 	return nil, fmt.Errorf("archived dashboard with ID %s not found", id)
 }
 
-func restoreDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id string, currentRevision int32) (*models.View, error) {
+func restoreDashboard(ctx context.Context, gcClient *client.GroundcoverAPI, id string, currentRevision int32) (*models.MemberView, error) {
 	// Restore dashboard using SDK client
 	restoreParams := dashboards.NewRestoreDashboardParams().
 		WithContext(ctx).
