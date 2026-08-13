@@ -63,7 +63,7 @@ type GetDashboardsParams struct {
 
 	/* Query.
 
-	   gcQL filter query (filters only, no pipes). Supported keys: name, owner, description, team, tags. Unkeyed terms are free text, matched as a case-insensitive substring across name, description, owner and tags.
+	   gcQL filter query (filters only, no pipes). Supported keys: name, tags, owner, source, description, team. `status` is also accepted but intentionally not suggested by the filter-bar autocomplete — the status selector owns it via the top-level status param, and the two are ANDed, so a query status that contradicts the param yields an empty list. Unkeyed terms are free text, matched as a case-insensitive substring across name, description, owner and tags.
 	*/
 	Query *string
 
