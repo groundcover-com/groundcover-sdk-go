@@ -81,7 +81,10 @@ func TestCloudwatch(t *testing.T) {
 
 	// 1. CREATE (without name/tags - backward compatibility)
 	// Use unique name to avoid conflicts with other test runs
-	uniqueName := "e2e-cloudwatch-" + uuid.New().String()
+	// e2e-test-* per the shared convention, matching the other cases in this
+	// file, so the name-based janitor recognises it. "e2e-cloudwatch-" was also
+	// a name a person could plausibly give a real integration.
+	uniqueName := "e2e-test-cloudwatch-" + uuid.New().String()
 	createBody := &models.CreateDataIntegrationConfigRequest{
 		Config: testCloudwatchConfig,
 		Name:   uniqueName,

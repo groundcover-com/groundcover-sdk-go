@@ -15,7 +15,10 @@ import (
 func createTestPolicy(t *testing.T, client *TestClient) string {
 	t.Helper()
 
-	policyName := "sa-test-policy-" + uuid.New().String()
+	// Named to the shared e2e convention (e2e-test-<kind>-<uuid>) so the
+	// name-based janitor in sdk-python/tools/gc_e2e_janitor recognises it. The
+	// old "sa-test-policy-" carried no e2e token at all and was invisible to it.
+	policyName := "e2e-test-policy-for-sa-" + uuid.New().String()
 	policyDesc := "Temporary policy for service account E2E tests"
 	createReq := &models.CreatePolicyRequest{
 		Name:        &policyName,
