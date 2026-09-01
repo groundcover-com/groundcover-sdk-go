@@ -37,7 +37,7 @@ type DiscoveryRequest struct {
 
 	// Type specifies the type of discovery to perform.
 	// Required: true
-	// Enum: ["logs","traces","events","issues","entities","apm","monitors"]
+	// Enum: ["logs","traces","events","issues","entities","apm","monitors","dashboards"]
 	Type *string `json:"type"`
 
 	// filter group
@@ -147,7 +147,7 @@ var discoveryRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities","apm","monitors"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities","apm","monitors","dashboards"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -177,6 +177,9 @@ const (
 
 	// DiscoveryRequestTypeMonitors captures enum value "monitors"
 	DiscoveryRequestTypeMonitors string = "monitors"
+
+	// DiscoveryRequestTypeDashboards captures enum value "dashboards"
+	DiscoveryRequestTypeDashboards string = "dashboards"
 )
 
 // prop value enum
