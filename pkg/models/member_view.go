@@ -51,6 +51,10 @@ type MemberView struct {
 	// owner
 	Owner string `json:"owner,omitempty"`
 
+	// PinOrder is the member's pin weight, higher sorts first; nil when not
+	// pinned. The client owns the numbering, so ties and gaps are possible.
+	PinOrder int32 `json:"pinOrder,omitempty"`
+
 	// preset
 	Preset string `json:"preset,omitempty"`
 
