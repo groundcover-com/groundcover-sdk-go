@@ -25,6 +25,7 @@ import (
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/monitors"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/notification_routes"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/policies"
+	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/profiling"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/rbac_v2"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/rum"
 	"github.com/groundcover-com/groundcover-sdk-go/pkg/client/search"
@@ -93,6 +94,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Groundcove
 	cli.Monitors = monitors.New(transport, formats)
 	cli.NotificationRoutes = notification_routes.New(transport, formats)
 	cli.Policies = policies.New(transport, formats)
+	cli.Profiling = profiling.New(transport, formats)
 	cli.RbacV2 = rbac_v2.New(transport, formats)
 	cli.Rum = rum.New(transport, formats)
 	cli.Search = search.New(transport, formats)
@@ -176,6 +178,8 @@ type GroundcoverAPI struct {
 
 	Policies policies.ClientService
 
+	Profiling profiling.ClientService
+
 	RbacV2 rbac_v2.ClientService
 
 	Rum rum.ClientService
@@ -215,6 +219,7 @@ func (c *GroundcoverAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Monitors.SetTransport(transport)
 	c.NotificationRoutes.SetTransport(transport)
 	c.Policies.SetTransport(transport)
+	c.Profiling.SetTransport(transport)
 	c.RbacV2.SetTransport(transport)
 	c.Rum.SetTransport(transport)
 	c.Search.SetTransport(transport)
