@@ -98,6 +98,11 @@ func WithAcceptApplicationxYaml(r *runtime.ClientOperation) {
 	r.ProducesMediaTypes = []string{"application/x-yaml"}
 }
 
+// WithAcceptTextPlain sets the Accept header to "text/plain".
+func WithAcceptTextPlain(r *runtime.ClientOperation) {
+	r.ProducesMediaTypes = []string{"text/plain"}
+}
+
 // ClientService is the interface for Client methods
 type ClientService interface {
 	CreateMonitor(params *CreateMonitorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateMonitorOK, error)
@@ -111,6 +116,8 @@ type ClientService interface {
 	DeleteRecurringSilence(params *DeleteRecurringSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteRecurringSilenceOK, error)
 
 	DeleteSilence(params *DeleteSilenceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteSilenceOK, error)
+
+	ExportMonitorsV2(params *ExportMonitorsV2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ExportMonitorsV2OK, error)
 
 	GetAllRecurringSilences(params *GetAllRecurringSilencesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetAllRecurringSilencesOK, error)
 
@@ -412,6 +419,57 @@ func (a *Client) DeleteSilence(params *DeleteSilenceParams, authInfo runtime.Cli
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for deleteSilence: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	ExportMonitorsV2 exports v2 monitors as terraform
+
+	One HCL document with a groundcover_monitor_v2 resource per uuid, in request
+
+order. A uuid that is unknown, deleted, or outside the caller's tenant and
+backend, and a monitor the resource cannot express, each become an HCL
+comment in place of the resource; the export never fails on one row. A uuid
+repeated in the request is rendered once.
+*/
+func (a *Client) ExportMonitorsV2(params *ExportMonitorsV2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ExportMonitorsV2OK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewExportMonitorsV2Params()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "exportMonitorsV2",
+		Method:             "POST",
+		PathPattern:        "/api/v2/monitors/export",
+		ProducesMediaTypes: []string{"text/plain"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ExportMonitorsV2Reader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*ExportMonitorsV2OK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for exportMonitorsV2: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
