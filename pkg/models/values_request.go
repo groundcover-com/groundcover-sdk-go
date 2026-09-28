@@ -59,7 +59,7 @@ type ValuesRequest struct {
 
 	// Type of the search values
 	// Required: true
-	// Enum: ["logs","traces","events","issues","entities","apm","ingestion_measurements","monitors","aws_cur","dashboards"]
+	// Enum: ["logs","traces","events","issues","entities","apm","ingestion_measurements","dbm_measurements_statement","monitors","aws_cur","dashboards"]
 	Type *string `json:"type"`
 
 	// filter group
@@ -214,7 +214,7 @@ var valuesRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities","apm","ingestion_measurements","monitors","aws_cur","dashboards"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities","apm","ingestion_measurements","dbm_measurements_statement","monitors","aws_cur","dashboards"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -244,6 +244,9 @@ const (
 
 	// ValuesRequestTypeIngestionMeasurements captures enum value "ingestion_measurements"
 	ValuesRequestTypeIngestionMeasurements string = "ingestion_measurements"
+
+	// ValuesRequestTypeDbmMeasurementsStatement captures enum value "dbm_measurements_statement"
+	ValuesRequestTypeDbmMeasurementsStatement string = "dbm_measurements_statement"
 
 	// ValuesRequestTypeMonitors captures enum value "monitors"
 	ValuesRequestTypeMonitors string = "monitors"
