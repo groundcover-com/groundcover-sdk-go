@@ -41,7 +41,7 @@ type GetEventsOverTimeRequest struct {
 
 	// Field to sort events by.
 	// Required: true
-	// Enum: ["timestamp","namespace","instance","object_kind","firstSeen","lastSeen","type","reason","count","workload","cluster"]
+	// Enum: ["timestamp","namespace","instance","object_kind","firstSeen","lastSeen","type","reason","message","count","workload","cluster"]
 	SortBy *string `json:"sortBy"`
 
 	// Sort order.
@@ -149,7 +149,7 @@ var getEventsOverTimeRequestTypeSortByPropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["timestamp","namespace","instance","object_kind","firstSeen","lastSeen","type","reason","count","workload","cluster"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["timestamp","namespace","instance","object_kind","firstSeen","lastSeen","type","reason","message","count","workload","cluster"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -182,6 +182,9 @@ const (
 
 	// GetEventsOverTimeRequestSortByReason captures enum value "reason"
 	GetEventsOverTimeRequestSortByReason string = "reason"
+
+	// GetEventsOverTimeRequestSortByMessage captures enum value "message"
+	GetEventsOverTimeRequestSortByMessage string = "message"
 
 	// GetEventsOverTimeRequestSortByCount captures enum value "count"
 	GetEventsOverTimeRequestSortByCount string = "count"
