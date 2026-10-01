@@ -47,7 +47,7 @@ type Policy struct {
 	// Read Only: true
 	RevisionNumber int32 `json:"revisionNumber,omitempty"`
 
-	// sensitive access
+	// Whether this policy grants access to sensitive (access-controlled) attributes.
 	SensitiveAccess bool `json:"sensitiveAccess,omitempty"`
 
 	// Tenant associated with the policy.
