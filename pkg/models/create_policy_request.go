@@ -30,6 +30,9 @@ type CreatePolicyRequest struct {
 	// Required: true
 	Name *string `json:"name"`
 
+	// Whether this policy grants access to sensitive (access-controlled) attributes.
+	SensitiveAccess bool `json:"sensitiveAccess,omitempty"`
+
 	// data scope
 	DataScope *DataScope `json:"dataScope,omitempty"`
 

@@ -47,6 +47,9 @@ type Policy struct {
 	// Read Only: true
 	RevisionNumber int32 `json:"revisionNumber,omitempty"`
 
+	// sensitive access
+	SensitiveAccess bool `json:"sensitiveAccess,omitempty"`
+
 	// Tenant associated with the policy.
 	// Read Only: true
 	TenantUUID string `json:"tenantUuid,omitempty"`
