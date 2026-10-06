@@ -74,6 +74,9 @@ type WorkloadsListItem struct {
 	// resource version
 	ResourceVersion string `json:"resourceVersion,omitempty"`
 
+	// running pods count
+	RunningPodsCount uint32 `json:"runningPodsCount,omitempty"`
+
 	// UID
 	UID string `json:"uid,omitempty"`
 
