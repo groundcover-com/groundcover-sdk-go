@@ -53,6 +53,9 @@ type WorkloadsListItem struct {
 	// namespace
 	Namespace string `json:"namespace,omitempty"`
 
+	// owner kind
+	OwnerKind string `json:"ownerKind,omitempty"`
+
 	// p50
 	P50 float64 `json:"p50,omitempty"`
 
