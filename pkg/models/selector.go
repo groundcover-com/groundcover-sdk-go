@@ -29,9 +29,6 @@ type Selector struct {
 	// auto complete
 	AutoComplete bool `json:"autoComplete,omitempty" yaml:"autoComplete,omitempty"`
 
-	// filter keys
-	FilterKeys []string `json:"filterKeys" yaml:"filterKeys"`
-
 	// is nullable
 	IsNullable bool `json:"isNullable,omitempty" yaml:"isNullable,omitempty"`
 

@@ -26,9 +26,6 @@ type Condition struct {
 	// auto complete
 	AutoComplete bool `json:"autoComplete,omitempty"`
 
-	// filter keys
-	FilterKeys []string `json:"filterKeys"`
-
 	// filters
 	Filters []*Filter `json:"filters"`
 

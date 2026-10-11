@@ -23,9 +23,6 @@ type Column struct {
 	// auto complete
 	AutoComplete bool `json:"autoComplete,omitempty"`
 
-	// filter keys
-	FilterKeys []string `json:"filterKeys"`
-
 	// is nullable
 	IsNullable bool `json:"isNullable,omitempty"`
 
