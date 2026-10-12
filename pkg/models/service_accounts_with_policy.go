@@ -21,6 +21,14 @@ import (
 // swagger:model ServiceAccountsWithPolicy
 type ServiceAccountsWithPolicy struct {
 
+	// Email of the user who created the service account.
+	CreatedBy string `json:"createdBy,omitempty"`
+
+	// Timestamp when the service account was created.
+	// Format: date-time
+	// Format: date-time
+	CreationDate strfmt.DateTime `json:"creationDate,omitempty"`
+
 	// Indicates if the service account has been marked for deletion.
 	Deleted bool `json:"deleted,omitempty"`
 
@@ -45,6 +53,10 @@ type ServiceAccountsWithPolicy struct {
 func (m *ServiceAccountsWithPolicy) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateCreationDate(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateLastActive(formats); err != nil {
 		res = append(res, err)
 	}
@@ -56,6 +68,18 @@ func (m *ServiceAccountsWithPolicy) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *ServiceAccountsWithPolicy) validateCreationDate(formats strfmt.Registry) error {
+	if swag.IsZero(m.CreationDate) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("creationDate", "body", "date-time", m.CreationDate.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 
