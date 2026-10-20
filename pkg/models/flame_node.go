@@ -29,7 +29,8 @@ type FlameNode struct {
 	// Omitted identifies a synthetic bucket, distinct from a real frame named other.
 	Omitted bool `json:"omitted,omitempty"`
 
-	// self
+	// Weight sampled directly in this function. In inverted trees, caller
+	// children partition the same weight and have zero self weight.
 	Self float64 `json:"self,omitempty"`
 
 	// value

@@ -17,7 +17,8 @@ import (
 // swagger:model StackCounts
 type StackCounts struct {
 
-	// Stacks included in the tree before depth, node, and small-branch compaction.
+	// Stacks selected for detailed paths before depth, node, and small-branch
+	// compaction. Inverted function totals also include stacks beyond this count.
 	Returned uint64 `json:"returned,omitempty"`
 
 	// Matching aggregated stacks before the top-stack limit or result truncation.

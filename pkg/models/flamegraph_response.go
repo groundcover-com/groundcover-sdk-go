@@ -19,7 +19,7 @@ import (
 // swagger:model FlamegraphResponse
 type FlamegraphResponse struct {
 
-	// filtered value
+	// Signed weight removed by focus and frame filtering.
 	FilteredValue float64 `json:"filteredValue,omitempty"`
 
 	// profile type
@@ -28,7 +28,7 @@ type FlamegraphResponse struct {
 	// sample type
 	SampleType string `json:"sampleType,omitempty"`
 
-	// total
+	// Original authorized selection weight before focus or frame filtering.
 	Total float64 `json:"total,omitempty"`
 
 	// truncated

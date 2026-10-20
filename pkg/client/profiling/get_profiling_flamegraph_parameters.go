@@ -70,11 +70,32 @@ type GetProfilingFlamegraphParams struct {
 	*/
 	End strfmt.DateTime
 
+	/* Focus.
+
+	     JSON array of exact root-to-leaf frame names. The selected frame becomes
+	the first level beneath root. Omit or pass [] for the full tree.
+	*/
+	Focus *string
+
+	/* FrameFilter.
+
+	   Case-sensitive substring matched against any frame in a stack.
+	*/
+	FrameFilter *string
+
+	/* Invert.
+
+	     Return leaves first, after applying focus and frameFilter. Sampled-function
+	totals use all matching stacks, before the caller-detail limit.
+	*/
+	Invert *bool
+
 	/* Limit.
 
-	   Maximum distinct stacks. Defaults to 6000 and is capped at 50000.
+	     Maximum detailed stacks. Defaults to 6000 and is capped at 50000.
+	Inverted function totals include all matching stacks; this limits callers.
 
-	   Format: int64
+	     Format: int64
 	*/
 	Limit *int64
 
@@ -156,6 +177,39 @@ func (o *GetProfilingFlamegraphParams) SetEnd(end strfmt.DateTime) {
 	o.End = end
 }
 
+// WithFocus adds the focus to the get profiling flamegraph params
+func (o *GetProfilingFlamegraphParams) WithFocus(focus *string) *GetProfilingFlamegraphParams {
+	o.SetFocus(focus)
+	return o
+}
+
+// SetFocus adds the focus to the get profiling flamegraph params
+func (o *GetProfilingFlamegraphParams) SetFocus(focus *string) {
+	o.Focus = focus
+}
+
+// WithFrameFilter adds the frameFilter to the get profiling flamegraph params
+func (o *GetProfilingFlamegraphParams) WithFrameFilter(frameFilter *string) *GetProfilingFlamegraphParams {
+	o.SetFrameFilter(frameFilter)
+	return o
+}
+
+// SetFrameFilter adds the frameFilter to the get profiling flamegraph params
+func (o *GetProfilingFlamegraphParams) SetFrameFilter(frameFilter *string) {
+	o.FrameFilter = frameFilter
+}
+
+// WithInvert adds the invert to the get profiling flamegraph params
+func (o *GetProfilingFlamegraphParams) WithInvert(invert *bool) *GetProfilingFlamegraphParams {
+	o.SetInvert(invert)
+	return o
+}
+
+// SetInvert adds the invert to the get profiling flamegraph params
+func (o *GetProfilingFlamegraphParams) SetInvert(invert *bool) {
+	o.Invert = invert
+}
+
 // WithLimit adds the limit to the get profiling flamegraph params
 func (o *GetProfilingFlamegraphParams) WithLimit(limit *int64) *GetProfilingFlamegraphParams {
 	o.SetLimit(limit)
@@ -204,6 +258,57 @@ func (o *GetProfilingFlamegraphParams) WriteToRequest(r runtime.ClientRequest, r
 
 		if err := r.SetQueryParam("end", qEnd); err != nil {
 			return err
+		}
+	}
+
+	if o.Focus != nil {
+
+		// query param focus
+		var qrFocus string
+
+		if o.Focus != nil {
+			qrFocus = *o.Focus
+		}
+		qFocus := qrFocus
+		if qFocus != "" {
+
+			if err := r.SetQueryParam("focus", qFocus); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.FrameFilter != nil {
+
+		// query param frameFilter
+		var qrFrameFilter string
+
+		if o.FrameFilter != nil {
+			qrFrameFilter = *o.FrameFilter
+		}
+		qFrameFilter := qrFrameFilter
+		if qFrameFilter != "" {
+
+			if err := r.SetQueryParam("frameFilter", qFrameFilter); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.Invert != nil {
+
+		// query param invert
+		var qrInvert bool
+
+		if o.Invert != nil {
+			qrInvert = *o.Invert
+		}
+		qInvert := swag.FormatBool(qrInvert)
+		if qInvert != "" {
+
+			if err := r.SetQueryParam("invert", qInvert); err != nil {
+				return err
+			}
 		}
 	}
 
