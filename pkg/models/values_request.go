@@ -59,7 +59,7 @@ type ValuesRequest struct {
 
 	// Type of the search values
 	// Required: true
-	// Enum: ["logs","traces","events","issues","entities","apm","ingestion_measurements","dbm_measurements_statement","monitors","aws_cur","dashboards","profiling_samples"]
+	// Enum: ["logs","traces","events","issues","entities","apm","ingestion_measurements","dbm_measurements_statement","monitors","aws_cur","dashboards","profiling_samples","autonomous_infra"]
 	Type *string `json:"type"`
 
 	// filter group
@@ -214,7 +214,7 @@ var valuesRequestTypeTypePropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities","apm","ingestion_measurements","dbm_measurements_statement","monitors","aws_cur","dashboards","profiling_samples"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["logs","traces","events","issues","entities","apm","ingestion_measurements","dbm_measurements_statement","monitors","aws_cur","dashboards","profiling_samples","autonomous_infra"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -259,6 +259,9 @@ const (
 
 	// ValuesRequestTypeProfilingSamples captures enum value "profiling_samples"
 	ValuesRequestTypeProfilingSamples string = "profiling_samples"
+
+	// ValuesRequestTypeAutonomousInfra captures enum value "autonomous_infra"
+	ValuesRequestTypeAutonomousInfra string = "autonomous_infra"
 )
 
 // prop value enum
