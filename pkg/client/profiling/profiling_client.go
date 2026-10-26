@@ -58,6 +58,8 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	GetProfilingFlamegraph(params *GetProfilingFlamegraphParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetProfilingFlamegraphOK, error)
 
+	GetProfilingFlamegraphDiff(params *GetProfilingFlamegraphDiffParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetProfilingFlamegraphDiffOK, error)
+
 	SetTransport(transport runtime.ClientTransport)
 }
 
@@ -72,7 +74,7 @@ func (a *Client) GetProfilingFlamegraph(params *GetProfilingFlamegraphParams, au
 	op := &runtime.ClientOperation{
 		ID:                 "getProfilingFlamegraph",
 		Method:             "GET",
-		PathPattern:        "/api/profiling/flamegraph",
+		PathPattern:        "/api/profiling/v1/flamegraph",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
@@ -102,6 +104,50 @@ func (a *Client) GetProfilingFlamegraph(params *GetProfilingFlamegraphParams, au
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getProfilingFlamegraph: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetProfilingFlamegraphDiff folds the heaviest stacks of a current and a baseline selection into one call tree with weights per side
+*/
+func (a *Client) GetProfilingFlamegraphDiff(params *GetProfilingFlamegraphDiffParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetProfilingFlamegraphDiffOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetProfilingFlamegraphDiffParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getProfilingFlamegraphDiff",
+		Method:             "GET",
+		PathPattern:        "/api/profiling/v1/flamegraph-diff",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetProfilingFlamegraphDiffReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetProfilingFlamegraphDiffOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getProfilingFlamegraphDiff: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

@@ -64,7 +64,7 @@ func (o *GetProfilingFlamegraphReader) ReadResponse(response runtime.ClientRespo
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("[GET /api/profiling/flamegraph] getProfilingFlamegraph", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /api/profiling/v1/flamegraph] getProfilingFlamegraph", response, response.Code())
 	}
 }
 
@@ -114,12 +114,12 @@ func (o *GetProfilingFlamegraphOK) Code() int {
 
 func (o *GetProfilingFlamegraphOK) Error() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphOK %s", 200, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphOK %s", 200, payload)
 }
 
 func (o *GetProfilingFlamegraphOK) String() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphOK %s", 200, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphOK %s", 200, payload)
 }
 
 func (o *GetProfilingFlamegraphOK) GetPayload() *models.FlamegraphResponse {
@@ -184,12 +184,12 @@ func (o *GetProfilingFlamegraphBadRequest) Code() int {
 
 func (o *GetProfilingFlamegraphBadRequest) Error() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphBadRequest %s", 400, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphBadRequest %s", 400, payload)
 }
 
 func (o *GetProfilingFlamegraphBadRequest) String() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphBadRequest %s", 400, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphBadRequest %s", 400, payload)
 }
 
 func (o *GetProfilingFlamegraphBadRequest) GetPayload() *GetProfilingFlamegraphBadRequestBody {
@@ -254,12 +254,12 @@ func (o *GetProfilingFlamegraphNotFound) Code() int {
 
 func (o *GetProfilingFlamegraphNotFound) Error() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphNotFound %s", 404, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphNotFound %s", 404, payload)
 }
 
 func (o *GetProfilingFlamegraphNotFound) String() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphNotFound %s", 404, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphNotFound %s", 404, payload)
 }
 
 func (o *GetProfilingFlamegraphNotFound) GetPayload() *GetProfilingFlamegraphNotFoundBody {
@@ -324,12 +324,12 @@ func (o *GetProfilingFlamegraphUnprocessableEntity) Code() int {
 
 func (o *GetProfilingFlamegraphUnprocessableEntity) Error() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphUnprocessableEntity %s", 422, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphUnprocessableEntity %s", 422, payload)
 }
 
 func (o *GetProfilingFlamegraphUnprocessableEntity) String() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphUnprocessableEntity %s", 422, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphUnprocessableEntity %s", 422, payload)
 }
 
 func (o *GetProfilingFlamegraphUnprocessableEntity) GetPayload() *GetProfilingFlamegraphUnprocessableEntityBody {
@@ -394,12 +394,12 @@ func (o *GetProfilingFlamegraphInternalServerError) Code() int {
 
 func (o *GetProfilingFlamegraphInternalServerError) Error() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphInternalServerError %s", 500, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphInternalServerError %s", 500, payload)
 }
 
 func (o *GetProfilingFlamegraphInternalServerError) String() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphInternalServerError %s", 500, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphInternalServerError %s", 500, payload)
 }
 
 func (o *GetProfilingFlamegraphInternalServerError) GetPayload() *GetProfilingFlamegraphInternalServerErrorBody {
@@ -464,12 +464,12 @@ func (o *GetProfilingFlamegraphGatewayTimeout) Code() int {
 
 func (o *GetProfilingFlamegraphGatewayTimeout) Error() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphGatewayTimeout %s", 504, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphGatewayTimeout %s", 504, payload)
 }
 
 func (o *GetProfilingFlamegraphGatewayTimeout) String() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[GET /api/profiling/flamegraph][%d] getProfilingFlamegraphGatewayTimeout %s", 504, payload)
+	return fmt.Sprintf("[GET /api/profiling/v1/flamegraph][%d] getProfilingFlamegraphGatewayTimeout %s", 504, payload)
 }
 
 func (o *GetProfilingFlamegraphGatewayTimeout) GetPayload() *GetProfilingFlamegraphGatewayTimeoutBody {
