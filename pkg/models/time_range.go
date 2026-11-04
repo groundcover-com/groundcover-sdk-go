@@ -19,24 +19,24 @@ import (
 // swagger:model TimeRange
 type TimeRange struct {
 
-	// end time
-	// Required: true
-	EndTime *string `json:"endTime"`
+	// from
+	// Format: date-time
+	From strfmt.DateTime `json:"from,omitempty"`
 
-	// start time
-	// Required: true
-	StartTime *string `json:"startTime"`
+	// to
+	// Format: date-time
+	To strfmt.DateTime `json:"to,omitempty"`
 }
 
 // Validate validates this time range
 func (m *TimeRange) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateEndTime(formats); err != nil {
+	if err := m.validateFrom(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateStartTime(formats); err != nil {
+	if err := m.validateTo(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -46,18 +46,24 @@ func (m *TimeRange) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *TimeRange) validateEndTime(formats strfmt.Registry) error {
+func (m *TimeRange) validateFrom(formats strfmt.Registry) error {
+	if swag.IsZero(m.From) { // not required
+		return nil
+	}
 
-	if err := validate.Required("endTime", "body", m.EndTime); err != nil {
+	if err := validate.FormatOf("from", "body", "date-time", m.From.String(), formats); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (m *TimeRange) validateStartTime(formats strfmt.Registry) error {
+func (m *TimeRange) validateTo(formats strfmt.Registry) error {
+	if swag.IsZero(m.To) { // not required
+		return nil
+	}
 
-	if err := validate.Required("startTime", "body", m.StartTime); err != nil {
+	if err := validate.FormatOf("to", "body", "date-time", m.To.String(), formats); err != nil {
 		return err
 	}
 

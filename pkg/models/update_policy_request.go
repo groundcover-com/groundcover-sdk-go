@@ -39,6 +39,9 @@ type UpdatePolicyRequest struct {
 	// data scope
 	DataScope *DataScope `json:"dataScope,omitempty"`
 
+	// feature permissions
+	FeaturePermissions Permissions `json:"featurePermissions,omitempty"`
+
 	// role
 	Role RoleMap `json:"role,omitempty"`
 }
@@ -52,6 +55,10 @@ func (m *UpdatePolicyRequest) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateDataScope(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateFeaturePermissions(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -97,6 +104,29 @@ func (m *UpdatePolicyRequest) validateDataScope(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *UpdatePolicyRequest) validateFeaturePermissions(formats strfmt.Registry) error {
+	if swag.IsZero(m.FeaturePermissions) { // not required
+		return nil
+	}
+
+	if m.FeaturePermissions != nil {
+		if err := m.FeaturePermissions.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("featurePermissions")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("featurePermissions")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *UpdatePolicyRequest) validateRole(formats strfmt.Registry) error {
 	if swag.IsZero(m.Role) { // not required
 		return nil
@@ -125,6 +155,10 @@ func (m *UpdatePolicyRequest) ContextValidate(ctx context.Context, formats strfm
 	var res []error
 
 	if err := m.contextValidateDataScope(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateFeaturePermissions(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -158,6 +192,28 @@ func (m *UpdatePolicyRequest) contextValidateDataScope(ctx context.Context, form
 
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *UpdatePolicyRequest) contextValidateFeaturePermissions(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.FeaturePermissions) { // not required
+		return nil
+	}
+
+	if err := m.FeaturePermissions.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("featurePermissions")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("featurePermissions")
+		}
+
+		return err
 	}
 
 	return nil
