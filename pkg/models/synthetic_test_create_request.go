@@ -29,6 +29,9 @@ type SyntheticTestCreateRequest struct {
 	// enabled
 	Enabled bool `json:"enabled,omitempty"`
 
+	// excluded clusters
+	ExcludedClusters []string `json:"excludedClusters"`
+
 	// Deprecated: Exporters field is no longer used but kept for backward compatibility
 	// to prevent parsing errors from clients that still send it.
 	Exporters []string `json:"exporters"`
