@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Permissions Permissions contains explicit overrides only; a missing feature inherits legacy authorization.
+// Permissions Permissions maps features to access levels. In policy overrides, a missing feature inherits legacy authorization.
 //
 // swagger:model Permissions
 type Permissions map[string]string
