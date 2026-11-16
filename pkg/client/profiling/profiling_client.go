@@ -56,11 +56,111 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	CreateProfilingRule(params *CreateProfilingRuleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateProfilingRuleCreated, error)
+
+	DeleteProfilingRule(params *DeleteProfilingRuleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteProfilingRuleNoContent, error)
+
 	GetProfilingFlamegraph(params *GetProfilingFlamegraphParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetProfilingFlamegraphOK, error)
 
 	GetProfilingFlamegraphDiff(params *GetProfilingFlamegraphDiffParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetProfilingFlamegraphDiffOK, error)
 
+	GetProfilingRule(params *GetProfilingRuleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetProfilingRuleOK, error)
+
+	ListProfilingRules(params *ListProfilingRulesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ListProfilingRulesOK, error)
+
+	UpdateProfilingRule(params *UpdateProfilingRuleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateProfilingRuleOK, error)
+
 	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+	CreateProfilingRule Create a profiling rule. Sensors in its scope profile the containers its
+
+filter selects until it expires or is deleted.
+*/
+func (a *Client) CreateProfilingRule(params *CreateProfilingRuleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateProfilingRuleCreated, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewCreateProfilingRuleParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "createProfilingRule",
+		Method:             "POST",
+		PathPattern:        "/api/profiling/v1/rules",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &CreateProfilingRuleReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*CreateProfilingRuleCreated)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createProfilingRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+DeleteProfilingRule deletes a profiling rule sensors stop applying it on their next poll
+*/
+func (a *Client) DeleteProfilingRule(params *DeleteProfilingRuleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteProfilingRuleNoContent, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewDeleteProfilingRuleParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "deleteProfilingRule",
+		Method:             "DELETE",
+		PathPattern:        "/api/profiling/v1/rules/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &DeleteProfilingRuleReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*DeleteProfilingRuleNoContent)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteProfilingRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -148,6 +248,138 @@ func (a *Client) GetProfilingFlamegraphDiff(params *GetProfilingFlamegraphDiffPa
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getProfilingFlamegraphDiff: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetProfilingRule gets a profiling rule
+*/
+func (a *Client) GetProfilingRule(params *GetProfilingRuleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetProfilingRuleOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetProfilingRuleParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getProfilingRule",
+		Method:             "GET",
+		PathPattern:        "/api/profiling/v1/rules/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetProfilingRuleReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetProfilingRuleOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getProfilingRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+ListProfilingRules lists profiling rules
+*/
+func (a *Client) ListProfilingRules(params *ListProfilingRulesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ListProfilingRulesOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewListProfilingRulesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "listProfilingRules",
+		Method:             "GET",
+		PathPattern:        "/api/profiling/v1/rules",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ListProfilingRulesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*ListProfilingRulesOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listProfilingRules: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+UpdateProfilingRule replaces a profiling rule keeping its ID the scope cannot change
+*/
+func (a *Client) UpdateProfilingRule(params *UpdateProfilingRuleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateProfilingRuleOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewUpdateProfilingRuleParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "updateProfilingRule",
+		Method:             "PUT",
+		PathPattern:        "/api/profiling/v1/rules/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &UpdateProfilingRuleReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*UpdateProfilingRuleOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateProfilingRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
