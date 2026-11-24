@@ -28,6 +28,9 @@ type AdvancedDataScope struct {
 	// metrics
 	Metrics *Group `json:"metrics,omitempty"`
 
+	// rum
+	Rum *Group `json:"rum,omitempty"`
+
 	// traces
 	Traces *Group `json:"traces,omitempty"`
 
@@ -48,6 +51,10 @@ func (m *AdvancedDataScope) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateMetrics(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRum(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -134,6 +141,29 @@ func (m *AdvancedDataScope) validateMetrics(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *AdvancedDataScope) validateRum(formats strfmt.Registry) error {
+	if swag.IsZero(m.Rum) { // not required
+		return nil
+	}
+
+	if m.Rum != nil {
+		if err := m.Rum.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("rum")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("rum")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *AdvancedDataScope) validateTraces(formats strfmt.Registry) error {
 	if swag.IsZero(m.Traces) { // not required
 		return nil
@@ -193,6 +223,10 @@ func (m *AdvancedDataScope) ContextValidate(ctx context.Context, formats strfmt.
 	}
 
 	if err := m.contextValidateMetrics(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRum(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -276,6 +310,31 @@ func (m *AdvancedDataScope) contextValidateMetrics(ctx context.Context, formats 
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("metrics")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *AdvancedDataScope) contextValidateRum(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Rum != nil {
+
+		if swag.IsZero(m.Rum) { // not required
+			return nil
+		}
+
+		if err := m.Rum.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("rum")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("rum")
 			}
 
 			return err
