@@ -28,6 +28,10 @@ type TenantAISettingsResponse struct {
 
 	// effective a i features enabled
 	EffectiveAIFeaturesEnabled bool `json:"effectiveAIFeaturesEnabled,omitempty"`
+
+	// The stored Semantic Intelligence switch. Whether Goals are served also needs the backend's
+	// semantic-intelligence feature; backend/list reports effectiveSemanticIntelligenceEnabled.
+	SemanticIntelligenceEnabled bool `json:"semanticIntelligenceEnabled,omitempty"`
 }
 
 // Validate validates this tenant a i settings response

@@ -8,42 +8,24 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
-// UpdateTenantAISettingsRequest update tenant a i settings request
+// UpdateTenantAISettingsRequest UpdateTenantAISettingsRequest changes the backend's AI settings. At least one field must be set; an omitted field keeps the stored value.
 //
 // swagger:model UpdateTenantAISettingsRequest
 type UpdateTenantAISettingsRequest struct {
 
-	// customer a i features opt out
-	// Required: true
-	CustomerAIFeaturesOptOut *bool `json:"customerAIFeaturesOptOut"`
+	// Opts the backend out of AI features; omitted keeps the stored value.
+	CustomerAIFeaturesOptOut *bool `json:"customerAIFeaturesOptOut,omitempty"`
+
+	// Turns background analysis of AI conversations on or off; omitted keeps the stored value.
+	SemanticIntelligenceEnabled *bool `json:"semanticIntelligenceEnabled,omitempty"`
 }
 
 // Validate validates this update tenant a i settings request
 func (m *UpdateTenantAISettingsRequest) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateCustomerAIFeaturesOptOut(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *UpdateTenantAISettingsRequest) validateCustomerAIFeaturesOptOut(formats strfmt.Registry) error {
-
-	if err := validate.Required("customerAIFeaturesOptOut", "body", m.CustomerAIFeaturesOptOut); err != nil {
-		return err
-	}
-
 	return nil
 }
 
